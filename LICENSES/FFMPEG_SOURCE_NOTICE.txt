@@ -1,0 +1,29 @@
+FFmpeg source notice for KWAK Split
+==================================
+
+Bundled binaries:
+- bin/ffmpeg.exe
+- bin/ffprobe.exe
+- bin/ffplay.exe
+
+Observed binary version:
+- ffmpeg version 8.1.1-essentials_build-www.gyan.dev
+
+Observed configure flags include:
+- --enable-gpl
+- --enable-version3
+- --enable-static
+- --enable-librubberband
+
+These binaries are the gyan.dev FFmpeg essentials build and should be treated as
+GPLv3-covered for redistribution. The GPLv3 license text is included next to
+this file as GPL-3.0.txt.
+
+Corresponding source reference noted by the build notice:
+- https://github.com/FFmpeg/FFmpeg/commit/239f2c733d
+
+FFmpeg legal notes:
+- https://www.ffmpeg.org/legal.html
+
+If KWAK Split is redistributed publicly, keep this notice and provide recipients
+access to the corresponding FFmpeg source for the exact binaries distributed.

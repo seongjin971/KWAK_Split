@@ -1,0 +1,71 @@
+KWAK Split third-party notices
+==============================
+
+This file is a practical notice for bundled third-party components. It is not legal advice.
+
+Bundled executable tools
+------------------------
+
+FFmpeg 8.1.1 essentials build from gyan.dev
+- Bundled files: bin/ffmpeg.exe, bin/ffprobe.exe, bin/ffplay.exe
+- Local version string: 8.1.1-essentials_build-www.gyan.dev
+- Local configure flags include --enable-gpl, --enable-version3, and --enable-static.
+- gyan.dev describes these Windows builds as static and GPLv3 licensed.
+- FFmpeg source for this release is linked by gyan.dev at:
+  https://github.com/FFmpeg/FFmpeg/commit/239f2c733d
+- FFmpeg legal notes:
+  https://www.ffmpeg.org/legal.html
+- GPLv3 license text:
+  https://www.gnu.org/licenses/gpl-3.0.html
+- Included local license/source notice files:
+  LICENSES/GPL-3.0.txt
+  LICENSES/FFMPEG_SOURCE_NOTICE.txt
+
+If this app is redistributed with the FFmpeg executables, provide the GPLv3 license text and make
+the corresponding FFmpeg source for the exact distributed binaries available to recipients.
+If a public download page is used, place the FFmpeg notice and source link next to the app download.
+
+Python runtimes
+---------------
+
+The app is packaged with Python/Tcl/Tk runtime files by PyInstaller. The bundled
+backend/demucs_runtime folder also contains Python runtime files used to run
+Demucs on machines that do not have Python installed at the original build path.
+- Python is distributed under the Python Software Foundation License:
+  https://docs.python.org/3/license.html
+- Tcl/Tk uses Tcl/Tk licensing terms:
+  https://www.tcl-lang.org/software/tcltk/license.html
+- PyInstaller is a build tool with a GPL exception for bundled applications:
+  https://pyinstaller.org/en/stable/license.html
+
+Stem separation runtime
+-----------------------
+
+The folder backend/demucs_runtime contains a Python runtime environment used to run Demucs.
+Package metadata and license files from installed packages are retained in their *.dist-info
+directories inside that runtime.
+
+Main installed packages observed in this build:
+- demucs 4.0.1: MIT License
+- torch 2.12.0: BSD-style license
+- torchaudio 2.11.0: BSD-style license
+- torchcodec 0.13.0: BSD 3-Clause license
+- numpy 2.4.6: BSD-style license
+- sympy 1.14.0: BSD-style license
+- PyYAML 6.0.3: MIT License
+- lameenc 1.8.2: LGPLv3
+- tqdm 4.67.3: MPL-2.0 AND MIT
+- openunmix 1.3.0: MIT License
+- julius 0.2.7: MIT License
+- einops 0.8.2: MIT License
+- dora_search 0.1.12: MIT License
+
+LGPLv3 license text is included as LICENSES/LGPL-3.0.txt. Package-specific
+license metadata and license files remain in their installed *.dist-info
+directories.
+
+The models folder may contain cached Demucs model weights, for example:
+- models/torch/hub/checkpoints/955717e8-8726e21a.th
+
+Demucs source code is MIT licensed, but pretrained model weight licensing should be checked before
+public or commercial redistribution if model files are bundled with the app.
