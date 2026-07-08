@@ -56,6 +56,8 @@ class AudioEffects:
     high_shape: str = "Bell"
     high_pass_hz: float = 0.0
     low_pass_hz: float = 0.0
+    high_pass_q: float = 0.7
+    low_pass_q: float = 0.7
     pitch_semitones: float = 0.0
     tempo_ratio: float = 1.0
     peak_normalize: bool = False
@@ -599,9 +601,9 @@ def _effect_filters(effects: AudioEffects) -> list[str]:
     if abs(effects.high_db) >= 0.05:
         filters.append(_eq_filter(effects.high_shape, effects.high_freq, effects.high_q, effects.high_db))
     if effects.high_pass_hz > 0:
-        filters.append(f"highpass=f={_clamp_frequency(effects.high_pass_hz):.3f}")
+        filters.append(f"highpass=f={_clamp_frequency(effects.high_pass_hz):.3f}:t=q:w={_clamp_q(effects.high_pass_q):.3f}")
     if effects.low_pass_hz > 0:
-        filters.append(f"lowpass=f={_clamp_frequency(effects.low_pass_hz):.3f}")
+        filters.append(f"lowpass=f={_clamp_frequency(effects.low_pass_hz):.3f}:t=q:w={_clamp_q(effects.low_pass_q):.3f}")
     return filters
 
 

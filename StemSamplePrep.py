@@ -166,6 +166,8 @@ class EqCurveEditor(tk.Canvas):
         high_shape_var: tk.StringVar,
         high_pass_var: tk.DoubleVar,
         low_pass_var: tk.DoubleVar,
+        high_pass_q_var: tk.DoubleVar,
+        low_pass_q_var: tk.DoubleVar,
     ) -> None:
         super().__init__(
             parent,
@@ -190,6 +192,8 @@ class EqCurveEditor(tk.Canvas):
             "low": low_q_var,
             "mid": mid_q_var,
             "high": high_q_var,
+            "hp": high_pass_q_var,
+            "lp": low_pass_q_var,
         }
         self.shape_vars = {
             "low": low_shape_var,
@@ -345,6 +349,8 @@ class EqCurveEditor(tk.Canvas):
             self.freq_vars[band].set(defaults[band])
             self.q_vars[band].set({"low": 0.8, "mid": 1.0, "high": 0.8}[band])
             self.shape_vars[band].set("Bell")
+        elif band in self.q_vars:
+            self.q_vars[band].set(0.7)
 
     def _nearest_handle(self, x: int, y: int) -> str | None:
         left, top, right, bottom = self._plot_bounds(
@@ -418,18 +424,18 @@ class EqCurveEditor(tk.Canvas):
                 return gain / (1.0 + math.exp(distance * q * 3.0))
             if shape == "High Shelf":
                 return gain / (1.0 + math.exp(-distance * q * 3.0))
-            width = max(0.18, 0.58 / q)
+            width = self._bell_width(q)
             return gain * math.exp(-(distance ** 2) / (2.0 * width * width))
         if band == "hp":
             cutoff = self._safe_float(self.vars["hp"].get())
-            if cutoff <= self.MIN_FREQ or freq >= cutoff:
+            if cutoff <= self.MIN_FREQ:
                 return 0.0
-            return max(-12.0, -18.0 * math.log2(cutoff / freq))
+            return max(min(self._cut_filter_db("hp", freq, cutoff, self._q_value("hp")), self.MAX_DB), self.MIN_DB)
         if band == "lp":
             cutoff = self._safe_float(self.vars["lp"].get())
-            if cutoff <= 0 or freq <= cutoff:
+            if cutoff <= 0:
                 return 0.0
-            return max(-12.0, -18.0 * math.log2(freq / cutoff))
+            return max(min(self._cut_filter_db("lp", freq, cutoff, self._q_value("lp")), self.MAX_DB), self.MIN_DB)
         return 0.0
 
     def _db_value(self, band: str) -> float:
@@ -441,6 +447,19 @@ class EqCurveEditor(tk.Canvas):
 
     def _q_value(self, band: str) -> float:
         return max(min(self._safe_float(self.q_vars[band].get()) or 1.0, 10.0), 0.1)
+
+    @staticmethod
+    def _bell_width(q: float) -> float:
+        return max(0.04, 0.58 / q)
+
+    @staticmethod
+    def _cut_filter_db(kind: str, freq: float, cutoff: float, q: float) -> float:
+        ratio = max(freq / max(cutoff, 0.000001), 0.000001)
+        denominator = math.sqrt((1.0 - ratio * ratio) ** 2 + (ratio / max(q, 0.000001)) ** 2)
+        if denominator <= 0:
+            return 0.0
+        magnitude = ratio * ratio / denominator if kind == "hp" else 1.0 / denominator
+        return 20.0 * math.log10(max(magnitude, 0.000001))
 
     def _shape_value(self, band: str) -> str:
         value = str(self.shape_vars[band].get())
@@ -1321,6 +1340,8 @@ class StemSamplePrepApp(tk.Tk):
         self.eq_high_shape_var = tk.StringVar(value="Bell")
         self.high_pass_var = tk.DoubleVar(value=0.0)
         self.low_pass_var = tk.DoubleVar(value=0.0)
+        self.high_pass_q_var = tk.DoubleVar(value=0.7)
+        self.low_pass_q_var = tk.DoubleVar(value=0.7)
         self.pitch_semitones_var = tk.DoubleVar(value=0.0)
         self.tempo_percent_var = tk.DoubleVar(value=100.0)
         self.peak_normalize_var = tk.BooleanVar(value=False)
@@ -1836,6 +1857,8 @@ class StemSamplePrepApp(tk.Tk):
             self.eq_high_shape_var,
             self.high_pass_var,
             self.low_pass_var,
+            self.high_pass_q_var,
+            self.low_pass_q_var,
         )
         self.eq_editor.grid(row=0, column=0, sticky="nsew", pady=(0, 10))
 
@@ -1967,18 +1990,23 @@ class StemSamplePrepApp(tk.Tk):
         )
         self.low_pass_spinbox.grid(row=0, column=4, sticky="ew")
 
-        eq_shape_grid = ttk.Frame(parent)
-        eq_shape_grid.grid(row=2, column=0, sticky="ew", pady=(8, 0))
+        eq_shape_grid = ttk.Frame(parent, style="Panel.TFrame")
+        eq_shape_grid.grid(row=2, column=0, sticky="ew", pady=(10, 0))
         for column in range(5):
             eq_shape_grid.columnconfigure(column, weight=1, uniform="eq_shape")
 
         self.eq_shape_widgets: list[tk.Widget] = []
-        self._add_eq_band_controls(eq_shape_grid, 1, self.eq_low_shape_var, self.eq_low_q_var)
-        self._add_eq_band_controls(eq_shape_grid, 2, self.eq_mid_shape_var, self.eq_mid_q_var)
-        self._add_eq_band_controls(eq_shape_grid, 3, self.eq_high_shape_var, self.eq_high_q_var)
+        self._add_filter_q_control(eq_shape_grid, 0, "HP", EqCurveEditor.COLORS["hp"], self.high_pass_q_var)
+        self._add_eq_band_controls(eq_shape_grid, 1, "Low", EqCurveEditor.COLORS["low"], self.eq_low_shape_var, self.eq_low_q_var)
+        self._add_eq_band_controls(eq_shape_grid, 2, "Mid", EqCurveEditor.COLORS["mid"], self.eq_mid_shape_var, self.eq_mid_q_var)
+        self._add_eq_band_controls(eq_shape_grid, 3, "High", EqCurveEditor.COLORS["high"], self.eq_high_shape_var, self.eq_high_q_var)
+        self._add_filter_q_control(eq_shape_grid, 4, "LP", EqCurveEditor.COLORS["lp"], self.low_pass_q_var)
 
+        eq_footer = ttk.Frame(parent, style="Panel.TFrame")
+        eq_footer.grid(row=3, column=0, sticky="ew", pady=(8, 0))
+        eq_footer.columnconfigure(0, weight=1)
         self.eq_reset_button = PillButton(
-            eq_shape_grid,
+            eq_footer,
             "Reset EQ",
             self.reset_eq,
             variant="ghost",
@@ -1986,7 +2014,7 @@ class StemSamplePrepApp(tk.Tk):
             height=30,
             bg="#101722",
         )
-        self.eq_reset_button.grid(row=0, column=4, sticky="e", padx=4)
+        self.eq_reset_button.grid(row=0, column=0, sticky="e")
 
         self.effect_widgets = [
             self.eq_reset_button,
@@ -2014,6 +2042,8 @@ class StemSamplePrepApp(tk.Tk):
             self.eq_low_q_var,
             self.eq_mid_q_var,
             self.eq_high_q_var,
+            self.high_pass_q_var,
+            self.low_pass_q_var,
             self.eq_low_shape_var,
             self.eq_mid_shape_var,
             self.eq_high_shape_var,
@@ -2030,11 +2060,12 @@ class StemSamplePrepApp(tk.Tk):
         self,
         parent: ttk.Frame,
         column: int,
+        label: str,
+        color: str,
         shape_var: tk.StringVar,
         q_var: tk.DoubleVar,
     ) -> None:
-        frame = ttk.Frame(parent)
-        frame.grid(row=0, column=column, sticky="ew", padx=4)
+        frame = self._build_eq_detail_cell(parent, column, label, color)
         frame.columnconfigure(0, weight=1)
         shape_box = ttk.Combobox(
             frame,
@@ -2046,8 +2077,8 @@ class StemSamplePrepApp(tk.Tk):
             font=("Segoe UI", 9, "bold"),
             style="EQ.TCombobox",
         )
-        shape_box.grid(row=0, column=0, sticky="ew")
-        ttk.Label(frame, text="Q").grid(row=0, column=1, sticky="e", padx=(6, 2))
+        shape_box.grid(row=0, column=0, sticky="ew", padx=(0, 8))
+        tk.Label(frame, text="Q", bg="#0b1018", fg="#aeb8c8", font=("Segoe UI", 8, "bold")).grid(row=0, column=1, sticky="e", padx=(0, 3))
         q_spinbox = ttk.Spinbox(
             frame,
             from_=0.1,
@@ -2063,6 +2094,65 @@ class StemSamplePrepApp(tk.Tk):
         q_spinbox.grid(row=0, column=2, sticky="e")
         self._bind_eq_q_drag(q_spinbox, q_var)
         self.eq_shape_widgets.extend([shape_box, q_spinbox])
+
+    def _add_filter_q_control(
+        self,
+        parent: ttk.Frame,
+        column: int,
+        label: str,
+        color: str,
+        q_var: tk.DoubleVar,
+    ) -> None:
+        frame = self._build_eq_detail_cell(parent, column, label, color)
+        frame.columnconfigure(0, weight=1)
+        tk.Label(frame, text="Q", bg="#0b1018", fg="#aeb8c8", font=("Segoe UI", 8, "bold")).grid(row=0, column=0, sticky="e", padx=(0, 3))
+        q_spinbox = ttk.Spinbox(
+            frame,
+            from_=0.1,
+            to=10.0,
+            increment=0.1,
+            textvariable=q_var,
+            width=5,
+            format="%.1f",
+            justify="center",
+            font=("Segoe UI", 9, "bold"),
+            style="EQ.TSpinbox",
+        )
+        q_spinbox.grid(row=0, column=1, sticky="e")
+        self._bind_eq_q_drag(q_spinbox, q_var)
+        self.eq_shape_widgets.append(q_spinbox)
+
+    def _build_eq_detail_cell(
+        self,
+        parent: ttk.Frame,
+        column: int,
+        label: str,
+        color: str,
+    ) -> tk.Frame:
+        cell = tk.Frame(
+            parent,
+            bg="#0b1018",
+            highlightthickness=1,
+            highlightbackground="#243043",
+            highlightcolor="#344052",
+        )
+        cell.grid(row=0, column=column, sticky="ew", padx=4)
+        cell.columnconfigure(0, weight=1)
+
+        header = tk.Frame(cell, bg="#0b1018")
+        header.grid(row=0, column=0, sticky="ew", padx=8, pady=(7, 4))
+        tk.Frame(header, bg=color, width=26, height=3).pack(side="left", padx=(0, 6), pady=(8, 0))
+        tk.Label(
+            header,
+            text=label,
+            bg="#0b1018",
+            fg="#f0f5ff",
+            font=("Segoe UI", 8, "bold"),
+        ).pack(side="left")
+
+        controls = tk.Frame(cell, bg="#0b1018")
+        controls.grid(row=1, column=0, sticky="ew", padx=8, pady=(0, 8))
+        return controls
 
     def _bind_eq_q_drag(self, widget: ttk.Spinbox, variable: tk.DoubleVar) -> None:
         drag_state = {"active": False, "y": 0, "value": 1.0}
@@ -3062,8 +3152,10 @@ class StemSamplePrepApp(tk.Tk):
     def _reset_eq_cut(self, band: str) -> None:
         if band == "hp":
             self.high_pass_var.set(0.0)
+            self.high_pass_q_var.set(0.7)
             return
         self.low_pass_var.set(0.0)
+        self.low_pass_q_var.set(0.7)
 
     def apply_stem_preset(self, label: str, selected: set[str]) -> None:
         if self.busy:
@@ -3150,6 +3242,8 @@ class StemSamplePrepApp(tk.Tk):
         high_q = max(min(float(self.eq_high_q_var.get()), 10.0), 0.1)
         high_pass_hz = max(float(self.high_pass_var.get()), 0.0)
         low_pass_hz = max(float(self.low_pass_var.get()), 0.0)
+        high_pass_q = max(min(float(self.high_pass_q_var.get()), 10.0), 0.1)
+        low_pass_q = max(min(float(self.low_pass_q_var.get()), 10.0), 0.1)
         if high_pass_hz > 0 and low_pass_hz > 0 and high_pass_hz >= low_pass_hz:
             raise AudioProcessingError("High-pass Hz must be lower than Low-pass Hz.")
         return AudioEffects(
@@ -3167,6 +3261,8 @@ class StemSamplePrepApp(tk.Tk):
             high_shape=self._eq_shape(self.eq_high_shape_var),
             high_pass_hz=high_pass_hz,
             low_pass_hz=low_pass_hz,
+            high_pass_q=high_pass_q,
+            low_pass_q=low_pass_q,
             pitch_semitones=max(min(float(self.pitch_semitones_var.get()), 12.0), -12.0),
             tempo_ratio=max(min(float(self.tempo_percent_var.get()) / 100.0, 2.0), 0.5),
             peak_normalize=bool(self.peak_normalize_var.get()),

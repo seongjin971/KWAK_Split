@@ -7,6 +7,7 @@ from backend.audio_processing.ffmpeg_tools import (
     _build_mix_filter,
     _clamp_db,
     _clamp_frequency,
+    _clamp_q,
     _limiter_ceiling,
     safe_name,
 )
@@ -28,6 +29,11 @@ def test_clamp_db_bounds():
 def test_clamp_frequency_bounds():
     assert _clamp_frequency(5) == 20.0
     assert _clamp_frequency(99999) == 20000.0
+
+
+def test_clamp_q_bounds():
+    assert _clamp_q(0.0) == 0.1
+    assert _clamp_q(99.0) == 10.0
 
 
 def test_limiter_ceiling_clamped():
@@ -58,6 +64,19 @@ def test_build_mix_filter_adds_rubberband_for_pitch_tempo():
         AudioEffects(pitch_semitones=12.0, tempo_ratio=2.0),
     )
     assert "rubberband=tempo=2.000000:pitch=2.000000" in filter_complex
+
+
+def test_build_mix_filter_adds_cut_filter_q_values():
+    _, filter_complex = _build_mix_filter(
+        [MixStem("vocals", Path("v.wav"), 1.0)],
+        0.0,
+        10.0,
+        0.0,
+        0.0,
+        AudioEffects(high_pass_hz=120.0, low_pass_hz=8000.0, high_pass_q=1.4, low_pass_q=0.6),
+    )
+    assert "highpass=f=120.000:t=q:w=1.400" in filter_complex
+    assert "lowpass=f=8000.000:t=q:w=0.600" in filter_complex
 
 
 def test_settings_roundtrip(tmp_path):
