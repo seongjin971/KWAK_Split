@@ -1,0 +1,19 @@
+{
+  "method": "Isolated Tk app with generated six-second audio; app scale 100%",
+  "captures": [
+    "fades-1000x700",
+    "fades-760x620",
+    "fades-640x480",
+    "narrow-mixer",
+    "20ms-fade-zoom",
+    "settings"
+  ],
+  "waveform_draw_ms": [
+    5.96,
+    6.19,
+    4.82,
+    4.55,
+    6.49
+  ],
+  "callback_errors": 0
+}

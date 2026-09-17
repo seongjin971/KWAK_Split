@@ -35,6 +35,7 @@ def playback_app(speed=1.0, source_start=10.0, source_duration=12.0):
         fade_in_var=Mock(get=Mock(return_value=0.0)),
         fade_out_var=Mock(get=Mock(return_value=0.0)),
         _playback_bounds=Mock(return_value=(source_start, source_start + source_duration)),
+        _selection_bounds=Mock(return_value=(source_start, source_start + source_duration)),
         _infer_preview_mode=Mock(return_value=("source", None)),
         _build_audio_effects=Mock(return_value=AudioEffects(tempo_ratio=speed)),
     )
@@ -140,12 +141,13 @@ class PlaybackTests(unittest.TestCase):
         app.playback_output_duration_seconds = 0.0
         processes = [Mock(poll=Mock(return_value=None)), Mock(poll=Mock(return_value=None))]
         with patch("StemSamplePrep.time.monotonic", return_value=100.0), \
-                patch("StemSamplePrep.start_realtime_mix", return_value=processes), \
+                patch("StemSamplePrep.start_realtime_mix", return_value=processes) as start_mix, \
                 patch("StemSamplePrep.winsound.PlaySound"):
             StemSamplePrepApp._start_preview(app, [MixStem("source", Path("source.wav"), 1.0)], "Source")
         self.assertEqual(app.playback_tempo_ratio, 0.5)
         self.assertEqual(app.playback_output_duration_seconds, 24.0)
         self.assertEqual(app.playback_duration_seconds, 12.0)
+        self.assertEqual(start_mix.call_args.kwargs["fade_bounds"], (10.0, 22.0))
 
     def test_rendered_preview_receives_captured_speed_and_measured_duration(self):
         app = playback_app()

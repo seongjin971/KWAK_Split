@@ -13,6 +13,10 @@ from backend.audio_processing.ffmpeg_tools import AudioProcessingError, find_exe
 from backend.audio_processing.separation import StemSeparator
 
 
+class StemRangeError(AudioProcessingError):
+    """An editable selection extends beyond the available separated audio."""
+
+
 class WorkspaceFeatures:
     def _init_workspace(self):
         self.loop_var = tk.BooleanVar(value=bool(self.settings.get("loop", True)))
@@ -21,7 +25,8 @@ class WorkspaceFeatures:
         self.mp3_bitrate_var = tk.IntVar(value=self.settings.get("mp3_bitrate", 320))
         self.peak_normalize_var.set(bool(self.settings.get("peak_normalize", False)))
         self.keep_adjustments_var = tk.BooleanVar(value=bool(self.settings.get("keep_adjustments", False)))
-        self.split_scope_var = tk.StringVar(value="Selection")
+        scope=self.settings.get("split_scope","Selection")
+        self.split_scope_var = tk.StringVar(value=scope if scope in ("Selection","Full track") else "Selection")
         self.mix_summary_var = tk.StringVar(value="Open audio to see the monitor source and export settings.")
         self.project_label_var = tk.StringVar(value="Unsaved project")
         self.view_start = 0.0
@@ -431,9 +436,10 @@ class WorkspaceFeatures:
 
     def _validate_stem_range(self, start, end):
         if self.stem_paths and (start < self.stem_range[0] - 0.001 or end > self.stem_range[1] + 0.001):
-            raise AudioProcessingError(
-                f"Current stems cover {self.stem_range[0]:.2f}–{self.stem_range[1]:.2f}s of the original audio.\n"
-                "Keep the selection within this range, or separate the required range/full track again.")
+            raise StemRangeError(
+                f"Stems cover {self.stem_range[0]:.2f}–{self.stem_range[1]:.2f}s. "
+                + ("Click Split Stems to separate the full track." if self.split_scope_var.get()=="Full track"
+                 else "Click Split Stems to separate the required range."))
 
     def _show_results(self, paths):
         self.result_files = [Path(path) for path in paths]

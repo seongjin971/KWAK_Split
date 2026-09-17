@@ -17,6 +17,7 @@ from typing import Callable, Iterable
 
 from backend.app_paths import AppPaths
 from backend.audio_processing.musical import build_rubberband_filter
+from backend.compact_model import EQ_GAIN_LIMIT
 
 
 LogCallback = Callable[[str], None] | None
@@ -424,6 +425,7 @@ def render_mix(
     process_callback: ProcessCallback = None,
     effects: AudioEffects | None = None,
     include_silent: bool = False,
+    fade_bounds: tuple[float, float] | None = None,
 ) -> None:
     active = _prepare_active_stems(stems, duration_seconds, cancel_event, include_silent)
 
@@ -452,6 +454,7 @@ def render_mix(
                 process_callback,
                 post_gain=0.125,
                 working_float=True,
+                fade_bounds=fade_bounds,
             )
             max_volume_db = _measure_max_volume_db(paths, ffmpeg, temp_path, cancel_event, process_callback)
             target_db = _linear_to_db(_limiter_ceiling(effects))
@@ -489,6 +492,7 @@ def render_mix(
         log,
         cancel_event,
         process_callback,
+        fade_bounds=fade_bounds,
     )
 
 
@@ -500,6 +504,7 @@ def start_realtime_mix(
     fade_in: float,
     fade_out: float,
     effects: AudioEffects | None = None,
+    fade_bounds: tuple[float, float] | None = None,
 ) -> list[subprocess.Popen]:
     active = _prepare_active_stems(stems, duration_seconds, None)
     ffmpeg = require_ffmpeg(paths)
@@ -512,6 +517,7 @@ def start_realtime_mix(
         fade_in,
         fade_out,
         effects,
+        fade_bounds=fade_bounds,
     )
     ffmpeg_command = [
         str(ffmpeg),
@@ -600,6 +606,7 @@ def _render_mix_once(
     process_callback: ProcessCallback,
     post_gain: float = 1.0,
     working_float: bool = False,
+    fade_bounds: tuple[float, float] | None = None,
 ) -> None:
     input_args, filter_complex = _build_mix_filter(
         active,
@@ -609,6 +616,7 @@ def _render_mix_once(
         fade_out,
         effects,
         post_gain,
+        fade_bounds=fade_bounds,
     )
     command = [
         str(ffmpeg),
@@ -651,6 +659,7 @@ def _build_mix_filter(
     fade_out: float,
     effects: AudioEffects,
     post_gain: float = 1.0,
+    fade_bounds: tuple[float, float] | None = None,
 ) -> tuple[list[str], str]:
     input_args: list[str] = []
     for stem in active:
@@ -668,16 +677,39 @@ def _build_mix_filter(
             ]
         )
 
-    fade_in = max(0.0, min(fade_in, duration_seconds / 2))
-    fade_out = max(0.0, min(fade_out, duration_seconds / 2))
+    # Fades belong to the full selected source range, including when previewing
+    # a later cursor position or a shortened fallback excerpt. Tempo is applied
+    # afterward, so the waveform and these endpoints use the same source time.
+    fade_start, fade_end = fade_bounds or (start_seconds, start_seconds + duration_seconds)
+    if not all(math.isfinite(value) for value in (fade_start, fade_end)) or fade_end <= fade_start:
+        raise AudioProcessingError("Fade bounds must describe a non-empty source range.")
+    max_fade = (fade_end - fade_start) / 2
+    fade_in = max(0.0, min(fade_in, max_fade))
+    fade_out = max(0.0, min(fade_out, max_fade))
+    fade_filters: list[str] = []
+    if fade_in > 0 and start_seconds < fade_start + fade_in:
+        elapsed = max(0.0, start_seconds - fade_start)
+        remaining = fade_in - elapsed
+        silence = elapsed / fade_in
+        fade_filters.append(
+            f"afade=t=in:st={max(0.0, fade_start - start_seconds):.6f}"
+            f":d={remaining:.6f}:silence={silence:.9f}"
+        )
+    if fade_out > 0:
+        remaining = max(0.0, fade_end - start_seconds)
+        if remaining == 0:
+            fade_filters.append("volume=0")
+        else:
+            fade_filters.append(
+                f"afade=t=out:st={max(0.0, fade_end - fade_out - start_seconds):.6f}"
+                f":d={min(fade_out, remaining):.6f}:unity={min(1.0, remaining / fade_out):.9f}"
+            )
     filters: list[str] = []
     labels: list[str] = []
     for index, stem in enumerate(active):
         chain = f"[{index}:a]aresample={effects.sample_rate},volume={stem.gain:.6f}"
-        if fade_in > 0:
-            chain += f",afade=t=in:st=0:d={fade_in:.6f}"
-        if fade_out > 0:
-            chain += f",afade=t=out:st={max(duration_seconds - fade_out, 0):.6f}:d={fade_out:.6f}"
+        if fade_filters:
+            chain += "," + ",".join(fade_filters)
         label = f"a{index}"
         chain += f"[{label}]"
         filters.append(chain)
@@ -733,7 +765,7 @@ def _eq_filter(shape: str, frequency: float, q: float, gain_db: float) -> str:
 
 
 def _clamp_db(value: float) -> float:
-    return max(min(float(value), 18.0), -18.0)
+    return max(min(float(value), EQ_GAIN_LIMIT), -EQ_GAIN_LIMIT)
 
 
 def _clamp_frequency(value: float) -> float:

@@ -12,6 +12,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "delete_temp_after_render": False,
     "output_dir": "",
     "keep_adjustments": False,
+    "split_scope": "Selection",
     "recent_project": "",
     "loop": True,
     "sample_rate": 48000,

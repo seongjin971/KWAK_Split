@@ -22,8 +22,8 @@ def test_safe_name_falls_back_when_empty():
 
 
 def test_clamp_db_bounds():
-    assert _clamp_db(99) == 18.0
-    assert _clamp_db(-99) == -18.0
+    assert _clamp_db(99) == 24.0
+    assert _clamp_db(-99) == -24.0
 
 
 def test_clamp_frequency_bounds():

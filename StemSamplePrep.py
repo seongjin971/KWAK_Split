@@ -23,9 +23,10 @@ from tkinter import ttk
 
 from backend.app_paths import AppPaths
 from backend.ui_helpers import ScrollableFrame, ToolTip
-from backend.workspace_features import WorkspaceFeatures
+from backend.workspace_features import StemRangeError, WorkspaceFeatures
 from backend.compact_ui import CompactInterface
 from backend.compact_widgets import enable_dpi_awareness
+from backend.compact_model import EQ_GAIN_LIMIT
 from backend.audio_processing import STEMS
 from backend.audio_processing.ffmpeg_tools import (
     AudioEffects,
@@ -2808,6 +2809,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             fade_out = float(self.fade_out_var.get())
             effects = self._build_audio_effects()
             self._validate_stem_range(start, end)
+        except StemRangeError as exc:
+            self.status_var.set(str(exc))
+            return
         except (ValueError, tk.TclError, AudioProcessingError) as exc:
             messagebox.showerror("Export settings", str(exc))
             return
@@ -2868,6 +2872,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             fade_in = float(self.fade_in_var.get())
             fade_out = float(self.fade_out_var.get())
             effects = self._build_audio_effects()
+        except StemRangeError as exc:
+            self.status_var.set(str(exc))
+            return
         except (ValueError, tk.TclError, AudioProcessingError) as exc:
             self.pending_preview_mode = None
             messagebox.showerror("Render settings", str(exc))
@@ -2961,6 +2968,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             return
         try:
             self._start_context_preview()
+        except StemRangeError as exc:
+            self.status_var.set(str(exc))
         except (ValueError, tk.TclError, AudioProcessingError) as exc:
             messagebox.showerror("Preview settings", str(exc))
 
@@ -3013,8 +3022,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.last_preview_stems = list(stems)
         self.last_preview_label = label
         self.last_preview_mode, self.last_preview_stem = self._infer_preview_mode(stems)
-        fade_in = min(float(self.fade_in_var.get()), duration / 2)
-        fade_out = min(float(self.fade_out_var.get()), duration / 2)
+        fade_in = float(self.fade_in_var.get())
+        fade_out = float(self.fade_out_var.get())
+        fade_bounds = self._selection_bounds()
         effects = self._build_audio_effects()
         try:
             self.stop_preview(show_status=False)
@@ -3026,6 +3036,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
                 fade_in=fade_in,
                 fade_out=fade_out,
                 effects=effects,
+                fade_bounds=fade_bounds,
             )
         except ToolMissingError:
             self._start_rendered_preview(stems, label, start, duration, fade_in, fade_out, effects)
@@ -3059,8 +3070,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         preview_dir.mkdir(parents=True, exist_ok=True)
         self._delete_old_previews()
         output_path = preview_dir / f"preview_{safe_name(label)}_{time.strftime('%H%M%S')}.wav"
-        fade_in = min(fade_in, duration / 2)
-        fade_out = min(fade_out, duration / 2)
+        fade_bounds = self._selection_bounds()
 
         def worker() -> None:
             self._queue_status(f"Preparing {label} preview. FFplay is missing, so a temporary WAV will play.")
@@ -3076,6 +3086,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
                 cancel_event=self.cancel_event,
                 process_callback=self._register_process,
                 effects=effects,
+                fade_bounds=fade_bounds,
             )
             output_duration = read_duration(self.paths, output_path)
             self.worker_queue.put(
@@ -3308,9 +3319,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
 
     def _build_audio_effects(self) -> AudioEffects:
         self._edit_snapshot()  # Reject incomplete/non-finite entries before starting audio work.
-        low_db = max(min(float(self.eq_low_var.get()), 12.0), -12.0)
-        mid_db = max(min(float(self.eq_mid_var.get()), 12.0), -12.0)
-        high_db = max(min(float(self.eq_high_var.get()), 12.0), -12.0)
+        low_db = max(min(float(self.eq_low_var.get()), EQ_GAIN_LIMIT), -EQ_GAIN_LIMIT)
+        mid_db = max(min(float(self.eq_mid_var.get()), EQ_GAIN_LIMIT), -EQ_GAIN_LIMIT)
+        high_db = max(min(float(self.eq_high_var.get()), EQ_GAIN_LIMIT), -EQ_GAIN_LIMIT)
         low_freq = max(min(float(self.eq_low_freq_var.get()), 20000.0), 20.0)
         mid_freq = max(min(float(self.eq_mid_freq_var.get()), 20000.0), 20.0)
         high_freq = max(min(float(self.eq_high_freq_var.get()), 20000.0), 20.0)
@@ -3875,6 +3886,10 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
     def _restart_preview_from_cursor(self, show_errors: bool = True) -> None:
         try:
             stems, label = self._build_last_preview_request()
+        except StemRangeError as exc:
+            self.stop_preview(show_status=False)
+            self.status_var.set(str(exc))
+            return
         except (ValueError, tk.TclError, AudioProcessingError) as exc:
             if show_errors:
                 messagebox.showerror("Preview settings", str(exc))
@@ -3890,6 +3905,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         try:
             self.pending_preview_mode = (preview_mode, preview_stem)
             self._start_preview(stems, label)
+        except StemRangeError as exc:
+            self.status_var.set(str(exc))
         except AudioProcessingError as exc:
             messagebox.showerror("Preview settings", str(exc))
 
@@ -4141,17 +4158,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.draw_waveform()
 
     def _schedule_fade_waveform_draw(self, force_full: bool = False) -> None:
-        if self.closing:
-            return
-        self._draw_fade_overlay_only()
-        if self.fade_control_dragging and not force_full:
-            return
-        if self.waveform_fade_after_id:
-            try:
-                self.after_cancel(self.waveform_fade_after_id)
-            except tk.TclError:
-                pass
-        self.waveform_fade_after_id = self.after(160, self._draw_waveform_after_fade_change)
+        if not self.closing and not self.waveform_fade_after_id:
+            self.waveform_fade_after_id = self.after_idle(self._draw_waveform_after_fade_change)
 
     def _draw_waveform_after_fade_change(self) -> None:
         self.waveform_fade_after_id = None

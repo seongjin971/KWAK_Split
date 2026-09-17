@@ -6,16 +6,20 @@ Goals and status: project.md
 Accepted UI and behavior: docs/compact-ui-implementation.md
 Verification: docs/qa/compact/verification.md
 Latest interaction audit: docs/qa/interaction-audit/verification.md
+Latest editing corrections: docs/qa/precision-controls/verification.md
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact-fix2/KWAK Split/KWAK Split.exe,
+1. Run "Run KWAK Split.cmd". It selects release/compact-fix3/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
 3. Right-drag the waveform or edit Start/End to select a range. The initial
    selection is the whole track. Left-click seeks; Play/Space plays or pauses.
 4. Split Stems separates the selected range into vocals, drums, bass and other.
-   Before separation, playback/export use the loaded audio directly.
+   Settings > Split Stems > Full track separates the whole file once, so later
+   selections can move freely. This takes longer than separating a short range.
+   Loading audio never starts separation. Before splitting, play/export use the
+   loaded audio directly.
 5. Adjust EQ, Speed, Pitch, fades and the stem mixer. Advanced contains Q and
    Limiter. Settings contains output preferences, Loop, and closed Help.
 6. Set Save folder in Settings. Browse opens the Windows folder chooser;
@@ -40,9 +44,17 @@ Editing and Monitoring
 ----------------------
 - Low Shelf / High Pass, Mid Bell, High Shelf / Low Pass. In Pass mode the knob
   selects 12/24/36/48 dB/oct; Q independently adjusts resonance in Advanced.
+- Shelf/Bell gain spans -24 to +24 dB, matching the graph and audio processing.
 - The graph shows the actual filter response, not a spectrum analyzer.
 - New audio starts with flat EQ unless Keep adjustments is enabled. Pass modes
   start at 120 Hz / 8000 Hz and 24 dB/oct. Fades start at 0.02 s, stepping 0.01 s.
+- Fades reduce the displayed waveform and have amber envelope lines. Tiny fades
+  remain marked when zoomed out; the marker's width is not the fade duration.
+  Preview seeking/resuming keeps fades anchored to the full selection.
+- Start/End display two decimal places. Drag any editable number vertically or
+  use its wheel to adjust it; Shift gives finer steps where available. Time
+  steps follow the visible zoom span, with 0.01 s as the smallest step. A click
+  still allows typing, and a whole drag is one Undo action.
 - Stem faders span silence to +12 dB. Unity is one-third down the scale;
   double-click or Home resets a focused fader to 0 dB.
 - Mute is yellow; Solo is red. Mute wins if both are enabled. With any Solo
@@ -52,7 +64,10 @@ Editing and Monitoring
 - Selection/cursor coordinates use the original track. Speed changes output
   duration independently of pitch. Play resumes from the paused cursor.
 - After selection-only separation, extending beyond the stems' coverage
-  requires splitting the larger range again; missing audio is never substituted.
+  shows an inline notice. Click Split Stems for the required range, or choose
+  Full track in Settings and split once. Nothing splits automatically, and
+  missing stem audio is never substituted. Returning inside coverage clears
+  the notice and allows playback/export again.
 - Loading, separation and export run in workers. Cancel is shown during a job.
   Audio processing and model preparation messages remain visible when relevant.
 
@@ -67,8 +82,9 @@ Ctrl+S                 Save session/project
 Ctrl+Shift+O           Open session/project
 Ctrl+Shift+R           Restore last temporary session
 Right-drag             Select a waveform range
-Mouse wheel            Zoom at pointer
-Shift+wheel            Pan waveform
+Mouse wheel on wave    Zoom at pointer
+Shift+wheel on wave    Pan waveform
+Drag / wheel on number Change value; Shift for finer steps
 + / - / 0              Zoom in / out / fit, while waveform has focus
 
 Projects and Recovery
@@ -100,7 +116,7 @@ if you want to resume. Settings also retains Keep adjustments and output options
 
 Running on Another PC
 --------------------
-Copy the entire release/compact-fix2/KWAK Split folder, not just the EXE, to a writable
+Copy the entire release/compact-fix3/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;
 the package no longer relies on the developer's Python installation path.

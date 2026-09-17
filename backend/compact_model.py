@@ -3,6 +3,15 @@ import math
 
 MAX_STEM_PERCENT = 100 * 10 ** (12 / 20)
 FADER_UNITY = .67
+EQ_GAIN_LIMIT = 24.0
+TIME_QUANTUM = .01
+
+
+def selection_step(view_span):
+    """About one hundred wheel steps per visible timeline, on readable intervals."""
+    target=max(TIME_QUANTUM, float(view_span)/100)
+    decade=10 ** math.floor(math.log10(target))
+    return max(TIME_QUANTUM, min((1,2,5,10),key=lambda n:abs(math.log(target/(n*decade))))*decade)
 
 
 def volume_to_position(volume):

@@ -6,10 +6,13 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, font, messagebox, ttk
 
-from backend.compact_model import initial_window, volume_label
+from backend.compact_model import (EQ_GAIN_LIMIT, TIME_QUANTUM, initial_window,
+    position_to_volume, selection_step, volume_label, volume_to_position)
+from backend.numeric_gestures import NumericGestures
 from backend.compact_widgets import (BG, PANEL, INSET, TEXT, MUTED, LINE, BLUE,
     CompactButton, CompactKnob, CompactFader, CompactEq, EditorViewport, display_metrics, icon)
 from backend.project_store import EDIT_DEFAULTS, EditHistory
+from backend.workspace_features import StemRangeError
 from backend.ui_helpers import ToolTip
 
 
@@ -93,6 +96,16 @@ class CompactInterface:
         self._numeric_fields.append((widget,display,variable,fmt))
         widget.bind("<Return>",lambda e:self._commit_numeric(widget))
         widget.bind("<FocusOut>",lambda e:self._commit_numeric(widget))
+        time_field=variable in (self.selection_start_var,self.selection_end_var)
+        quantum=TIME_QUANTUM if time_field else 10**-int(fmt.split(".")[1][:-1]) if fmt and "." in fmt else step
+        def increment():
+            if time_field:
+                start,end=self._wave_view_bounds()
+                return selection_step(end-start)
+            return step
+        widget.numeric_gestures=NumericGestures(self,widget,variable.get,variable.set,
+            lambda:(float(widget.cget("from")),float(widget.cget("to"))),increment,quantum,
+            commit=lambda:self._commit_numeric(widget))
         return widget
 
     def _edit_snapshot(self):
@@ -230,10 +243,14 @@ class CompactInterface:
                 combo.pack(side="left",fill="x",expand=True);self.effect_widgets.append(combo);self.eq_shape_widgets.append(combo)
                 combo.bind("<<ComboboxSelected>>",lambda e,b=band:self._mode_changed(b))
             knob=CompactKnob(box,self,lambda b=band:self._band_value(b),lambda v,b=band:self._set_band_value(b,v),
-                              lambda b=band:(12,48,12,24) if self._band_is_pass(b) else (-12,12,.5,0))
+                              lambda b=band:(12,48,12,24) if self._band_is_pass(b) else (-EQ_GAIN_LIMIT,EQ_GAIN_LIMIT,.5,0))
             knob.grid(row=1,column=0);self.compact_knobs[band]=knob;self.effect_widgets.append(knob)
             value=tk.StringVar(value="0 dB");self.band_values[band]=value
-            self._label(box,variable=value,kind="small",anchor="center").grid(row=2,column=0,pady=(0,self.px(3)))
+            readout=self._label(box,variable=value,kind="small",anchor="center",cursor="sb_v_double_arrow")
+            readout.grid(row=2,column=0,pady=(0,self.px(3)))
+            self._track_edit_widget(readout)
+            readout.bind("<Button-1>",knob.press);readout.bind("<B1-Motion>",knob.drag)
+            readout.bind("<MouseWheel>",knob.wheel);readout.bind("<Double-Button-1>",knob.reset)
             frequency=tk.Frame(box,bg=PANEL);frequency.grid(row=3,column=0)
             lo,hi=self._band_frequency_limits(band)
             entry=self._spin(frequency,getattr(self,"eq_"+band+"_freq_var"),lo,hi,10 if band=="low" else 50 if band=="mid" else 100,6,"%.0f")
@@ -272,7 +289,12 @@ class CompactInterface:
             volume=tk.DoubleVar(value=100);mute=tk.BooleanVar(value=False);solo=tk.BooleanVar(value=False)
             self.stem_vars[stem]={"volume":volume,"mute":mute,"solo":solo}
             text=tk.StringVar(value="0.0 dB");self.stem_volume_label_vars[stem]=text
-            self._label(card,variable=text,kind="small",anchor="center").grid(row=2,column=0)
+            readout=self._label(card,variable=text,kind="small",anchor="center",cursor="sb_v_double_arrow")
+            readout.grid(row=2,column=0)
+            readout.numeric_gestures=NumericGestures(self,readout,
+                lambda v=volume:volume_to_position(v.get()),lambda value,v=volume:v.set(position_to_volume(value)),
+                lambda:(0,1),lambda:.005,.001,enabled=lambda name=stem:name in self.stem_paths)
+            readout.bind("<Double-Button-1>",lambda e,v=volume,name=stem:v.set(100) if name in self.stem_paths else None)
             fader=CompactFader(card,self,volume);fader.grid(row=3,column=0,sticky="nsew",pady=self.px(2))
             buttons=tk.Frame(card,bg=INSET);buttons.grid(row=4,column=0,pady=(0,self.px(8)))
             m=self._button(buttons,"M",lambda v=mute:v.set(not v.get()),width=28,toggle=mute,active_color="#edc653")
@@ -290,7 +312,7 @@ class CompactInterface:
         return getattr(self,("high_pass_slope_var" if band=="low" else "low_pass_slope_var") if self._band_is_pass(band) else "eq_"+band+"_var")
     def _band_value(self,band): return self._band_value_var(band).get()
     def _set_band_value(self,band,value):
-        self._band_value_var(band).set(int(max(12,min(48,round(value/12)*12))) if self._band_is_pass(band) else max(-12,min(12,value)))
+        self._band_value_var(band).set(int(max(12,min(48,round(value/12)*12))) if self._band_is_pass(band) else max(-EQ_GAIN_LIMIT,min(EQ_GAIN_LIMIT,value)))
     def _mode_changed(self,band):
         # Clear a legacy independent cut only when the user explicitly changes its mode.
         getattr(self,"high_pass_var" if band=="low" else "low_pass_var").set(0)
@@ -310,7 +332,9 @@ class CompactInterface:
         for name in EDIT_DEFAULTS:
             if name.startswith(("eq_","high_pass","low_pass","pitch_","tempo_","limiter")):
                 getattr(self,name+"_var").trace_add("write",lambda *a:self._schedule_live_preview_restart())
-        for variable in (self.fade_in_var,self.fade_out_var):variable.trace_add("write",lambda *a:self._schedule_fade_live_preview_restart())
+        for variable in (self.fade_in_var,self.fade_out_var):
+            variable.trace_add("write",lambda *a:self._schedule_fade_live_preview_restart())
+            variable.trace_add("write",lambda *a:self._schedule_fade_waveform_draw())
         for button in (1,3):
             self.bind_all(f"<ButtonRelease-{button}>",self._end_edit_drag,add="+")
         for chord,action in (("<Control-z>",self.undo_edit),("<Control-y>",self.redo_edit),("<Control-Shift-Z>",self.redo_edit),
@@ -470,16 +494,28 @@ class CompactInterface:
         self.play_button.icon_name="pause" if self.preview_playing else "play"
         self.play_button.configure(text="Pause" if self.preview_playing else "Play")
         self._set_state(self.cancel_button,self.busy)
-        self._status_changed();self._update_workspace_summary();self._schedule_compact_render()
+        self._status_changed();self._update_workspace_summary();self._schedule_compact_render();self._sync_stem_range_notice()
+
+    def _sync_stem_range_notice(self):
+        if self.busy:return
+        previous=getattr(self,"_stem_coverage_notice","")
+        message=""
+        try:self._validate_stem_range(*self._selection_bounds_no_error())
+        except StemRangeError as exc:message=str(exc)
+        self._stem_coverage_notice=message
+        if message:
+            if self.status_var.get()!=message:self.status_var.set(message)
+        elif previous and self.status_var.get()==previous:self.status_var.set("")
 
     def _configure_selection_limits(self,limit):
         # Entries display centiseconds; the rounded last frame must remain a
         # valid display value. Actual audio bounds still use the exact duration.
-        display_limit=math.ceil(limit*100)/100
+        display_limit=math.ceil(limit/TIME_QUANTUM)*TIME_QUANTUM
         for widget in (self.start_spinbox,self.end_spinbox):widget.configure(to=display_limit)
     def _update_selection_label(self):
         try:
             start,end=self._selection_bounds_no_error();self.selection_label.configure(text=f"{max(0,end-start):.2f}s")
+            self._sync_stem_range_notice()
         except tk.TclError:pass
     def _update_volume_label(self,stem):
         try:self.stem_volume_label_vars[stem].set(volume_label(self.stem_vars[stem]["volume"].get()))
@@ -523,16 +559,51 @@ class CompactInterface:
                 index=min(len(self.peaks)-1,int((start+span*x/w)/self.duration_seconds*len(self.peaks)))
                 peak=self.peaks[index]
                 value=peak[channel] if isinstance(peak,(tuple,list)) else peak
-                amp=max(.5*s,min(1,value)*plot*.2)
-                canvas.create_line(x,center-amp,x,center+amp,fill="#7ab2fb" if x1<=x<=x2 else "#5486c5",width=max(1,s*.75))
+                seconds=start+span*x/w
+                try:gain=self._fade_display_gain(seconds,selected_start,selected_end)
+                except (ValueError,tk.TclError):gain=1
+                amp=max(0,min(1,value)*gain*plot*.2)
+                canvas.create_line(x,center-amp,x,center+amp,fill="#7ab2fb" if x1<=x<=x2 else "#5486c5",width=max(1,s*.75),tags="wave-sample")
         for x in (x1,x2):canvas.create_line(x,0,x,plot,fill=BLUE,width=max(1,s))
+        self._draw_compact_fades(start,end,selected_start,selected_end,plot)
         count=max(2,min(8,int(w/(100*s))))
+        previous_label=None
         for i in range(count+1):
             x=w*i/count;seconds=start+span*i/count
-            label=f"{int(seconds)//60:02}:{int(seconds)%60:02}"
+            centiseconds=round(seconds*100)
+            label=f"{centiseconds//6000:02}:{centiseconds%6000/100:05.2f}" if span<10 else f"{int(seconds)//60:02}:{int(seconds)%60:02}"
+            if label==previous_label:continue
+            previous_label=label
             canvas.create_text(max(8*s,min(w-8*s,x)),h-10*s,text=label,
-                               anchor="w" if i==0 else "e" if i==count else "center",fill=MUTED,font=self.fonts["small"])
+                               anchor="w" if i==0 else "e" if i==count else "center",fill=MUTED,font=self.fonts["small"],tags="timeline-tick")
         self._draw_playback_cursor()
+
+    def _draw_compact_fades(self,start,end,selected_start,selected_end,plot):
+        if selected_end<=selected_start:return
+        try:
+            half=(selected_end-selected_start)/2
+            fades=(min(max(self.fade_in_var.get(),0),half),min(max(self.fade_out_var.get(),0),half))
+        except (ValueError,tk.TclError):return
+        canvas=self.wave_canvas;w=canvas.winfo_width();s=self.ui_scale;span=max(.001,end-start)
+        for direction,duration in zip(("in","out"),fades):
+            if duration<=0:continue
+            a,b=(selected_start,selected_start+duration) if direction=="in" else (selected_end-duration,selected_end)
+            if b<start or a>end:continue
+            left,right=max(start,a),min(end,b)
+            x0,x1=(left-start)/span*w,(right-start)/span*w
+            g0,g1=(left-a)/duration,(right-a)/duration
+            if direction=="out":g0,g1=1-g0,1-g1
+            for center in (plot*.26,plot*.74):
+                for sign in (-1,1):
+                    canvas.create_line(x0,center+sign*g0*plot*.2,x1,center+sign*g1*plot*.2,
+                        fill="#e7bb75",width=max(1.5,s),tags=("fade-envelope","fade-"+direction))
+            # A small endpoint marker stays visible even when a 20 ms fade is
+            # narrower than one pixel. Its width is a handle, not a fake duration.
+            endpoint=b if direction=="in" else a
+            if start<=endpoint<=end:
+                x=max(5*s,min(w-5*s,(endpoint-start)/span*w))
+                canvas.create_polygon(x-4*s,3*s,x+4*s,3*s,x,10*s,
+                    fill="#e7bb75",outline="",tags=("fade-marker","fade-"+direction))
     def _draw_playback_cursor(self):
         canvas=self.wave_canvas;canvas.delete("playhead")
         if not self.duration_seconds:return
@@ -583,7 +654,7 @@ class CompactInterface:
         check.grid(row=row,column=0,sticky="w",pady=self.px(3));return check
 
     def open_render_settings(self):
-        window,content=self._new_dialog("Settings",530,430);self.render_settings_window=window
+        window,content=self._new_dialog("Settings",530,475);self.render_settings_window=window
         group=self._group(content,"Save folder",0)
         row=tk.Frame(group,bg=PANEL);row.grid(row=1,column=0,sticky="ew");row.columnconfigure(0,weight=1)
         self.settings_folder_var=tk.StringVar(value=str(self.output_dir))
@@ -598,15 +669,30 @@ class CompactInterface:
             formats.columnconfigure(i,weight=1,uniform="format")
             cell=tk.Frame(formats,bg=PANEL);cell.grid(row=0,column=i,sticky="ew",padx=(0,self.px(8)))
             self._label(cell,name,kind="small",color=MUTED).pack(anchor="w",pady=(0,self.px(4)))
-            ttk.Combobox(cell,values=values,textvariable=variable,state="readonly",width=10,font=self.fonts["body"]).pack(fill="x")
+            choice=ttk.Combobox(cell,values=values,textvariable=variable,state="readonly",width=10,font=self.fonts["body"])
+            choice.pack(fill="x")
+            ordered=tuple(sorted(values))
+            choice.numeric_gestures=NumericGestures(self,choice,
+                lambda v=variable,items=ordered:items.index(v.get()),
+                lambda value,v=variable,items=ordered:v.set(items[int(value)]),
+                lambda items=ordered:(0,len(items)-1),lambda:1,1)
         self._check(group,"Peak Normalize on export",self.peak_normalize_var,2)
         self._check(group,"Delete working audio after export",self.delete_temp_var,3)
         group=self._group(content,"Playback & editing",2)
         self._check(group,"Loop playback",self.loop_var,1)
         self._check(group,"Keep adjustments when opening new audio",self.keep_adjustments_var,2)
+        scope=tk.Frame(group,bg=PANEL);scope.grid(row=3,column=0,sticky="w",pady=self.px(6))
+        self._label(scope,"Split Stems",kind="small",color=MUTED).pack(side="left",padx=(0,self.px(8)))
+        ttk.Combobox(scope,values=("Selection","Full track"),textvariable=self.split_scope_var,
+                     state="readonly",width=14,font=self.fonts["body"]).pack(side="left")
+        self._label(group,"Full track takes longer once; later selections need no new split.",
+                    kind="small",color=MUTED,wraplength=self.px(460)).grid(row=4,column=0,sticky="w")
         helpbox=tk.Frame(content,bg=PANEL);helpbox.grid(row=3,column=0,sticky="ew",padx=self.px(16),pady=self.px(4))
         self.help_content=tk.Frame(helpbox,bg=PANEL)
         helptext=("Space: play / pause. Ctrl+O: open audio.\nRight-drag: select. Wheel: zoom; Shift+wheel: pan.\n"
+                  "Numbers: drag up/down or turn the wheel. Shift: finer steps.\n"
+                  "Start/End steps follow zoom; time display stays at 0.01 s.\n"
+                  "Amber lines/markers show fades on the waveform.\n"
                   "Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z: undo / redo.\nDouble-click a fader: 0 dB. Q controls resonance.\n"
                   "Selection times use the original audio timeline.\nNormalize is applied on export only.\n"
                   "Ctrl+S: save session; Ctrl+Shift+O: open session.\nCtrl+Shift+R: restore the last session.")
@@ -640,7 +726,8 @@ class CompactInterface:
     def _save_output_preferences(self):
         for name,variable in (("loop",self.loop_var),("sample_rate",self.sample_rate_var),("bit_depth",self.bit_depth_var),
                                ("mp3_bitrate",self.mp3_bitrate_var),("peak_normalize",self.peak_normalize_var),
-                               ("keep_adjustments",self.keep_adjustments_var),("delete_temp_after_render",self.delete_temp_var)):
+                               ("keep_adjustments",self.keep_adjustments_var),("delete_temp_after_render",self.delete_temp_var),
+                               ("split_scope",self.split_scope_var)):
             self.settings[name]=variable.get()
     def open_advanced(self):
         _,content=self._new_dialog("Advanced Effects",420,305)
@@ -675,6 +762,7 @@ class CompactInterface:
         self.compact_buttons=[w for w in self.compact_buttons if w.winfo_exists()]
         self._numeric_fields=[item for item in self._numeric_fields if item[0].winfo_exists()]
         self.focus_set()
+        self._sync_stem_range_notice()
     def set_log_visible(self,visible):
         if self._log_window and self._log_window.winfo_exists():
             if visible:self._log_window.lift()
