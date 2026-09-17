@@ -53,3 +53,7 @@ Automated tests, actual window captures, silent playback-process checks and dire
 - Startup and minimum sizes share the same work-area bounds; this avoids a 1080p/200% minimum-height clamp expanding the window beyond the screen.
 - The new release bundles a separate interpreter and standard library with isolated import paths, removing the development venv's absolute Python dependency. The original runtime and earlier release remain untouched.
 - Detailed results and remaining physical-device checks are in `docs/qa/compact/verification.md`.
+
+## Loading and close correction
+
+The user's subsequent report supersedes the earlier close guard: closing the window immediately cancels active work and closes, retaining a temporary recovery snapshot when possible. It does not require waiting for a job, pressing Cancel first, or responding to an unsaved-project prompt. Permanent projects still use Ctrl+S. A fractional-duration validation error that stranded loading after worker completion is fixed; worker result handling also remains alive after an unexpected UI exception. See `docs/qa/loading-fix/verification.md`.

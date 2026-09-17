@@ -3526,7 +3526,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.cancel_event.set()
         process = self.current_process
         if process and process.poll() is None:
-            process.terminate()
+            self._terminate_owned_process(process)
         self._set_busy_status("Cancel requested. Cleaning up")
         self.append_log("User requested cancellation.")
         self.cancel_button.configure(state="disabled")
@@ -3599,7 +3599,25 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         threading.Thread(target=wrapped, daemon=True).start()
 
     def _register_process(self, process: subprocess.Popen | None) -> None:
+        if self.closing and process is not None:
+            self._terminate_owned_process(process)
+            return
         self.current_process = process
+
+    def _terminate_owned_process(self, process: subprocess.Popen) -> None:
+        if process.poll() is not None:
+            return
+        try:
+            if os.name == "nt":
+                # Detached cleanup also terminates Demucs multiprocessing children.
+                # Do not wait for it on the UI thread or touch unrelated processes.
+                subprocess.Popen(["taskkill.exe", "/PID", str(process.pid), "/T", "/F"],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                 creationflags=subprocess.CREATE_NO_WINDOW)
+            else:
+                process.terminate()
+        except OSError:
+            logging.exception("Could not stop owned audio process %s", process.pid)
 
     def _set_busy(self, busy: bool, title: str = "") -> None:
         self.busy = busy
@@ -3906,49 +3924,64 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
 
     def _process_worker_queue(self) -> None:
         self.worker_queue_after_id = None
+        if self.closing:
+            return
         try:
-            while True:
-                kind, payload = self.worker_queue.get_nowait()
-                if kind == "log":
-                    self.append_log(str(payload))
-                elif kind == "status":
-                    self._set_busy_status(str(payload))
-                elif kind == "progress":
-                    self.progressbar.stop()
-                    self.progressbar.configure(mode="determinate")
-                    self.busy_progress_percent = float(payload)
-                    self.progress_var.set(self.busy_progress_percent)
-                    self._apply_busy_status()
-                elif kind == "source_ready":
-                    self._handle_source_ready(payload)  # type: ignore[arg-type]
-                elif kind == "stems_ready":
-                    self._handle_stems_ready(payload)  # type: ignore[arg-type]
-                elif kind == "render_ready":
-                    self._handle_render_ready(Path(str(payload)))
-                elif kind == "stems_exported":
-                    self._handle_stems_exported(payload)  # type: ignore[arg-type]
-                elif kind == "project_saved":
-                    self._handle_project_saved(payload)
-                elif kind == "preview_ready":
-                    self._handle_preview_ready(payload)  # type: ignore[arg-type]
-                elif kind == "temp_cleaned":
-                    self._clear_after_temp_delete()
-                    self.append_log("Deleted current temp after render.")
-                elif kind == "cancelled":
+            while not self.closing:
+                try:
+                    kind, payload = self.worker_queue.get_nowait()
+                except queue.Empty:
+                    break
+                try:
+                    self._handle_worker_message(kind, payload)
+                except Exception:
+                    # A bad UI result must never strand the queued "done" event.
+                    logging.exception("Could not apply worker result: %s", kind)
                     self._pending_project = None
-                    self.status_var.set("Task cancelled.")
-                    self.append_log(str(payload))
-                elif kind == "error":
-                    self._pending_project = None
-                    self.status_var.set("Error. Check the detailed log.")
-                    self.set_log_visible(True)
-                    messagebox.showerror("Error", str(payload))
-                elif kind == "done":
-                    self._set_busy(False)
-        except queue.Empty:
-            pass
-        if not self.closing:
-            self.worker_queue_after_id = self.after(100, self._process_worker_queue)
+                    if self.cancel_event:
+                        self.cancel_event.set()
+                    self.status_var.set("Error updating the screen. Details are in the log.")
+        finally:
+            if not self.closing:
+                self.worker_queue_after_id = self.after(100, self._process_worker_queue)
+
+    def _handle_worker_message(self, kind, payload) -> None:
+        if kind == "log":
+            self.append_log(str(payload))
+        elif kind == "status":
+            self._set_busy_status(str(payload))
+        elif kind == "progress":
+            self.progressbar.stop()
+            self.progressbar.configure(mode="determinate")
+            self.busy_progress_percent = float(payload)
+            self.progress_var.set(self.busy_progress_percent)
+            self._apply_busy_status()
+        elif kind == "source_ready":
+            self._handle_source_ready(payload)  # type: ignore[arg-type]
+        elif kind == "stems_ready":
+            self._handle_stems_ready(payload)  # type: ignore[arg-type]
+        elif kind == "render_ready":
+            self._handle_render_ready(Path(str(payload)))
+        elif kind == "stems_exported":
+            self._handle_stems_exported(payload)  # type: ignore[arg-type]
+        elif kind == "project_saved":
+            self._handle_project_saved(payload)
+        elif kind == "preview_ready":
+            self._handle_preview_ready(payload)  # type: ignore[arg-type]
+        elif kind == "temp_cleaned":
+            self._clear_after_temp_delete()
+            self.append_log("Deleted current temp after render.")
+        elif kind == "cancelled":
+            self._pending_project = None
+            self.status_var.set("Task cancelled.")
+            self.append_log(str(payload))
+        elif kind == "error":
+            self._pending_project = None
+            self.status_var.set("Error. Check the detailed log.")
+            self.set_log_visible(True)
+            messagebox.showerror("Error", str(payload))
+        elif kind == "done":
+            self._set_busy(False)
 
     def _handle_source_ready(self, payload: dict[str, object]) -> None:
         self.current_input = Path(str(payload["input"]))
@@ -4072,8 +4105,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.status_var.set("Enter numeric start and end times.")
             return
         if self.duration_seconds > 0:
-            start = round(max(0.0, min(float(self.selection_start_var.get()), self.duration_seconds)), 2)
-            end = round(max(0.0, min(float(self.selection_end_var.get()), self.duration_seconds)), 2)
+            start = min(self.duration_seconds, round(max(0.0, float(self.selection_start_var.get())), 2))
+            end = min(self.duration_seconds, round(max(0.0, float(self.selection_end_var.get())), 2))
             if start != self.selection_start_var.get():
                 self.selection_start_var.set(start)
             if end != self.selection_end_var.get():
@@ -4362,23 +4395,32 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
                 self.tk.call("after", "cancel", after_id)
 
     def on_close(self) -> None:
-        if self.busy:
-            messagebox.showinfo("Task in Progress", "Close the window after the current task finishes or is cancelled.")
+        if self.closing:
             return
-        if not self._guard_project(self.on_close):
-            return
-        self._workspace_close()
         self.closing = True
+        self.withdraw()
+        if self.cancel_event:
+            self.cancel_event.set()
+        processes = list(self.realtime_processes)
+        if self.current_process is not None:
+            processes.append(self.current_process)
+        for process in processes:
+            self._terminate_owned_process(process)
+        self.realtime_processes = []
+        self.preview_playing = False
         self._cancel_main_after_callbacks()
-        self.stop_preview(show_status=False)
-        if self.busy:
-            self.cancel_current_operation()
-        self._disable_file_drop()
-        self.settings["delete_temp_after_render"] = bool(self.delete_temp_var.get())
-        self.settings["output_dir"] = str(self.output_dir)
-        self.paths.write_settings(self.settings)
-        self._cancel_main_after_callbacks()
-        self.destroy()
+        try:
+            winsound.PlaySound(None, winsound.SND_PURGE)
+            self._workspace_close()
+            self._disable_file_drop()
+            self.settings["delete_temp_after_render"] = bool(self.delete_temp_var.get())
+            self.settings["output_dir"] = str(self.output_dir)
+            self.paths.write_settings(self.settings)
+        except Exception:
+            logging.exception("Could not persist all closing-session preferences")
+        finally:
+            self._cancel_main_after_callbacks()
+            self.destroy()
 
 
 if __name__ == "__main__":

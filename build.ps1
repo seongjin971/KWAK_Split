@@ -1,7 +1,8 @@
 param(
     [string]$PythonExe = "",
     [ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$ReleaseName = "compact",
-    [switch]$SkipDependencyInstall
+    [switch]$SkipDependencyInstall,
+    [string]$PreparedRuntime = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -81,8 +82,19 @@ $runtimeSource = Join-Path $Root "backend\demucs_runtime"
 if (Test-Path $runtimeSource) {
     $runtimeDest = Join-Path $AppOut "backend\demucs_runtime"
     New-Item -ItemType Directory -Force -Path $runtimeDest | Out-Null
-    & $VenvPython -B (Join-Path $Root "scripts\bundle_demucs_runtime.py") --source $runtimeSource --destination $runtimeDest
-    if ($LASTEXITCODE -ne 0) { throw "App-local Demucs runtime bundling failed." }
+    if ($PreparedRuntime) {
+        $preparedPath = (Resolve-Path -LiteralPath $PreparedRuntime).Path
+        if (-not (Test-Path -LiteralPath (Join-Path $preparedPath 'bundle-info.json'))) {
+            throw "PreparedRuntime must be a previously verified app-local runtime."
+        }
+        & robocopy.exe $preparedPath $runtimeDest /E /MT:8 /R:1 /W:1 /NFL /NDL /NJH /NJS /XD __pycache__ /XF '*.pyc'
+        if ($LASTEXITCODE -ge 8) { throw "Prepared runtime copy failed." }
+        & (Join-Path $runtimeDest 'python.exe') -B -c "import demucs, torch, torchaudio; print('Copied app-local runtime imports verified.')"
+        if ($LASTEXITCODE -ne 0) { throw "Copied runtime verification failed." }
+    } else {
+        & $VenvPython -B (Join-Path $Root "scripts\bundle_demucs_runtime.py") --source $runtimeSource --destination $runtimeDest
+        if ($LASTEXITCODE -ne 0) { throw "App-local Demucs runtime bundling failed." }
+    }
 }
 
 Get-ChildItem -LiteralPath $AppOut -Recurse -Directory -Filter "__pycache__" -Force -ErrorAction SilentlyContinue |

@@ -379,11 +379,11 @@ class WorkspaceFeatures:
             self.after_cancel(self._recovery_after)
         self._recovery_after = self.after(1200, self._write_recovery)
 
-    def _write_recovery(self):
+    def _write_recovery(self, allow_busy=False):
         if self._recovery_after:
             self.after_cancel(self._recovery_after)
         self._recovery_after = None
-        if self.busy or not self.source_wav or not self.source_wav.exists():
+        if (self.busy and not allow_busy) or not self.source_wav or not self.source_wav.exists():
             return
         try:
             document = self._project_document()
@@ -540,7 +540,7 @@ class WorkspaceFeatures:
         messagebox.showinfo("Environment Check", "\n".join(lines))
 
     def _workspace_close(self):
-        self._write_recovery()
+        self._write_recovery(allow_busy=self.closing)
         self._save_output_preferences()
         self.settings["keep_adjustments"] = bool(self.keep_adjustments_var.get())
         for name in ("_history_after", "_recovery_after", "_loop_after", "_selection_ui_after"):

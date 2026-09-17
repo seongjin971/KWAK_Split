@@ -4,6 +4,8 @@ Baseline: main / 4babbf0 · Started: 2026-09-13
 
 ## Current work — approved compact desktop UI (2026-09-17)
 
+Latest correction: **loading completion and immediate close are fixed**. Fractional track durations could round the displayed End value beyond the old numeric limit, throwing from the UI result handler and leaving the app busy after the worker had completed. The same reported 207.456-second MP3 now opens with active controls and no lingering progress. Closing cancels active processing immediately and preserves temporary recovery when possible, without a blocking dialog. Current launcher: `release/compact-fix1/KWAK Split/KWAK Split.exe`. **83 tests and 19 subtests pass**; see [Loading/close correction](docs/qa/loading-fix/verification.md). The original compact and English packages remain preserved.
+
 The user accepted the compact HTML UI and authorized completing the real Python/Tkinter application to match it, including responsive windows for 1080p through 4K displays. The previous preview-only restriction is superseded for this implementation. Preserve existing source changes, projects, audio, settings, runtime assets, historical evidence, and the three accepted preview documents.
 
 Implementation order and acceptance criteria are in [Compact UI implementation](docs/compact-ui-implementation.md). First commit the current application, accepted preview, and this plan as a recovery checkpoint; then complete and validate each package in order. A local commit is authorized; pushing is not requested.

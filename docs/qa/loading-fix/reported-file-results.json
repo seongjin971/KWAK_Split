@@ -1,0 +1,13 @@
+{
+  "input": "reported local MP3; original retained",
+  "duration_seconds": 207.456,
+  "load_until_controls_ready_seconds": 4.884,
+  "selection_end_exact": 207.456,
+  "selection_end_display": "207.46",
+  "idle_cpu_seconds_over_1_5_seconds": 0.031,
+  "automatic_dpi_scale": 2.0,
+  "controls_enabled": true,
+  "loading_and_cancel_hidden": true,
+  "automatic_split": false,
+  "callback_errors": 0
+}

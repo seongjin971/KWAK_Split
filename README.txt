@@ -8,7 +8,7 @@ Verification: docs/qa/compact/verification.md
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact/KWAK Split/KWAK Split.exe,
+1. Run "Run KWAK Split.cmd". It selects release/compact-fix1/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
 3. Right-drag the waveform or edit Start/End to select a range. The initial
@@ -77,7 +77,10 @@ readable; the new version includes EQ slopes and the wider fader range.
 Saving is atomic and existing audio assets remain untouched.
 
 Temporary recovery uses temp/recovery.json; it is not a permanent audio backup.
-Closing or loading another file checks unsaved changes. Undo/Redo stores 100
+Closing immediately dismisses the window and cancels active processing. The app
+keeps a temporary recovery snapshot when possible, without a blocking dialog.
+Save with Ctrl+S for a permanent project. Loading another file checks unsaved
+changes. Undo/Redo stores 100
 major edits, grouping each drag; file changes and separation jobs are not undone.
 Project/history controls use shortcuts so the main UI stays compact.
 
@@ -95,7 +98,7 @@ if you want to resume. Settings also retains Keep adjustments and output options
 
 Running on Another PC
 --------------------
-Copy the entire release/compact/KWAK Split folder, not just the EXE, to a writable
+Copy the entire release/compact-fix1/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;
 the package no longer relies on the developer's Python installation path.

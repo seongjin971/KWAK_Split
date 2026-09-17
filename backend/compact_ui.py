@@ -449,7 +449,10 @@ class CompactInterface:
         self._status_changed();self._update_workspace_summary();self._schedule_compact_render()
 
     def _configure_selection_limits(self,limit):
-        for widget in (self.start_spinbox,self.end_spinbox):widget.configure(to=limit)
+        # Entries display centiseconds; the rounded last frame must remain a
+        # valid display value. Actual audio bounds still use the exact duration.
+        display_limit=math.ceil(limit*100)/100
+        for widget in (self.start_spinbox,self.end_spinbox):widget.configure(to=display_limit)
     def _update_selection_label(self):
         try:
             start,end=self._selection_bounds_no_error();self.selection_label.configure(text=f"{max(0,end-start):.2f}s")
