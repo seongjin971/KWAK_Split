@@ -38,7 +38,7 @@ class WorkspaceTests(unittest.TestCase):
         self.mocks = [p.start() for p in self.patches]
         for p in self.patches:
             self.addCleanup(p.stop)
-        self.app = StemSamplePrepApp()
+        self.app = StemSamplePrepApp(ui_scale=getattr(self, "ui_scale", 1.0))
         self.callback_errors = []
         self.app.report_callback_exception = lambda *args: self.callback_errors.append(args)
         self.app.load_audio_path(self.source)
@@ -67,21 +67,26 @@ class WorkspaceTests(unittest.TestCase):
         self.assertFalse(self.callback_errors, self.callback_errors)
         self.assertFalse(self.mocks[-1].called, self.mocks[-1].call_args)
 
-    def test_responsive_layout_tabs_and_scroll_regions(self):
-        for width, height in ((1280, 720), (900, 600), (640, 480)):
+    def test_responsive_compact_layout_and_reachable_actions(self):
+        for width, height in ((1280, 720), (900, 600), (760, 620), (640, 480)):
             with self.subTest(size=(width, height)):
                 self.app.geometry(f"{width}x{height}")
                 self.app.update()
-                self.assertEqual(len(self.app.editor_tabs.tabs()), 3)
-                self.assertGreater(self.app.workspace_scroll.canvas.bbox("all")[3], height)
-                for tab in self.app.editor_tabs.tabs():
-                    self.app.editor_tabs.select(tab)
+                for widget in (self.app.load_button, self.app.settings_button,
+                               self.app.render_button, self.app.render_mp3_button):
+                    self.assertTrue(widget.winfo_ismapped())
+                    self.assertGreaterEqual(widget.winfo_rootx(), self.app.winfo_rootx())
+                    self.assertLessEqual(widget.winfo_rootx()+widget.winfo_width(), self.app.winfo_rootx()+width)
+                if width >= 740:
+                    self.assertEqual(self.app._layout_mode, "side-by-side")
+                    self.assertLess(self.app.eq_panel.winfo_rootx(), self.app.mixer_panel.winfo_rootx())
+                else:
+                    self.assertEqual(self.app._layout_mode, "stacked")
+                    self.assertLess(self.app.eq_panel.winfo_rooty(), self.app.mixer_panel.winfo_rooty())
+                    self.app.workspace_scroll.canvas.yview_moveto(1)
                     self.app.update()
-                    self.assertGreater(self.app.nametowidget(tab).winfo_width(), 0)
-                self.app.workspace_scroll.canvas.yview_moveto(1.0)
-                self.app.update()
-                self.assertGreater(self.app.result_list.winfo_rooty(), self.app.winfo_rooty())
-                self.assertLess(self.app.result_list.winfo_rooty(), self.app.winfo_rooty() + height)
+                    self.assertLessEqual(self.app.mixer_panel.winfo_rooty()+self.app.mixer_panel.winfo_height(),
+                                         self.app.workspace_scroll.canvas.winfo_rooty()+self.app.workspace_scroll.canvas.winfo_height()+2)
 
     def test_new_project_resets_and_keep_option_preserves_adjustments(self):
         self.app.eq_low_var.set(7)
@@ -192,21 +197,13 @@ class WorkspaceTests(unittest.TestCase):
     def test_english_ui_summaries_and_dialogs(self):
         import re
         korean = re.compile("[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]")
-        self.assertEqual(self.app.split_scope_var.get(), "Full Track")
+        self.assertEqual(self.app.split_scope_var.get(), "Selection")
         self.app._update_workspace_summary()
         self.assertIn("Monitor: Original audio", self.app.mix_summary_var.get())
         self.assertIn("Export: Original audio", self.app.mix_summary_var.get())
-        with patch("tkinter.messagebox.askokcancel", return_value=False) as confirm:
-            self.app._confirm_render()
-            title, body = confirm.call_args.args
-            self.assertEqual(title, "Confirm Export")
-            self.assertNotRegex(body, korean)
-            self.app.stem_paths = {"vocals": self.source}
-            self.app._confirm_render(individual=True)
-            body = confirm.call_args.args[1]
-            self.assertIn("Individual export: vocals", body)
-            self.assertFalse(any(line.startswith("Export:") for line in body.splitlines()))
-            self.assertNotRegex(body, korean)
+        with patch("tkinter.messagebox.askokcancel") as confirm:
+            self.assertTrue(self.app._confirm_render())
+            confirm.assert_not_called()
         self.app.open_render_settings()
         self.app.update()
 

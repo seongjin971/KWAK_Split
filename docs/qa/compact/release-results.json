@@ -1,0 +1,35 @@
+{
+  "release": "release\\compact\\KWAK Split",
+  "external_pc_tested": false,
+  "method": "packaged EXE startup; real source UI with bundled audio engines; dummy playback device",
+  "exe_smoke_exit": 0,
+  "exe_sha256": "9a93862b7ad9c8e8d9bd00ede37a47b4987eea17ad58c674639d08f464dc428a",
+  "runtime_imports_confined_to_release": true,
+  "split_seconds": 30.344,
+  "stem_durations": {
+    "vocals": 2.0,
+    "drums": 2.0,
+    "bass": 2.0,
+    "other": 2.0
+  },
+  "exports": {
+    "wav": {
+      "duration": 1.6,
+      "sample_rate": "48000",
+      "codec": "pcm_s24le",
+      "bytes": 460902
+    },
+    "mp3": {
+      "duration": 1.6,
+      "sample_rate": "48000",
+      "codec": "mp3",
+      "bytes": 66285
+    }
+  },
+  "dummy_play_pause_resume": true,
+  "automatic_dpi_scale": 2.0,
+  "automatic_client": [
+    2000,
+    1400
+  ]
+}

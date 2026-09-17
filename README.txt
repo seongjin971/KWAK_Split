@@ -1,148 +1,141 @@
-KWAK Split — Windows Audio and Stem Editor
-==========================================
+KWAK Split — Compact Windows Audio and Stem Editor
+=================================================
 
+Edition: 2026-09-17
 Goals and status: project.md
-Workflow verification: docs/qa/G02-G08-workflow.md
-English UI verification: docs/qa/english/verification.md
-Local edition: 2026-09-13
+Accepted UI and behavior: docs/compact-ui-implementation.md
+Verification: docs/qa/compact/verification.md
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd" from this folder.
-   It opens release/english/KWAK Split/KWAK Split.exe when a build is available,
-   otherwise it runs the source using Python on PATH.
-2. Click Open Audio to choose WAV/MP3/FLAC/M4A, or drop audio onto the window.
-3. Right-drag on the waveform or use Start/End to select a range.
-   Left-click and the Now slider change the playback start position.
-4. Choose Full Track or Selection beside Split, then click Split Stems.
-5. Adjust vocals/drums/bass/other volume, Mute, and Solo in the mixer.
-   The other tabs contain presets, pitch, speed, fades, and EQ.
-6. Preview with Play/Space, then choose Export WAV or Export MP3.
-   Check the selected stems, range, effects, and format in Confirm Export.
-7. Select an entry in Exported Files to play it in the default player,
-   open its folder, or copy its path.
+1. Run "Run KWAK Split.cmd". It selects release/compact/KWAK Split/KWAK Split.exe,
+   or runs the source through run_dev.ps1 when the build is unavailable.
+2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
+3. Right-drag the waveform or edit Start/End to select a range. The initial
+   selection is the whole track. Left-click seeks; Play/Space plays or pauses.
+4. Split Stems separates the selected range into vocals, drums, bass and other.
+   Before separation, playback/export use the loaded audio directly.
+5. Adjust EQ, Speed, Pitch, fades and the stem mixer. Advanced contains Q and
+   Limiter. Settings contains output preferences, Loop, and closed Help.
+6. Set Save folder in Settings. Browse opens the Windows folder chooser;
+   cancelling Browse keeps the existing path. Done saves the preferences.
+7. WAV or MP3 immediately exports the current selection and mix to Save folder.
+   Existing names get numbered suffixes. Click the saved-path status to open
+   its folder. Errors and progress appear in the same contextual area.
 
-Use the right/bottom scrollbars in smaller windows. The waveform can be hidden,
-and EQ details rearrange with the window width. Settings can also be resized
-and scrolled. Very narrow windows require horizontal scrolling.
-Application labels, help, status, and errors are in English. Windows-owned
-file pickers, standard dialog buttons, and OS error details follow Windows settings.
-User filenames are preserved in their original language.
+Window Size and Displays
+------------------------
+The initial window fits its monitor's work area and DPI. Fonts, controls and
+graphs scale together. Widening the window expands the editors; a narrow window
+stacks EQ above Stem Mixer. Short windows scroll vertically while the top
+Open Audio / Settings / WAV / MP3 row remains available. No horizontal scroll
+is required. Settings and Advanced also fit the work area and can scroll.
 
-Monitoring and Export
+The layout was checked at 1080p–4K equivalent app sizes and 100–200% app scaling,
+including a 640x480 window. These checks do not change Windows display settings.
+Physical monitor switching and a separate laptop remain device acceptance checks.
+
+Editing and Monitoring
+----------------------
+- Low Shelf / High Pass, Mid Bell, High Shelf / Low Pass. In Pass mode the knob
+  selects 12/24/36/48 dB/oct; Q independently adjusts resonance in Advanced.
+- The graph shows the actual filter response, not a spectrum analyzer.
+- New audio starts with flat EQ unless Keep adjustments is enabled. Pass modes
+  start at 120 Hz / 8000 Hz and 24 dB/oct. Fades start at 0.02 s, stepping 0.01 s.
+- Stem faders span silence to +12 dB. Unity is one-third down the scale;
+  double-click or Home resets a focused fader to 0 dB.
+- Mute is yellow; Solo is red. Mute wins if both are enabled. With any Solo
+  active, only unmuted soloed stems play/export. An entirely excluded mix is
+  rejected with an error. Limiter prevents peaks above its ceiling without
+  automatically increasing quiet audio. Peak Normalize applies on export only.
+- Selection/cursor coordinates use the original track. Speed changes output
+  duration independently of pitch. Play resumes from the paused cursor.
+- After selection-only separation, extending beyond the stems' coverage
+  requires splitting the larger range again; missing audio is never substituted.
+- Loading, separation and export run in workers. Cancel is shown during a job.
+  Audio processing and model preparation messages remain visible when relevant.
+
+Keyboard and Waveform
 ---------------------
-- Before separation, playback uses the original audio; afterward it uses the mix.
-- M (Mute) excludes a stem. S (Solo) uses only selected stems.
-  Solo takes priority when enabled.
-- Original comparison changes monitoring only. Export still uses the current mix.
-  Current effects also apply to original comparison; it is not a dry A/B mode.
-- Live FFplay monitoring skips Peak Normalize. Export applies it when enabled.
-- Individual stem export writes every stem to a separate WAV.
-  Each volume, EQ, pitch, speed, fades, and Normalize applies; Mute/Solo is ignored.
-  A stem at 0% volume is exported as silence.
-- Normal mix export follows Mute/Solo. A mix with all stems excluded is rejected.
-- The EQ graph shows filter response, not an audio spectrum analysis.
-- Waveform/Now positions use the original timeline. At 50% speed, playback lasts
-  twice as long; at 200%, half as long. Completion follows the actual player.
-- Loop Selection repeats the selected range. Stop also cancels a pending repeat.
-  Starting playback from outside the selection returns to its start.
-- Zoom +/Zoom −, Fit Selection/Fit All, and the waveform scrollbar aid navigation.
-- Selection-only separation retains original time coordinates. To export outside
-  the separated range, narrow the selection or separate the required range again.
+Space                  Play / Pause (outside text inputs and dialogs)
+Ctrl+O                 Open Audio
+Ctrl+Z                 Undo
+Ctrl+Y / Ctrl+Shift+Z   Redo
+Ctrl+S                 Save session/project
+Ctrl+Shift+O           Open session/project
+Ctrl+Shift+R           Restore last temporary session
+Right-drag             Select a waveform range
+Mouse wheel            Zoom at pointer
+Shift+wheel            Pan waveform
++ / - / 0              Zoom in / out / fit, while waveform has focus
 
 Projects and Recovery
 ---------------------
-- Save Project (Ctrl+S) stores settings, the working source WAV, and separated
-  stems in a .kwaksplit document and its matching .assets folder.
-  Example: song.kwaksplit + song.kwaksplit.assets/
-  Keep both together when moving or backing up a project.
-- Resume with Open Project (Ctrl+O) or Recent Project.
-  Missing source audio prompts relinking; missing stems prompt separation again.
-- Restore Session uses temporary audio references in temp/recovery.json.
-  It is not a permanent project backup and cannot recover deleted working audio.
-- New Project, opening another audio file, and closing check for unsaved changes.
-- New projects/audio reset EQ, speed, pitch, fades, and stem adjustments by default.
-  Enable "Keep adjustments for new audio/projects" in Settings to retain them.
-- Undo (Ctrl+Z) and Redo (Ctrl+Y) retain up to 100 major edit states.
-  One drag is one step. Audio replacement and separation jobs are not undoable.
-- Audio assets are deduplicated by content hash. The project document is replaced
-  only after saving succeeds. Older audio assets are not automatically deleted,
-  so repeated source changes can increase disk usage.
+A .kwaksplit document keeps edits and references its matching .kwaksplit.assets
+folder. Keep both together when moving a project. Old version-1 documents remain
+readable; the new version includes EQ slopes and the wider fader range.
+Saving is atomic and existing audio assets remain untouched.
 
-Output Settings
----------------
-- WAV: 44.1kHz or 48kHz, with 16bit or 24bit PCM.
-- MP3: 128/192/256/320kbps. WAV bit depth does not apply to MP3.
-- Standard profile: 44.1kHz/16bit. DAW profile: 48kHz/24bit.
-- Working WAV uses float32 at the source sample rate to avoid unnecessary
-  intermediate 16bit quantization.
-- Existing export names receive (1), (2), etc., preserving earlier results.
-- "Delete working audio after export" is off by default. Enabling it removes the
-  current working audio and prevents continued editing or temporary recovery.
-  Save a project first if you need to resume later.
+Temporary recovery uses temp/recovery.json; it is not a permanent audio backup.
+Closing or loading another file checks unsaved changes. Undo/Redo stores 100
+major edits, grouping each drag; file changes and separation jobs are not undone.
+Project/history controls use shortcuts so the main UI stays compact.
 
-Development Setup
------------------
-Python 3.11 with Tkinter was verified here (3.11.9).
-These PowerShell commands allow scripts only for that process. They do not change
-the system-wide execution policy or require a particular D: drive layout.
+Output and Settings
+-------------------
+WAV: 44.1 or 48 kHz, 16 or 24 bit PCM. MP3: 128/192/256/320 kbps.
+Defaults: 48 kHz / 24 bit, MP3 320 kbps, Loop on, Normalize off, Limiter on.
+WAV and MP3 share Save folder and preserve original Unicode filenames.
+Working audio uses float32, avoiding intermediate 16-bit quantization.
+
+Delete working audio after export is off by default. When enabled, successful
+export removes owned temporary audio and ends that editing/recovery session.
+The original source and saved project assets are preserved. Save a project first
+if you want to resume. Settings also retains Keep adjustments and output options.
+
+Running on Another PC
+--------------------
+Copy the entire release/compact/KWAK Split folder, not just the EXE, to a writable
+folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
+app-local Python/Demucs runtime. Python imports are confined to that runtime;
+the package no longer relies on the developer's Python installation path.
+Keep saved projects/assets together. Set Save folder for the destination PC.
+An independent laptop run, audio-device listening and physical DPI transitions
+have not been observed by automated local QA.
+
+The earlier release/english folder and its settings/output remain preserved.
+Source and each release have their own settings, temp, output and logs. Existing
+session data stays in its original folder; use saved projects to transfer work.
+
+Development and Build
+---------------------
+Verified development Python: 3.11.9 with Tkinter. Commands below affect only the
+PowerShell process execution policy, not the system policy.
 
   powershell -NoProfile -ExecutionPolicy Bypass -File .\run_dev.ps1
-  powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\download_ffmpeg.ps1
-  powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\prepare_demucs_runtime.ps1
-
-- Tools in bin/ take priority over PATH. Prepare ffmpeg.exe, ffprobe.exe, and ffplay.exe.
-- The Demucs script installs demucs 4.0.1 and CPU torch/torchaudio 2.5.1 in the
-  backend/demucs_runtime virtual environment.
-  Pass -PythonExe 'full path' to use a specific Python installation.
-- The first split may require a model download; the app prompts first.
-  Models stay in models/ and installation caches in temp/pip-cache/.
-- Setup requires free disk space. Runtime/bin/models are not tracked by Git.
-- FFmpeg, the CPU runtime, and model weights are prepared in this local checkout
-  and its packaged build.
-
-Tests and Build
----------------
   powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_tests.ps1
-  .\.build\qa\Scripts\python.exe -B scripts/qa_workspace.py --real-demucs
+  .\.build\qa\Scripts\python.exe -B scripts/qa_compact.py --all-sizes --real-demucs
   powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 
-Tests use generated audio in isolated temp/ folders. Pillow, included in the test
-dependencies, captures the test application's own window.
-build.ps1 builds in .build/ and copies tools, models, runtime, and documents to
-release/english/KWAK Split/KWAK Split.exe. Keep working projects backed up before replacing
-a release folder. Source edits need a rebuild, or use run_dev.ps1 to run them directly.
+Prepare missing tools/runtime with scripts/download_ffmpeg.ps1 and
+scripts/prepare_demucs_runtime.ps1. Tools in bin/ take precedence over PATH.
+The runtime uses Demucs 4.0.1 with CPU torch/torchaudio 2.5.1. Model downloads
+require confirmation and remain under models/. Runtime/model/tool binaries are
+not tracked by Git. Tests use generated audio in isolated temporary folders.
 
-The English edition has a separate release folder to preserve the previously open
-version and its working files. Existing preferences are copied for this delivery;
-temporary session data remains in the original folder. Saved .kwaksplit projects
-can be opened from either edition. The root launcher now selects the English build.
+build.ps1 creates a separate release/compact folder and refuses to overwrite an
+existing release. Use -ReleaseName compact-next for another build, then select
+the verified edition in the root launcher. -SkipDependencyInstall reuses the
+prepared build environment. Source changes require rebuilding the EXE.
 
-The current Demucs virtual environment references this PC's Python installation.
-EXE startup/shutdown and the bundled runtime were verified locally, not as a fully
-standalone package capable of separation on another PC without Python.
-Keep the entire package and verify separation, playback, and export on target PCs.
+Troubleshooting and Notices
+---------------------------
+Settings > Help > Environment Check reports tools/runtime/model availability.
+Settings > View Log and logs/app.log contain processing details. The contextual
+status reports failed operations; a new action can be tried after correcting it.
+App-local folders are bin/, backend/demucs_runtime/, models/, temp/, output/,
+logs/ and settings.json. Run from a writable folder.
 
-Troubleshooting and Storage
-----------------------------
-- Settings → Environment Check / Setup shows FFmpeg/FFplay/Demucs/model availability.
-- During separation, check the stage, elapsed time, progress, and log.
-  CPU separation can take a while; running jobs can be cancelled.
-- Failure details appear in the screen log and logs/app.log.
-- If output is quiet or silent, check M/S, volume, Normalize, and Limiter.
-- App-local folders: bin/ tools, backend/demucs_runtime/ engine, models/ weights,
-  temp/ working files/recovery, output/ default exports, logs/ logs,
-  and settings.json preferences.
-- Source and EXE runs each use their own application folder for settings and data.
-  Run from a writable folder rather than an administrator-only Program Files path.
-
-Important Usage Notice
-----------------------
-Use this tool only with audio you own, audio you recorded yourself, or samples
-you are legally allowed to edit. Do not use it to transform someone else's
-copyrighted work without permission or to bypass copyright protections on any
-platform.
-
-Third-Party Notices
--------------------
-See THIRD_PARTY_NOTICES.txt and the LICENSES folder before redistributing.
+Use audio you own or are authorized to edit. Third-party component and source
+notices are in THIRD_PARTY_NOTICES.txt and LICENSES/. Package-specific notices
+remain with bundled dependencies. The Python runtime includes LICENSE.txt.

@@ -10,20 +10,22 @@ import uuid
 from pathlib import Path
 
 from backend.audio_processing.ffmpeg_tools import OperationCancelled
+from backend.compact_model import MAX_STEM_PERCENT
 
 FORMAT = "kwak-split-project"
-VERSION = 1
+VERSION = 2
 EDIT_DEFAULTS = {
     "selection_start": 0.0, "selection_end": 0.0,
     "fade_in": 0.02, "fade_out": 0.02,
     "eq_low": 0.0, "eq_mid": 0.0, "eq_high": 0.0,
-    "eq_low_freq": 100.0, "eq_mid_freq": 1000.0, "eq_high_freq": 8000.0,
+    "eq_low_freq": 120.0, "eq_mid_freq": 1000.0, "eq_high_freq": 8000.0,
     "eq_low_q": 0.8, "eq_mid_q": 1.0, "eq_high_q": 0.8,
-    "eq_low_shape": "Bell", "eq_mid_shape": "Bell", "eq_high_shape": "Bell",
+    "eq_low_shape": "Low Shelf", "eq_mid_shape": "Bell", "eq_high_shape": "High Shelf",
     "high_pass": 0.0, "low_pass": 0.0, "high_pass_q": 0.7, "low_pass_q": 0.7,
+    "high_pass_slope": 24, "low_pass_slope": 24,
     "pitch_semitones": 0.0, "tempo_percent": 100.0,
     "peak_normalize": False, "limiter_enabled": True, "limiter_ceiling": 0.98,
-    "stem_bypass": False, "loop": False, "sample_rate": 44100, "bit_depth": 16,
+    "stem_bypass": False, "loop": True, "sample_rate": 48000, "bit_depth": 24,
     "mp3_bitrate": 320,
 }
 
@@ -40,9 +42,15 @@ def validate_edits(edits):
         elif isinstance(default, (int, float)):
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
                 raise ValueError(f"Invalid number: {name}")
-        elif value not in ("Bell", "Low Shelf", "High Shelf"):
+        elif value not in ("Bell", "Low Shelf", "High Shelf", "High Pass", "Low Pass"):
             raise ValueError(f"Invalid EQ shape: {name}")
         result[name] = value
+    for key in ("high_pass_slope", "low_pass_slope"):
+        if result[key] not in (12, 24, 36, 48):
+            raise ValueError("Filter slope must be 12, 24, 36 or 48 dB/oct.")
+    for key in ("fade_in", "fade_out"):
+        if not 0 <= result[key] <= 10:
+            raise ValueError("Fade duration must be between 0 and 10 seconds.")
     if result["sample_rate"] not in (44100, 48000) or result["bit_depth"] not in (16, 24):
         raise ValueError("Unsupported WAV format.")
     if result["mp3_bitrate"] not in (128, 192, 256, 320):
@@ -58,8 +66,8 @@ def validate_edits(edits):
         if not isinstance(values, dict):
             raise ValueError("Invalid stem settings.")
         volume = values.get("volume", 100.0)
-        if not isinstance(volume, (int, float)) or not math.isfinite(volume) or not 0 <= volume <= 200:
-            raise ValueError("Stem volume must be between 0% and 200%.")
+        if isinstance(volume, bool) or not isinstance(volume, (int, float)) or not math.isfinite(volume) or not 0 <= volume <= MAX_STEM_PERCENT + 1e-6:
+            raise ValueError("Stem volume must be between silence and +12 dB.")
         if not all(isinstance(values.get(key, False), bool) for key in ("mute", "solo")):
             raise ValueError("Invalid Mute/Solo value.")
         result["stems"][stem] = {"volume": volume, "mute": values.get("mute", False), "solo": values.get("solo", False)}
@@ -115,8 +123,12 @@ def read_project(path: Path, allow_external=False):
         raise ValueError("The project file is too large.")
     with path.open(encoding="utf-8") as handle:
         document = json.load(handle)
-    if not isinstance(document, dict) or document.get("format") != FORMAT or document.get("version") != VERSION:
+    if not isinstance(document, dict) or document.get("format") != FORMAT or document.get("version") not in (1, VERSION):
         raise ValueError("Unsupported KWAK Split project.")
+    if document.get("version") == 1 and isinstance(document.get("edits"), dict):
+        # v1 had one two-pole pass filter. Preserve its sound when reopening.
+        document["edits"].setdefault("high_pass_slope", 12)
+        document["edits"].setdefault("low_pass_slope", 12)
     document["edits"] = validate_edits(document.get("edits"))
     if "original_input" in document and not isinstance(document["original_input"], str):
         raise ValueError("Invalid original audio name.")

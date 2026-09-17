@@ -47,18 +47,17 @@ directories inside that runtime.
 
 Main installed packages observed in this build:
 - demucs 4.0.1: MIT License
-- torch 2.12.0: BSD-style license
-- torchaudio 2.11.0: BSD-style license
-- torchcodec 0.13.0: BSD 3-Clause license
+- torch 2.5.1+cpu: BSD-style license
+- torchaudio 2.5.1+cpu: BSD-style license
 - numpy 2.4.6: BSD-style license
-- sympy 1.14.0: BSD-style license
+- sympy 1.13.1: BSD-style license
 - PyYAML 6.0.3: MIT License
-- lameenc 1.8.2: LGPLv3
-- tqdm 4.67.3: MPL-2.0 AND MIT
+- lameenc 1.8.4: LGPLv3
+- tqdm 4.70.1: MPL-2.0 AND MIT
 - openunmix 1.3.0: MIT License
-- julius 0.2.7: MIT License
+- julius 0.2.8: MIT License
 - einops 0.8.2: MIT License
-- dora_search 0.1.12: MIT License
+- dora_search 0.1.13: MIT License
 
 LGPLv3 license text is included as LICENSES/LGPL-3.0.txt. Package-specific
 license metadata and license files remain in their installed *.dist-info

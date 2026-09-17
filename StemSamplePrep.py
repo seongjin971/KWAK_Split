@@ -24,6 +24,8 @@ from tkinter import ttk
 from backend.app_paths import AppPaths
 from backend.ui_helpers import ScrollableFrame, ToolTip
 from backend.workspace_features import WorkspaceFeatures
+from backend.compact_ui import CompactInterface
+from backend.compact_widgets import enable_dpi_awareness
 from backend.audio_processing import STEMS
 from backend.audio_processing.ffmpeg_tools import (
     AudioEffects,
@@ -38,6 +40,8 @@ from backend.audio_processing.ffmpeg_tools import (
     safe_name,
     start_realtime_mix,
     waveform_peaks,
+    stereo_waveform_peaks,
+    audio_channels,
 )
 from backend.audio_processing.separation import StemSeparator
 
@@ -1251,8 +1255,10 @@ class StemFader(tk.Canvas):
         self.variable.set(round(ratio * 200.0))
 
 
-class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
-    def __init__(self) -> None:
+class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
+    def __init__(self, *, ui_scale=None) -> None:
+        self._ui_scale_override = ui_scale
+        enable_dpi_awareness()
         super().__init__()
         self.paths = AppPaths.from_runtime()
         self.paths.ensure()
@@ -1326,19 +1332,21 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         self.eq_low_var = tk.DoubleVar(value=0.0)
         self.eq_mid_var = tk.DoubleVar(value=0.0)
         self.eq_high_var = tk.DoubleVar(value=0.0)
-        self.eq_low_freq_var = tk.DoubleVar(value=EqCurveEditor.LOW_FREQ)
+        self.eq_low_freq_var = tk.DoubleVar(value=120.0)
         self.eq_mid_freq_var = tk.DoubleVar(value=EqCurveEditor.MID_FREQ)
         self.eq_high_freq_var = tk.DoubleVar(value=EqCurveEditor.HIGH_FREQ)
         self.eq_low_q_var = tk.DoubleVar(value=0.8)
         self.eq_mid_q_var = tk.DoubleVar(value=1.0)
         self.eq_high_q_var = tk.DoubleVar(value=0.8)
-        self.eq_low_shape_var = tk.StringVar(value="Bell")
+        self.eq_low_shape_var = tk.StringVar(value="Low Shelf")
         self.eq_mid_shape_var = tk.StringVar(value="Bell")
-        self.eq_high_shape_var = tk.StringVar(value="Bell")
+        self.eq_high_shape_var = tk.StringVar(value="High Shelf")
         self.high_pass_var = tk.DoubleVar(value=0.0)
         self.low_pass_var = tk.DoubleVar(value=0.0)
         self.high_pass_q_var = tk.DoubleVar(value=0.7)
         self.low_pass_q_var = tk.DoubleVar(value=0.7)
+        self.high_pass_slope_var = tk.IntVar(value=24)
+        self.low_pass_slope_var = tk.IntVar(value=24)
         self.pitch_semitones_var = tk.DoubleVar(value=0.0)
         self.tempo_percent_var = tk.DoubleVar(value=100.0)
         self.peak_normalize_var = tk.BooleanVar(value=False)
@@ -1402,7 +1410,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         except Exception:
             logging.debug("Dark title bar is not available.", exc_info=True)
 
-    def _configure_theme(self) -> None:
+    def _legacy_configure_theme(self) -> None:
         self.configure(bg="#090d14")
         style = ttk.Style(self)
         try:
@@ -1510,7 +1518,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
             foreground=[("disabled", "#806b72")],
         )
 
-    def _build_ui(self) -> None:
+    def _legacy_build_ui(self) -> None:
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.workspace_scroll = ScrollableFrame(self)
@@ -2678,7 +2686,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
             )
             duration = read_duration(self.paths, source_wav)
             self._queue_status("Preparing waveform")
-            peaks = waveform_peaks(
+            peaks = stereo_waveform_peaks(
                 self.paths,
                 source_wav,
                 cancel_event=self.cancel_event,
@@ -2693,6 +2701,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
                         "session": session_name,
                         "duration": duration,
                         "peaks": peaks,
+                        "channels": audio_channels(self.paths, input_path, self.cancel_event, self._register_process),
                     },
                 )
             )
@@ -2865,16 +2874,15 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         if not self._confirm_render():
             return
         input_label = safe_name(self.current_input.stem if self.current_input else "render")
-        default_output_path = self._unique_output_path(self.output_dir / f"{input_label}_current_mix.{extension}")
-        output_path_text = filedialog.asksaveasfilename(
-            title=f"Save {label} Render",
-            initialdir=str(self.output_dir if self.output_dir.exists() else self.paths.output),
-            initialfile=default_output_path.name,
-            defaultextension=f".{extension}",
-            filetypes=filetypes,
-        )
-        if not output_path_text:
+        try:
+            self.output_dir.mkdir(parents=True, exist_ok=True)
+            input_label = self.current_input.stem if self.current_input else "audio"
+            filename = f"{input_label}_{start:.2f}-{end:.2f}.{extension}"
+            default_output_path = self._unique_output_path(self.output_dir / filename)
+        except OSError as exc:
+            self.status_var.set(f"Cannot save to this folder: {exc}")
             return
+        output_path_text = str(default_output_path)
         self.stop_preview(show_status=False)
         output_path = Path(output_path_text)
         if output_path.suffix.lower() != f".{extension}":
@@ -2884,7 +2892,8 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.settings["output_dir"] = str(self.output_dir)
         self.paths.write_settings(self.settings)
-        self.output_dir_label_var.set(self._format_output_dir_label())
+        if hasattr(self, "output_dir_label_var"):
+            self.output_dir_label_var.set(self._format_output_dir_label())
         delete_temp = self.delete_temp_var.get()
 
         def worker() -> None:
@@ -2961,8 +2970,8 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
     def _context_preview_request(self) -> tuple[list[MixStem], str, tuple[str, str | None]]:
         if not self.source_wav:
             raise AudioProcessingError("No loaded audio file.")
-        if self.stem_bypass_var.get() or not self.stem_paths:
-            label = "Stem Bypass" if self.stem_paths else "Source"
+        if not self.stem_paths:
+            label = "Source"
             return [MixStem("source", self.source_wav, 1.0)], label, ("source", None)
         return self._build_mix_stems(), "Current Mix", ("mix", None)
 
@@ -2984,11 +2993,11 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         state = "ON" if active else "OFF"
         self.stem_bypass_button.configure(text=f"Stem Bypass {state}")
 
-    def _space_toggle_playback(self, _event: tk.Event) -> str:
+    def _legacy_space_toggle_playback(self, _event: tk.Event) -> str:
         self.toggle_playback()
         return "break"
 
-    def _bind_space_shortcut(self, widget: tk.Widget) -> None:
+    def _legacy_bind_space_shortcut(self, widget: tk.Widget) -> None:
         widget.bind("<KeyPress-space>", self._space_toggle_playback)
         for child in widget.winfo_children():
             self._bind_space_shortcut(child)
@@ -3181,7 +3190,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         self._update_volume_label(stem)
         self._schedule_live_preview_restart()
 
-    def _update_volume_label(self, stem: str) -> None:
+    def _legacy_update_volume_label(self, stem: str) -> None:
         value = max(float(self.stem_vars[stem]["volume"].get()), 0.0)
         if value <= 0.0:
             label = "-inf dB"
@@ -3272,7 +3281,8 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
 
         soloed = {stem for stem in STEMS if bool(self.stem_vars[stem]["solo"].get())}
         self._validate_stem_range(*self._selection_bounds())
-        selected = soloed or {stem for stem in STEMS if not bool(self.stem_vars[stem]["mute"].get())}
+        selected = {stem for stem in STEMS if not bool(self.stem_vars[stem]["mute"].get())
+                    and (not soloed or stem in soloed)}
 
         mix_stems: list[MixStem] = []
         missing_files: list[str] = []
@@ -3309,6 +3319,10 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         low_pass_hz = max(float(self.low_pass_var.get()), 0.0)
         high_pass_q = max(min(float(self.high_pass_q_var.get()), 10.0), 0.1)
         low_pass_q = max(min(float(self.low_pass_q_var.get()), 10.0), 0.1)
+        if self.eq_low_shape_var.get() == "High Pass":
+            low_db, high_pass_hz = 0.0, low_freq
+        if self.eq_high_shape_var.get() == "Low Pass":
+            high_db, low_pass_hz = 0.0, high_freq
         if high_pass_hz > 0 and low_pass_hz > 0 and high_pass_hz >= low_pass_hz:
             raise AudioProcessingError("High-pass Hz must be lower than Low-pass Hz.")
         return AudioEffects(
@@ -3328,6 +3342,8 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
             low_pass_hz=low_pass_hz,
             high_pass_q=high_pass_q,
             low_pass_q=low_pass_q,
+            high_pass_slope=int(self.high_pass_slope_var.get()),
+            low_pass_slope=int(self.low_pass_slope_var.get()),
             pitch_semitones=max(min(float(self.pitch_semitones_var.get()), 12.0), -12.0),
             tempo_ratio=max(min(float(self.tempo_percent_var.get()) / 100.0, 2.0), 0.5),
             peak_normalize=bool(self.peak_normalize_var.get()),
@@ -3387,10 +3403,11 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.settings["output_dir"] = str(self.output_dir)
         self.paths.write_settings(self.settings)
-        self.output_dir_label_var.set(self._format_output_dir_label())
+        if hasattr(self, "output_dir_label_var"):
+            self.output_dir_label_var.set(self._format_output_dir_label())
         self.status_var.set(f"Save folder: {self.output_dir}")
 
-    def open_render_settings(self) -> None:
+    def _legacy_open_render_settings(self) -> None:
         if self.render_settings_window and self.render_settings_window.winfo_exists():
             self.render_settings_window.focus_force()
             return
@@ -3468,7 +3485,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         )
         close_button.grid(row=11, column=0, columnspan=3, sticky="e", pady=12)
 
-    def _close_render_settings(self) -> None:
+    def _legacy_close_render_settings(self) -> None:
         if self.render_settings_window and self.render_settings_window.winfo_exists():
             self.render_settings_window.destroy()
         self.render_settings_window = None
@@ -3687,7 +3704,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         minutes, seconds = divmod(elapsed, 60)
         return f"{minutes:02d}:{seconds:02d}"
 
-    def _refresh_action_states(self) -> None:
+    def _legacy_refresh_action_states(self) -> None:
         if not hasattr(self, "load_button"):
             return
         source_ready = self.source_wav is not None
@@ -3940,6 +3957,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         self.file_label_var.set(self.current_input.name)
         self.duration_seconds = float(payload["duration"])
         self.peaks = list(payload["peaks"])  # type: ignore[arg-type]
+        self.source_channels = int(payload.get("channels", 2))
         self._clear_stem_state("Waiting")
         self._reset_playback_tracking()
         self.selection_start_var.set(0.0)
@@ -4027,7 +4045,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
     def toggle_log_visibility(self) -> None:
         self.set_log_visible(not self.log_visible)
 
-    def set_log_visible(self, visible: bool) -> None:
+    def _legacy_set_log_visible(self, visible: bool) -> None:
         self.log_visible = visible
         self.log_toggle_button.configure(text="Hide Log" if visible else "Show Log")
         if visible:
@@ -4041,7 +4059,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         else:
             self.log_text.grid_remove()
 
-    def _configure_selection_limits(self, limit: float) -> None:
+    def _legacy_configure_selection_limits(self, limit: float) -> None:
         for widget in (self.range_scale, self.start_spinbox, self.end_spinbox):
             widget.configure(to=limit)
         self.playback_scale.configure(to=limit)
@@ -4065,7 +4083,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         self._update_selection_label()
         self.draw_waveform()
 
-    def _update_selection_label(self) -> None:
+    def _legacy_update_selection_label(self) -> None:
         start = min(self.selection_start_var.get(), self.selection_end_var.get())
         end = max(self.selection_start_var.get(), self.selection_end_var.get())
         length = max(end - start, 0.0)
@@ -4104,7 +4122,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
         if not self.closing:
             self.draw_waveform()
 
-    def draw_waveform(self) -> None:
+    def _legacy_draw_waveform(self) -> None:
         canvas = self.wave_canvas
         canvas.delete("all")
         width = max(canvas.winfo_width(), 1)
@@ -4193,7 +4211,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
             self._draw_fade_overlay(canvas, x1, x2, height, max(end - start, 0.0))
             self._draw_playback_cursor()
 
-    def _draw_fade_overlay_only(self) -> None:
+    def _legacy_draw_fade_overlay_only(self) -> None:
         canvas = self.wave_canvas
         canvas.delete("fade_overlay")
         if self.duration_seconds <= 0:
@@ -4240,7 +4258,7 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
             gain = min(gain, max((selection_end - seconds) / fade_out, 0.0))
         return gain
 
-    def _draw_playback_cursor(self) -> None:
+    def _legacy_draw_playback_cursor(self) -> None:
         canvas = self.wave_canvas
         canvas.delete("playback_cursor")
         if self.duration_seconds <= 0:
@@ -4318,6 +4336,8 @@ class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
 
     def _cancel_main_after_callbacks(self) -> None:
         for attr in (
+            "_layout_after",
+            "_compact_after",
             "worker_queue_after_id",
             "drop_queue_after_id",
             "playback_progress_after_id",

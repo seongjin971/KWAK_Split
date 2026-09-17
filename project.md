@@ -10,10 +10,14 @@ Implementation order and acceptance criteria are in [Compact UI implementation](
 
 | Package | Scope | Status |
 | --- | --- | --- |
-| U01 | Preserve baseline and accepted UI; record implementation contract | In progress |
-| U02 | Real EQ slopes/Q, +12 dB mixer, stereo waveform, edit history compatibility | Pending |
-| U03 | Compact responsive Tkinter UI, Settings/Advanced, direct export and interaction wiring | Pending |
-| U04 | Audio/workflow and viewport/DPI verification, separate release build, updated usage/evidence | Pending |
+| U01 | Preserve baseline and accepted UI; record implementation contract | Complete; checkpoint 388e2db |
+| U02 | Real EQ slopes/Q, +12 dB mixer, stereo waveform, edit history compatibility | Complete; objective audio tests passed |
+| U03 | Compact responsive Tkinter UI, Settings/Advanced, direct export and interaction wiring | Complete; native window and workflow checks passed |
+| U04 | Audio/workflow and viewport/DPI verification, separate release build, updated usage/evidence | Complete; EXE startup and bundled-engine workflow passed |
+
+Source validation: **79 tests and 19 subtests passed**. Eleven viewport/scaling cases, fifteen initial-work-area calculations, 1080p minimum-window checks at five scales, actual four-stem separation and direct WAV/MP3 export passed. See [Compact verification](docs/qa/compact/verification.md) for exact evidence and the distinction between app scaling and physical-device testing.
+
+The root `Run KWAK Split.cmd` now selects `release/compact/KWAK Split/KWAK Split.exe`. The earlier English release is preserved. The new package includes an isolated app-local Python engine; startup, four-stem separation, 48 kHz/24-bit WAV, 320 kbps MP3 and dummy-device play/pause/resume passed with the development Python path excluded. The real monitor DPI was also detected automatically at 200%, producing a 2000×1400 client window within its work area. Physical laptop/monitor switching and direct listening remain device acceptance checks.
 
 The G01–G08 sections below describe the preserved earlier application, not completion of U01–U04.
 

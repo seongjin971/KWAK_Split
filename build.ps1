@@ -1,5 +1,7 @@
 param(
-    [string]$PythonExe = ""
+    [string]$PythonExe = "",
+    [ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$ReleaseName = "compact",
+    [switch]$SkipDependencyInstall
 )
 
 $ErrorActionPreference = "Stop"
@@ -8,10 +10,13 @@ if (-not $PythonExe) { $PythonExe = (Get-Command python.exe -ErrorAction Stop).S
 $BuildRoot = Join-Path $Root ".build"
 $Venv = Join-Path $BuildRoot "venv"
 $VenvPython = Join-Path $Venv "Scripts\python.exe"
-$ReleaseRoot = Join-Path $Root "release\english"
+$ReleaseRoot = Join-Path $Root "release\$ReleaseName"
 $AppName = "KWAK Split"
 $AppExe = "$AppName.exe"
 $AppOut = Join-Path $ReleaseRoot $AppName
+if (Test-Path -LiteralPath $AppOut) {
+    throw "Preserving existing release: $AppOut. Choose a new -ReleaseName."
+}
 
 $env:TEMP = Join-Path $Root "temp"
 $env:TMP = Join-Path $Root "temp"
@@ -31,9 +36,10 @@ if (-not (Test-Path $VenvPython)) {
     if ($LASTEXITCODE -ne 0) { throw "Build environment creation failed." }
 }
 
-& $VenvPython -m pip install --upgrade pip
-& $VenvPython -m pip install -r (Join-Path $Root "requirements-build.txt")
-if ($LASTEXITCODE -ne 0) { throw "Build dependencies could not be installed." }
+if (-not $SkipDependencyInstall) {
+    & $VenvPython -m pip install -r (Join-Path $Root "requirements-build.txt")
+    if ($LASTEXITCODE -ne 0) { throw "Build dependencies could not be installed." }
+}
 
 Set-Location $Root
 & $VenvPython -m PyInstaller `
@@ -75,9 +81,8 @@ $runtimeSource = Join-Path $Root "backend\demucs_runtime"
 if (Test-Path $runtimeSource) {
     $runtimeDest = Join-Path $AppOut "backend\demucs_runtime"
     New-Item -ItemType Directory -Force -Path $runtimeDest | Out-Null
-    Get-ChildItem -LiteralPath $runtimeSource -Force | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination $runtimeDest -Recurse -Force
-    }
+    & $VenvPython -B (Join-Path $Root "scripts\bundle_demucs_runtime.py") --source $runtimeSource --destination $runtimeDest
+    if ($LASTEXITCODE -ne 0) { throw "App-local Demucs runtime bundling failed." }
 }
 
 Get-ChildItem -LiteralPath $AppOut -Recurse -Directory -Filter "__pycache__" -Force -ErrorAction SilentlyContinue |
@@ -127,5 +132,5 @@ $LauncherPath = Join-Path $AppOut $LauncherName
     "start """" ""%~dp0$AppExe"""
 ) | Set-Content -LiteralPath $LauncherPath -Encoding ASCII
 
-Write-Host "Local build complete (verify runtime portability on each target PC):"
+Write-Host "Build complete with app-local Python (verify on each target PC):"
 Write-Host "  $AppOut\$AppExe"

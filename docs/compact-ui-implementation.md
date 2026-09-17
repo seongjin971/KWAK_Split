@@ -43,3 +43,13 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
 4. U04: run meaningful existing and new regressions, real generated-audio split/export/playback workflows, inspect actual app captures at viewport/scaling variants, create a separate release, smoke-test it, update launcher/README/project and record evidence.
 
 Automated tests, actual window captures, silent playback-process checks and direct human listening are distinct. Report observed results and any remaining device-specific limits accurately. Final aesthetic acceptance remains the user's judgment; the implementation must already match the accepted design before delivery.
+
+## Implementation record
+
+- U01 checkpoint: `388e2db`, including all earlier dirty/untracked application work, documentation, tests and three accepted previews. No reset, stash or push.
+- Native surface: `backend/compact_ui.py` and `backend/compact_widgets.py`; existing processing and project services remain in use through the main app.
+- Slopes are cascaded two-pole filters with independently adjustable Q. The response model matches FFmpeg's actual bass/treble coefficient convention as well as Bell and Pass; generated audio validates the curves. Limiter now honors its ceiling without automatic makeup gain or an added output tail.
+- Version-1 project input remains supported; omitted slope fields retain the earlier 12 dB/oct behavior. Version 2 stores new slopes and the wider fader range. Existing project assets are preserved.
+- Startup and minimum sizes share the same work-area bounds; this avoids a 1080p/200% minimum-height clamp expanding the window beyond the screen.
+- The new release bundles a separate interpreter and standard library with isolated import paths, removing the development venv's absolute Python dependency. The original runtime and earlier release remain untouched.
+- Detailed results and remaining physical-device checks are in `docs/qa/compact/verification.md`.

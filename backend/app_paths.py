@@ -13,6 +13,11 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "output_dir": "",
     "keep_adjustments": False,
     "recent_project": "",
+    "loop": True,
+    "sample_rate": 48000,
+    "bit_depth": 24,
+    "mp3_bitrate": 320,
+    "peak_normalize": False,
 }
 
 

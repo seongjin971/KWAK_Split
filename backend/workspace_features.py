@@ -15,12 +15,13 @@ from backend.audio_processing.separation import StemSeparator
 
 class WorkspaceFeatures:
     def _init_workspace(self):
-        self.loop_var = tk.BooleanVar(value=False)
-        self.sample_rate_var = tk.IntVar(value=44100)
-        self.bit_depth_var = tk.IntVar(value=16)
-        self.mp3_bitrate_var = tk.IntVar(value=320)
+        self.loop_var = tk.BooleanVar(value=bool(self.settings.get("loop", True)))
+        self.sample_rate_var = tk.IntVar(value=self.settings.get("sample_rate", 48000))
+        self.bit_depth_var = tk.IntVar(value=self.settings.get("bit_depth", 24))
+        self.mp3_bitrate_var = tk.IntVar(value=self.settings.get("mp3_bitrate", 320))
+        self.peak_normalize_var.set(bool(self.settings.get("peak_normalize", False)))
         self.keep_adjustments_var = tk.BooleanVar(value=bool(self.settings.get("keep_adjustments", False)))
-        self.split_scope_var = tk.StringVar(value="Full Track")
+        self.split_scope_var = tk.StringVar(value="Selection")
         self.mix_summary_var = tk.StringVar(value="Open audio to see the monitor source and export settings.")
         self.project_label_var = tk.StringVar(value="Unsaved project")
         self.view_start = 0.0
@@ -168,6 +169,9 @@ class WorkspaceFeatures:
 
     def _reset_edits(self):
         state = validate_edits({})
+        # Output/playback preferences survive opening another audio file.
+        for name in ("loop", "sample_rate", "bit_depth", "mp3_bitrate", "peak_normalize"):
+            state[name] = getattr(self, name + "_var").get()
         state["selection_end"] = self.duration_seconds
         self._apply_edits(state)
 
@@ -396,7 +400,7 @@ class WorkspaceFeatures:
         try:
             start, end = self._selection_bounds_no_error()
             solo = [name for name, values in self.stem_vars.items() if values["solo"].get()]
-            chosen = solo or [name for name, values in self.stem_vars.items() if not values["mute"].get()]
+            chosen = [name for name, values in self.stem_vars.items() if not values["mute"].get() and (not solo or name in solo)]
             mix = ", ".join(chosen) if self.stem_paths else "Original audio"
             monitor = "Original comparison (export uses the mix below)" if self.stem_bypass_var.get() else mix
             normalized = "On · skipped during live monitoring" if self.peak_normalize_var.get() else "Off"
@@ -537,6 +541,7 @@ class WorkspaceFeatures:
 
     def _workspace_close(self):
         self._write_recovery()
+        self._save_output_preferences()
         self.settings["keep_adjustments"] = bool(self.keep_adjustments_var.get())
         for name in ("_history_after", "_recovery_after", "_loop_after", "_selection_ui_after"):
             value = getattr(self, name, None)

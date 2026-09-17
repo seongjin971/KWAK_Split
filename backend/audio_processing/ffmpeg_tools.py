@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from backend.audio_processing.equalizer import pass_section_qs
+
 import json
 import math
 import os
@@ -59,6 +61,8 @@ class AudioEffects:
     low_pass_hz: float = 0.0
     high_pass_q: float = 0.7
     low_pass_q: float = 0.7
+    high_pass_slope: int = 12
+    low_pass_slope: int = 12
     pitch_semitones: float = 0.0
     tempo_ratio: float = 1.0
     peak_normalize: bool = False
@@ -324,6 +328,87 @@ def _waveform_peaks_wav(audio_path: Path, bucket_count: int, cancel_event: Event
                 peaks[bucket] = max(peaks[bucket], min(abs(sample) / max_possible, 1.0))
                 frame_index += 1
         return peaks
+
+
+def stereo_waveform_peaks(paths: AppPaths, audio_path: Path, bucket_count: int = 4096,
+                          cancel_event: Event | None = None, process_callback=None) -> list[tuple[float, float]]:
+    """Read the working PCM WAV without summing channels or discarding highs."""
+    try:
+        handle = wave.open(str(audio_path), "rb")
+    except wave.Error:
+        return _stereo_float_peaks(paths, audio_path, bucket_count, cancel_event, process_callback)
+    with handle:
+        frames, channels, width = handle.getnframes(), handle.getnchannels(), handle.getsampwidth()
+        if width not in (2, 3, 4):
+            raise AudioProcessingError("Working audio must be 16, 24 or 32-bit PCM.")
+        count = min(bucket_count, max(1, frames))
+        bucket_size = max(1, math.ceil(frames / count))
+        left, right = [0.0] * count, [0.0] * count
+        index, maximum = 0, float(1 << (8*width-1))
+        while raw := handle.readframes(8192):
+            if _is_cancelled(cancel_event):
+                raise OperationCancelled("Waveform preparation cancelled.")
+            if width in (2, 4):
+                values = array("h" if width == 2 else "i")
+                values.frombytes(raw)
+            else:
+                values = [int.from_bytes(raw[i:i+3], "little", signed=True) for i in range(0, len(raw), 3)]
+            for offset in range(0, len(values), channels):
+                bucket = min(index // bucket_size, count-1)
+                left[bucket] = max(left[bucket], abs(values[offset]) / maximum)
+                right[bucket] = max(right[bucket], abs(values[offset + (1 if channels > 1 else 0)]) / maximum)
+                index += 1
+        return list(zip(left, right))
+
+
+def _stereo_float_peaks(paths, source, count, cancel_event, process_callback):
+    ffmpeg = find_executable(paths, "ffmpeg")
+    if not ffmpeg:
+        raise ToolMissingError("FFmpeg is required for floating-point working audio.")
+    rate = 48000
+    bucket_size = max(1, math.ceil(read_duration(paths, source) * rate / count))
+    left, right = [0.0]*count, [0.0]*count
+    process = subprocess.Popen([ffmpeg, "-v", "error", "-i", str(source), "-vn", "-ac", "2", "-ar", str(rate),
+                                "-f", "f32le", "-"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                               env=paths.runtime_env(), **_no_window_kwargs())
+    if process_callback: process_callback(process)
+    index = 0
+    try:
+        while raw := process.stdout.read(65536):
+            if _is_cancelled(cancel_event):
+                raise OperationCancelled("Waveform preparation cancelled.")
+            values = array("f"); values.frombytes(raw)
+            for offset in range(0, len(values)-1, 2):
+                bucket = min(index//bucket_size, count-1)
+                left[bucket] = max(left[bucket], abs(values[offset]))
+                right[bucket] = max(right[bucket], abs(values[offset+1]))
+                index += 1
+        if _is_cancelled(cancel_event):
+            raise OperationCancelled("Waveform preparation cancelled.")
+        if process.wait() != 0:
+            raise AudioProcessingError("Stereo waveform preparation failed.")
+    finally:
+        process.stdout.close()
+        if process.poll() is None: _stop_process(process)
+        if process_callback: process_callback(None)
+    return list(zip(left, right))
+
+
+def audio_channels(paths: AppPaths, audio_path: Path, cancel_event=None, process_callback=None) -> int:
+    try:
+        with wave.open(str(audio_path), "rb") as handle:
+            return handle.getnchannels()
+    except (wave.Error, EOFError):
+        probe = find_executable(paths, "ffprobe")
+        if probe:
+            output = _run_capture([probe, "-v", "error", "-select_streams", "a:0", "-show_entries",
+                                   "stream=channels", "-of", "csv=p=0", str(audio_path)],
+                                  paths, None, cancel_event, process_callback)
+            try:
+                return int(output.strip().splitlines()[0])
+            except (ValueError, IndexError):
+                pass
+    return 2
 
 
 def render_mix(
@@ -605,7 +690,7 @@ def _build_mix_filter(
     if post_gain < 0.9999 or post_gain > 1.0001:
         tail_filters.append(f"volume={post_gain:.6f}")
     if effects.limiter_enabled:
-        tail_filters.append(f"alimiter=limit={_limiter_ceiling(effects):.6f}")
+        tail_filters.append(f"alimiter=limit={_limiter_ceiling(effects):.6f}:level=false:latency=true")
     if not tail_filters:
         tail_filters.append("anull")
 
@@ -627,10 +712,11 @@ def _effect_filters(effects: AudioEffects) -> list[str]:
         filters.append(_eq_filter(effects.mid_shape, effects.mid_freq, effects.mid_q, effects.mid_db))
     if abs(effects.high_db) >= 0.05:
         filters.append(_eq_filter(effects.high_shape, effects.high_freq, effects.high_q, effects.high_db))
-    if effects.high_pass_hz > 0:
-        filters.append(f"highpass=f={_clamp_frequency(effects.high_pass_hz):.3f}:t=q:w={_clamp_q(effects.high_pass_q):.3f}")
-    if effects.low_pass_hz > 0:
-        filters.append(f"lowpass=f={_clamp_frequency(effects.low_pass_hz):.3f}:t=q:w={_clamp_q(effects.low_pass_q):.3f}")
+    for key, name in (("high_pass", "highpass"), ("low_pass", "lowpass")):
+        frequency = getattr(effects, key + "_hz")
+        if frequency > 0:
+            for q in pass_section_qs(getattr(effects, key + "_slope"), _clamp_q(getattr(effects, key + "_q"))):
+                filters.append(f"{name}=f={_clamp_frequency(frequency):.3f}:t=q:w={q:.3f}:precision=f64")
     return filters
 
 
@@ -703,7 +789,7 @@ def _apply_output_gain(
 ) -> None:
     filters = [f"volume={gain_db:.6f}dB"]
     if effects.limiter_enabled:
-        filters.append(f"alimiter=limit={_limiter_ceiling(effects):.6f}")
+        filters.append(f"alimiter=limit={_limiter_ceiling(effects):.6f}:level=false:latency=true")
     command = [
         str(ffmpeg),
         "-hide_banner",
