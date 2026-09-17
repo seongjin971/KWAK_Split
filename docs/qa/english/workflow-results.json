@@ -1,0 +1,24 @@
+{
+  "real_demucs": true,
+  "captures": [
+    "docs/qa/english/captures/desktop-top.png",
+    "docs/qa/english/captures/compact-top.png",
+    "docs/qa/english/captures/compact-eq.png",
+    "docs/qa/english/captures/small-results.png",
+    "docs/qa/english/captures/settings.png"
+  ],
+  "source": "generated 6-second sine WAV",
+  "split_seconds": 23.985,
+  "stem_durations": {
+    "vocals": 2.0,
+    "drums": 2.0,
+    "bass": 2.0,
+    "other": 2.0
+  },
+  "exported_durations": [
+    2.0,
+    2.0,
+    2.0,
+    2.0
+  ]
+}

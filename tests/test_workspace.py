@@ -1,0 +1,257 @@
+"""Integration tests against the real Tk widget tree, using generated audio only."""
+import json
+import logging
+import os
+import shutil
+import subprocess
+import tempfile
+import time
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+
+from StemSamplePrep import StemSamplePrepApp
+from backend.app_paths import AppPaths
+from backend.project_store import read_project
+from backend.audio_processing.ffmpeg_tools import AudioEffects, MixStem, extract_audio_range, render_mix
+
+
+@unittest.skipUnless(shutil.which("ffmpeg"), "FFmpeg is required")
+class WorkspaceTests(unittest.TestCase):
+    def setUp(self):
+        self.folder = tempfile.TemporaryDirectory(prefix="workspace-test-", dir=Path(__file__).resolve().parents[1] / "temp")
+        self.addCleanup(self.folder.cleanup)
+        self.paths = AppPaths(Path(self.folder.name))
+        self.paths.ensure()
+        self.source = self.paths.root / "test.wav"
+        subprocess.run([shutil.which("ffmpeg"), "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i",
+                        "sine=frequency=440:duration=6:sample_rate=48000", "-c:a", "pcm_s24le", str(self.source)],
+                       check=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        self.patches = [patch.object(AppPaths, "from_runtime", return_value=self.paths),
+                        patch.object(StemSamplePrepApp, "_configure_logging"),
+                        patch("tkinter.messagebox.askyesnocancel", return_value=False),
+                        patch("tkinter.messagebox.askyesno", return_value=True),
+                        patch("tkinter.messagebox.askokcancel", return_value=True),
+                        patch("tkinter.messagebox.showwarning"), patch("tkinter.messagebox.showinfo"),
+                        patch("tkinter.messagebox.showerror")]
+        self.mocks = [p.start() for p in self.patches]
+        for p in self.patches:
+            self.addCleanup(p.stop)
+        self.app = StemSamplePrepApp()
+        self.callback_errors = []
+        self.app.report_callback_exception = lambda *args: self.callback_errors.append(args)
+        self.app.load_audio_path(self.source)
+        self.wait_idle()
+
+    def tearDown(self):
+        self.app._workspace_close()
+        self.app.closing = True
+        self.app.stop_preview(show_status=False)
+        self.app._cancel_main_after_callbacks()
+        self.app._disable_file_drop()
+        self.app.destroy()
+        for p in reversed(self.patches):
+            p.stop()
+        self.folder.cleanup()
+
+    def wait_idle(self, timeout=20):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            self.app.update()
+            if not self.app.busy:
+                break
+            time.sleep(0.02)
+        self.app.update()
+        self.assertFalse(self.app.busy, "Worker did not finish")
+        self.assertFalse(self.callback_errors, self.callback_errors)
+        self.assertFalse(self.mocks[-1].called, self.mocks[-1].call_args)
+
+    def test_responsive_layout_tabs_and_scroll_regions(self):
+        for width, height in ((1280, 720), (900, 600), (640, 480)):
+            with self.subTest(size=(width, height)):
+                self.app.geometry(f"{width}x{height}")
+                self.app.update()
+                self.assertEqual(len(self.app.editor_tabs.tabs()), 3)
+                self.assertGreater(self.app.workspace_scroll.canvas.bbox("all")[3], height)
+                for tab in self.app.editor_tabs.tabs():
+                    self.app.editor_tabs.select(tab)
+                    self.app.update()
+                    self.assertGreater(self.app.nametowidget(tab).winfo_width(), 0)
+                self.app.workspace_scroll.canvas.yview_moveto(1.0)
+                self.app.update()
+                self.assertGreater(self.app.result_list.winfo_rooty(), self.app.winfo_rooty())
+                self.assertLess(self.app.result_list.winfo_rooty(), self.app.winfo_rooty() + height)
+
+    def test_new_project_resets_and_keep_option_preserves_adjustments(self):
+        self.app.eq_low_var.set(7)
+        self.app.tempo_percent_var.set(150)
+        self.app.stem_vars["vocals"]["mute"].set(True)
+        self.app.cleanup_current_temp()
+        self.assertEqual(self.app.eq_low_var.get(), 0)
+        self.assertEqual(self.app.tempo_percent_var.get(), 100)
+        self.assertFalse(self.app.stem_vars["vocals"]["mute"].get())
+        self.app.load_audio_path(self.source)
+        self.wait_idle()
+        self.app.keep_adjustments_var.set(True)
+        self.app.eq_low_var.set(4)
+        self.app.cleanup_current_temp()
+        self.assertEqual(self.app.eq_low_var.get(), 4)
+
+    def test_drag_is_one_undo_step_and_redo_restores_it(self):
+        self.app._begin_edit_drag()
+        for value in (1, 2, 3, 4):
+            self.app.eq_low_var.set(value)
+        self.app._end_edit_drag()
+        self.app._commit_edit()
+        self.app.undo_edit()
+        self.assertEqual(self.app.eq_low_var.get(), 0)
+        self.app.redo_edit()
+        self.assertEqual(self.app.eq_low_var.get(), 4)
+
+    def test_project_roundtrip_and_recovery(self):
+        self.app.eq_low_var.set(3)
+        self.app.tempo_percent_var.set(75)
+        self.app.selection_start_var.set(2)
+        self.app.selection_end_var.set(4)
+        project = self.paths.root / "test.kwaksplit"
+        with patch("tkinter.filedialog.asksaveasfilename", return_value=str(project)):
+            self.app.save_current_project()
+        self.wait_idle()
+        self.assertFalse(self.app.project_dirty)
+        self.assertTrue(read_project(project)["source_path"].exists())
+        self.app.cleanup_current_temp()
+        self.app._open_project_path(project)
+        self.wait_idle()
+        self.assertEqual(self.app.eq_low_var.get(), 3)
+        self.assertEqual(self.app.tempo_percent_var.get(), 75)
+        self.assertEqual(self.app._selection_bounds(), (2, 4))
+        self.app.eq_low_var.set(5)
+        self.app._write_recovery()
+        self.app.eq_low_var.set(1)
+        self.app.restore_last_session()
+        self.wait_idle()
+        self.assertEqual(self.app.eq_low_var.get(), 5)
+
+    def test_zoom_seek_and_selection_only_preview(self):
+        self.app.selection_start_var.set(2)
+        self.app.selection_end_var.set(4)
+        self.app.zoom_selection()
+        self.app.update()
+        midpoint = self.app._event_to_seconds(SimpleNamespace(x=self.app.wave_canvas.winfo_width() / 2))
+        self.assertAlmostEqual(midpoint, 3)
+        self.app.playback_cursor_manual = True
+        self.app.playback_position_var.set(5)
+        self.assertEqual(self.app._playback_bounds(), (2, 4))
+        self.app._draw_fade_overlay_only()
+        self.assertFalse(self.callback_errors)
+
+    def test_selected_stem_offsets_match_original_render(self):
+        crop = self.paths.root / "crop.wav"
+        extract_audio_range(self.paths, self.source, crop, 2.0, 2.0)
+        self.app.stem_paths = {"vocals": crop}
+        self.app.stem_range = (2, 4)
+        self.app.selection_start_var.set(2.5)
+        self.app.selection_end_var.set(3.0)
+        stems = self.app._build_mix_stems()
+        self.assertEqual(stems[0].offset_seconds, 2)
+        effects = AudioEffects(limiter_enabled=False)
+        original_output = self.paths.output / "original.wav"
+        cropped_output = self.paths.output / "cropped.wav"
+        render_mix(self.paths, [MixStem("source", self.source, 1)], original_output, 2.5, 0.5, 0, 0, effects=effects)
+        render_mix(self.paths, stems, cropped_output, 2.5, 0.5, 0, 0, effects=effects)
+        # Decoded PCM is identical; metadata chunks may differ between outputs.
+        import wave
+        with wave.open(str(original_output)) as a, wave.open(str(cropped_output)) as b:
+            self.assertEqual(a.readframes(a.getnframes()), b.readframes(b.getnframes()))
+        self.app.selection_end_var.set(5)
+        with self.assertRaisesRegex(Exception, "[Ss]eparate"):
+            self.app._build_mix_stems()
+
+    def test_output_profiles_and_normalize_use_requested_format(self):
+        for rate, depth, normalize in ((44100, 16, False), (44100, 24, True), (48000, 16, True), (48000, 24, False)):
+            with self.subTest(rate=rate, depth=depth, normalize=normalize):
+                target = self.paths.output / f"{rate}_{depth}.wav"
+                render_mix(self.paths, [MixStem("source", self.source, 1)], target, 0, 1, 0, 0,
+                           effects=AudioEffects(sample_rate=rate, bit_depth=depth, peak_normalize=normalize))
+                output = subprocess.check_output([shutil.which("ffprobe"), "-v", "error", "-show_streams", "-of", "json", str(target)],
+                                                 creationflags=subprocess.CREATE_NO_WINDOW)
+                stream = json.loads(output)["streams"][0]
+                self.assertEqual(int(stream["sample_rate"]), rate)
+                self.assertEqual(int(stream["bits_per_sample"]), depth)
+
+    def test_result_actions_are_connected(self):
+        self.app._show_results([self.source])
+        self.assertEqual(self.app._selected_result(), self.source)
+        with patch("os.startfile") as start:
+            self.app.play_result_file()
+            start.assert_called_with(self.source)
+            self.app.open_result_folder()
+            start.assert_called_with(self.source.parent)
+
+    def test_english_ui_summaries_and_dialogs(self):
+        import re
+        korean = re.compile("[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]")
+        self.assertEqual(self.app.split_scope_var.get(), "Full Track")
+        self.app._update_workspace_summary()
+        self.assertIn("Monitor: Original audio", self.app.mix_summary_var.get())
+        self.assertIn("Export: Original audio", self.app.mix_summary_var.get())
+        with patch("tkinter.messagebox.askokcancel", return_value=False) as confirm:
+            self.app._confirm_render()
+            title, body = confirm.call_args.args
+            self.assertEqual(title, "Confirm Export")
+            self.assertNotRegex(body, korean)
+            self.app.stem_paths = {"vocals": self.source}
+            self.app._confirm_render(individual=True)
+            body = confirm.call_args.args[1]
+            self.assertIn("Individual export: vocals", body)
+            self.assertFalse(any(line.startswith("Export:") for line in body.splitlines()))
+            self.assertNotRegex(body, korean)
+        self.app.open_render_settings()
+        self.app.update()
+
+        def check_text(widget):
+            for option in ("text", "values"):
+                if option in widget.keys():
+                    self.assertNotRegex(str(widget.cget(option)), korean)
+            for child in widget.winfo_children():
+                check_text(child)
+
+        check_text(self.app)
+        for tooltip in self.app.tooltips:
+            self.assertNotRegex(tooltip.text, korean)
+        self.app._close_render_settings()
+
+    def test_loop_restarts_and_explicit_stop_cancels_repeat(self):
+        from backend.audio_processing.ffmpeg_tools import start_realtime_mix
+        self.app.selection_start_var.set(0.2)
+        self.app.selection_end_var.set(0.6)
+        self.app.loop_var.set(True)
+        with patch.dict(os.environ, {"SDL_AUDIODRIVER": "dummy"}), \
+                patch("StemSamplePrep.start_realtime_mix", wraps=start_realtime_mix) as starts:
+            self.app.toggle_playback()
+            deadline = time.monotonic() + 8
+            while time.monotonic() < deadline and starts.call_count < 3:
+                self.app.update()
+                time.sleep(0.02)
+            self.assertGreaterEqual(starts.call_count, 3)
+            self.app.stop_preview()
+            count = starts.call_count
+            for _ in range(20):
+                self.app.update()
+                time.sleep(0.02)
+            self.assertEqual(starts.call_count, count)
+            self.assertFalse(self.app.preview_playing)
+
+    def test_zero_volume_stem_can_export_silent_wav(self):
+        target = self.paths.output / "silent.wav"
+        render_mix(self.paths, [MixStem("vocals", self.source, 0)], target, 0, 1, 0, 0, include_silent=True)
+        import wave
+        with wave.open(str(target)) as handle:
+            samples = handle.readframes(handle.getnframes())
+        self.assertTrue(samples)
+        self.assertEqual(set(samples), {0})
+
+
+if __name__ == "__main__":
+    unittest.main()

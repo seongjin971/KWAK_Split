@@ -38,6 +38,7 @@ class MixStem:
     name: str
     path: Path
     gain: float
+    offset_seconds: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -63,6 +64,9 @@ class AudioEffects:
     peak_normalize: bool = False
     limiter_enabled: bool = True
     limiter_ceiling: float = 0.98
+    sample_rate: int = 44100
+    bit_depth: int = 16
+    mp3_bitrate: int = 320
 
 
 def safe_name(value: str) -> str:
@@ -190,13 +194,23 @@ def convert_to_work_wav(
         "-vn",
         "-ac",
         "2",
-        "-ar",
-        "44100",
-        *_output_format_args(output_path),
+        "-c:a",
+        "pcm_f32le",
         str(output_path),
     ]
     if log:
         log("Converting input file to working WAV.")
+    _run_checked(command, paths, log, cancel_event, process_callback)
+
+
+def extract_audio_range(paths: AppPaths, source: Path, output: Path, start: float, duration: float,
+                        cancel_event=None, process_callback=None, log=None) -> None:
+    if start < 0 or duration <= 0:
+        raise AudioProcessingError("Select a range to separate.")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    command = [str(require_ffmpeg(paths)), "-hide_banner", "-y", "-ss", f"{start:.6f}",
+               "-i", str(source), "-t", f"{duration:.6f}", "-vn", "-ac", "2",
+               "-c:a", "pcm_f32le", str(output)]
     _run_checked(command, paths, log, cancel_event, process_callback)
 
 
@@ -273,6 +287,7 @@ def _waveform_peaks_ffmpeg(
                 peaks[bucket] = max(peaks[bucket], min(abs(value) / max_possible, 1.0))
                 sample_index += 1
     finally:
+        process.stdout.close()
         if process_callback:
             process_callback(None)
 
@@ -323,8 +338,9 @@ def render_mix(
     cancel_event: Event | None = None,
     process_callback: ProcessCallback = None,
     effects: AudioEffects | None = None,
+    include_silent: bool = False,
 ) -> None:
-    active = _prepare_active_stems(stems, duration_seconds, cancel_event)
+    active = _prepare_active_stems(stems, duration_seconds, cancel_event, include_silent)
 
     ffmpeg = require_ffmpeg(paths)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -350,6 +366,7 @@ def render_mix(
                 cancel_event,
                 process_callback,
                 post_gain=0.125,
+                working_float=True,
             )
             max_volume_db = _measure_max_volume_db(paths, ffmpeg, temp_path, cancel_event, process_callback)
             target_db = _linear_to_db(_limiter_ceiling(effects))
@@ -471,8 +488,9 @@ def _prepare_active_stems(
     stems: Iterable[MixStem],
     duration_seconds: float,
     cancel_event: Event | None,
+    include_silent: bool = False,
 ) -> list[MixStem]:
-    active = [stem for stem in stems if stem.gain > 0.0001]
+    active = [stem for stem in stems if stem.gain > 0.0001 or (include_silent and stem.gain == 0)]
     if not active:
         raise AudioProcessingError("No stems to render. Check mute, solo, and volume settings.")
     if duration_seconds <= 0:
@@ -496,6 +514,7 @@ def _render_mix_once(
     cancel_event: Event | None,
     process_callback: ProcessCallback,
     post_gain: float = 1.0,
+    working_float: bool = False,
 ) -> None:
     input_args, filter_complex = _build_mix_filter(
         active,
@@ -516,10 +535,10 @@ def _render_mix_once(
         "-map",
         "[outa]",
         "-ar",
-        "44100",
+        str(effects.sample_rate),
         "-ac",
         "2",
-        *_output_format_args(output_path),
+        *(["-c:a", "pcm_f32le"] if working_float else _output_format_args(output_path, effects)),
         str(output_path),
     ]
     if log:
@@ -528,10 +547,15 @@ def _render_mix_once(
     _run_checked(command, paths, log, cancel_event, process_callback)
 
 
-def _output_format_args(output_path: Path) -> list[str]:
+def _output_format_args(output_path: Path, effects: AudioEffects | None = None) -> list[str]:
+    effects = effects or AudioEffects()
+    if effects.sample_rate not in (44100, 48000) or effects.bit_depth not in (16, 24):
+        raise AudioProcessingError("WAV supports 44.1/48kHz and 16/24bit.")
+    if effects.mp3_bitrate not in (128, 192, 256, 320):
+        raise AudioProcessingError("Unsupported MP3 bitrate.")
     if output_path.suffix.lower() == ".mp3":
-        return ["-c:a", "libmp3lame", "-b:a", "320k"]
-    return ["-sample_fmt", "s16"]
+        return ["-c:a", "libmp3lame", "-b:a", f"{effects.mp3_bitrate}k"]
+    return ["-c:a", "pcm_s24le" if effects.bit_depth == 24 else "pcm_s16le"]
 
 
 def _build_mix_filter(
@@ -545,10 +569,13 @@ def _build_mix_filter(
 ) -> tuple[list[str], str]:
     input_args: list[str] = []
     for stem in active:
+        local_start = start_seconds - stem.offset_seconds
+        if local_start < -0.001:
+            raise AudioProcessingError("The selection is outside the separated stem range. Separate the required range again.")
         input_args.extend(
             [
                 "-ss",
-                f"{max(start_seconds, 0):.6f}",
+                f"{max(local_start, 0):.6f}",
                 "-t",
                 f"{duration_seconds:.6f}",
                 "-i",
@@ -561,7 +588,7 @@ def _build_mix_filter(
     filters: list[str] = []
     labels: list[str] = []
     for index, stem in enumerate(active):
-        chain = f"[{index}:a]aresample=44100,volume={stem.gain:.6f}"
+        chain = f"[{index}:a]aresample={effects.sample_rate},volume={stem.gain:.6f}"
         if fade_in > 0:
             chain += f",afade=t=in:st=0:d={fade_in:.6f}"
         if fade_out > 0:
@@ -686,11 +713,10 @@ def _apply_output_gain(
         "-af",
         ",".join(filters),
         "-ar",
-        "44100",
+        str(effects.sample_rate),
         "-ac",
         "2",
-        "-sample_fmt",
-        "s16",
+        *_output_format_args(output_path, effects),
         str(output_path),
     ]
     _run_checked(command, paths, log, cancel_event, process_callback)
@@ -732,6 +758,7 @@ def _run_capture(
                     log(text)
         exit_code = process.wait()
     finally:
+        process.stdout.close()
         if process_callback:
             process_callback(None)
 
@@ -779,6 +806,7 @@ def _run_checked(
                     log(text)
         exit_code = process.wait()
     finally:
+        process.stdout.close()
         if process_callback:
             process_callback(None)
 

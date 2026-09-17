@@ -1,0 +1,2177 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>KWAK Split - Compact Studio Preview 02</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled="true"]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed="true"],
+  [aria-selected="true"],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type="file"]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type="color"] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type="date"],
+    [type="datetime-local"],
+    [type="month"],
+    [type="time"],
+    [type="week"]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html>body{padding:0}</style>
+</head>
+<body>
+<div id="kwak-compact-preview" aria-label="KWAK Split compact studio layout">
+  <style>
+    #kwak-compact-preview {
+      --ks-bg: light-dark(#f0f3f8, #0b1018);
+      --ks-panel: light-dark(#ffffff, #141c28);
+      --ks-inset: light-dark(#edf2f8, #0c131e);
+      --ks-text: light-dark(#18283e, #edf2fa);
+      --ks-muted: light-dark(#52647b, #a5b4c9);
+      --ks-line: light-dark(#d3deeb, #2b3a50);
+      --ks-accent: light-dark(#2563ad, #69acff);
+      --ks-accent-ink: light-dark(#ffffff, #081326);
+      --ks-active: light-dark(#e0edff, #203b5a);
+      --ks-vocals: light-dark(#226bb5, #6eb3ff);
+      --ks-drums: light-dark(#986317, #e6b66e);
+      --ks-bass: light-dark(#8253aa, #be98ed);
+      --ks-other: light-dark(#187d72, #6ad2c1);
+      --ks-success: light-dark(#26774e, #77cda0);
+      --ks-fader-cap: light-dark(#f9fbff, #bbc7d7);
+      --ks-fader-ink: light-dark(#697c94, #35465d);
+      --ks-fader-height: 174px;
+      color: var(--ks-text);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 1.4;
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      position: relative;
+      background: var(--ks-bg);
+      border: 1px solid var(--ks-line);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-weight: 400;
+    }
+    #kwak-compact-preview * { box-sizing: border-box; }
+    #kwak-compact-preview [hidden] { display: none !important; }
+    #kwak-compact-preview button, #kwak-compact-preview input, #kwak-compact-preview select {
+      font: inherit; color: inherit;
+    }
+    #kwak-compact-preview button { cursor: pointer; }
+    #kwak-compact-preview button:disabled { opacity: .4; cursor: default; }
+    #kwak-compact-preview .ks-button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 30px; padding: 5px 10px; border: 1px solid var(--ks-line);
+      border-radius: 5px; background: var(--ks-panel); white-space: nowrap; font-weight: 500;
+    }
+    #kwak-compact-preview .ks-button:hover { background: var(--ks-active); }
+    #kwak-compact-preview .ks-button.ks-primary { background: var(--ks-accent); color: var(--ks-accent-ink); border-color: transparent; }
+    #kwak-compact-preview .ks-button[aria-pressed="true"] { color: var(--ks-accent); background: var(--ks-active); border-color: var(--ks-accent); }
+    #kwak-compact-preview .ks-icon-button { min-width: 30px; padding: 5px; }
+    #kwak-compact-preview .ks-quiet { border-color: transparent; background: transparent; }
+    #kwak-compact-preview .ks-appbar {
+      display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+      border-bottom: 1px solid var(--ks-line); flex-wrap: wrap;
+    }
+    #kwak-compact-preview .ks-brand { display: flex; align-items: center; gap: 7px; font-weight: 500; font-size: 15px; white-space: nowrap; }
+    #kwak-compact-preview .ks-brand i { color: var(--ks-accent); }
+    #kwak-compact-preview .ks-tag { font-size: 11px; letter-spacing: .07em; color: var(--ks-muted); }
+    #kwak-compact-preview .ks-app-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+    #kwak-compact-preview .ks-divider { width: 1px; height: 20px; background: var(--ks-line); margin: 0 5px; }
+    #kwak-compact-preview .ks-timeline { padding: 10px 12px 8px; }
+    #kwak-compact-preview .ks-timeline-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+    #kwak-compact-preview .ks-track { flex: 1 1 0; min-width: 0; font-weight: 500; }
+    #kwak-compact-preview .ks-track-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    #kwak-compact-preview .ks-track-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #kwak-compact-preview .ks-track small { flex: none; color: var(--ks-muted); font-weight: 400; font-size: 11px; white-space: nowrap; }
+    #kwak-compact-preview .ks-time { font-variant-numeric: tabular-nums; color: var(--ks-muted); font-size: 12px; min-width: 41px; }
+    #kwak-compact-preview .ks-wave {
+      background: var(--ks-inset); border: 1px solid var(--ks-line); border-radius: 5px;
+      padding: 0 8px; position: relative;
+    }
+    #kwak-compact-preview #ks-wave-svg { display: block; width: 100%; height: 112px; }
+    #kwak-compact-preview #ks-wave-svg text { fill: var(--ks-muted); font-family: inherit; font-size: 11px; }
+    #kwak-compact-preview .ks-selection { fill: var(--ks-active); }
+    #kwak-compact-preview .ks-wave-bars { fill: var(--ks-accent); opacity: .75; }
+    #kwak-compact-preview .ks-wave-base { stroke: var(--ks-line); stroke-width: 1; }
+    #kwak-compact-preview .ks-wave-handle { stroke: var(--ks-accent); stroke-width: 2; }
+    #kwak-compact-preview .ks-wave-cursor { stroke: var(--ks-text); stroke-width: 1; }
+    #kwak-compact-preview .ks-rangebar { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: 0 0 auto; max-width: 100%; flex-wrap: wrap; }
+    #kwak-compact-preview .ks-field { display: inline-flex; align-items: center; gap: 5px; color: var(--ks-muted); font-size: 12px; }
+    #kwak-compact-preview input[type="number"], #kwak-compact-preview input[type="text"], #kwak-compact-preview select {
+      background: var(--ks-inset); border: 1px solid var(--ks-line); border-radius: 4px; padding: 4px 6px; min-height: 29px; color: var(--ks-text);
+      max-width: 100%;
+    }
+    #kwak-compact-preview input[type="number"] { width: 69px; font-variant-numeric: tabular-nums; }
+    #kwak-compact-preview input[type="range"] { width: 100%; min-width: 0; margin: 0; accent-color: var(--ks-accent); cursor: pointer; }
+    #kwak-compact-preview input[type="checkbox"] { accent-color: var(--ks-accent); margin: 0; }
+    #kwak-compact-preview .ks-range-tools { display: flex; align-items: center; gap: 4px; }
+    #kwak-compact-preview .ks-transport-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; }
+    #kwak-compact-preview .ks-split { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    #kwak-compact-preview .ks-editors { display: grid; grid-template-columns: minmax(0, 1.14fr) minmax(0, .86fr); gap: 10px; padding: 0 12px 10px; }
+    #kwak-compact-preview .ks-panel { min-width: 0; padding: 8px; border: 1px solid var(--ks-line); border-radius: 6px; background: var(--ks-panel); }
+    #kwak-compact-preview .ks-panel-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; min-height: 28px; margin-bottom: 6px; flex-wrap: wrap; }
+    #kwak-compact-preview .ks-panel-head h3 { color: var(--ks-muted); font-weight: 500; font-size: 11px; letter-spacing: .08em; margin: 0; }
+    #kwak-compact-preview .ks-panel-head select { font-size: 12px; padding: 3px 5px; min-height: 27px; }
+    #kwak-compact-preview .ks-panel-head button { min-height: 26px; padding: 3px 6px; font-size: 12px; }
+    #kwak-compact-preview .ks-mixer { display: flex; flex-direction: column; }
+    #kwak-compact-preview .ks-mixer .ks-panel-head { flex: none; }
+    #kwak-compact-preview #ks-stems { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; flex: 1; }
+    #kwak-compact-preview .ks-stem-row {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      padding: 8px 2px; min-width: 0; border-top: 2px solid var(--ks-stem-color);
+      background: var(--ks-inset); border-radius: 3px;
+    }
+    #kwak-compact-preview .ks-stem-name { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+    #kwak-compact-preview .ks-stem-dot { width: 3px; height: 17px; border-radius: 2px; background: var(--ks-stem-color); flex: none; }
+    #kwak-compact-preview .ks-stem-row output { font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
+    #kwak-compact-preview .ks-fader { display: flex; position: relative; align-items: center; justify-content: center; width: 100%; height: var(--ks-fader-height); min-height: var(--ks-fader-height); flex: 1 0 var(--ks-fader-height); }
+    #kwak-compact-preview .ks-fader input {
+      appearance: none; writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%;
+      margin-left: 23px; background: linear-gradient(var(--ks-line), var(--ks-line)) center / 3px calc(100% - 10px) no-repeat;
+    }
+    #kwak-compact-preview .ks-fader input::-webkit-slider-runnable-track { width: 24px; background: transparent; }
+    #kwak-compact-preview .ks-fader input::-webkit-slider-thumb {
+      appearance: none; width: 24px; height: 12px; border: 1px solid var(--ks-fader-ink); border-radius: 2px;
+      background: linear-gradient(to bottom, var(--ks-fader-cap) 44%, var(--ks-fader-ink) 44% 54%, var(--ks-fader-cap) 54%);
+    }
+    #kwak-compact-preview .ks-fader input::-moz-range-track { width: 3px; background: var(--ks-line); }
+    #kwak-compact-preview .ks-fader input::-moz-range-thumb { width: 24px; height: 10px; border-radius: 2px; background: var(--ks-fader-cap); border: 1px solid var(--ks-fader-ink); }
+    #kwak-compact-preview .ks-fader-scale { position: absolute; top: 6px; bottom: 6px; left: calc(50% - 25px); width: 25px; color: var(--ks-muted); font-size: 11px; pointer-events: none; }
+    #kwak-compact-preview .ks-fader-scale span { position: absolute; right: 0; top: var(--ks-mark); transform: translateY(-50%); }
+    #kwak-compact-preview .ks-fader-scale span::after { content: ""; position: absolute; left: calc(100% + 3px); top: 50%; width: 4px; height: 1px; background: var(--ks-line); }
+    #kwak-compact-preview .ks-fader-scale .ks-fader-unity { color: var(--ks-text); font-weight: 600; }
+    #kwak-compact-preview .ks-fader-scale .ks-fader-unity::after { width: 6px; background: var(--ks-muted); }
+    #kwak-compact-preview .ks-stem-buttons { display: flex; gap: 4px; }
+    #kwak-compact-preview .ks-stem-buttons button { min-height: 26px; width: 27px; padding: 2px; border-radius: 4px; font-size: 11px; }
+    #kwak-compact-preview .ks-button[data-mute][aria-pressed="true"] { color: #211a08; background: #edc653; border-color: #edc653; }
+    #kwak-compact-preview .ks-button[data-solo][aria-pressed="true"] { color: #ffffff; background: #ba343c; border-color: #ba343c; }
+    #kwak-compact-preview .ks-stem-row[data-audible="false"] .ks-stem-name,
+    #kwak-compact-preview .ks-stem-row[data-audible="false"] .ks-fader { opacity: .4; }
+    #kwak-compact-preview .ks-eq-graph { background: var(--ks-inset); border: 1px solid var(--ks-line); border-radius: 4px; position: relative; }
+    #kwak-compact-preview #ks-eq-svg { display: block; width: 100%; height: 128px; }
+    #kwak-compact-preview #ks-eq-svg text { fill: var(--ks-muted); font: 11px "Segoe UI", system-ui, sans-serif; }
+    #kwak-compact-preview .ks-eq-grid { stroke: var(--ks-line); stroke-width: 1; fill: none; }
+    #kwak-compact-preview #ks-eq-zero { stroke: var(--ks-muted); stroke-width: 1; opacity: .65; }
+    #kwak-compact-preview #ks-eq-line { stroke: var(--ks-accent); stroke-width: 2; fill: none; }
+    #kwak-compact-preview .ks-eq-node { position: absolute; transform: translate(-50%, -50%); width: 32px; height: 32px; padding: 7px; border: 0; border-radius: 50%; color: var(--ks-accent-ink); background: transparent; touch-action: none; cursor: grab; font-size: 11px; }
+    #kwak-compact-preview .ks-eq-node span { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--ks-accent); pointer-events: none; }
+    #kwak-compact-preview .ks-eq-node:active { cursor: grabbing; }
+    #kwak-compact-preview .ks-band-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 6px; }
+    #kwak-compact-preview .ks-band { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+    #kwak-compact-preview .ks-band + .ks-band { border-left: 1px solid var(--ks-line); }
+    #kwak-compact-preview .ks-band-name { color: var(--ks-muted); font-size: 11px; font-weight: 400; min-height: 28px; display: flex; align-items: center; gap: 5px; width: 100%; max-width: 126px; padding: 0 4px; }
+    #kwak-compact-preview .ks-band-name select, #kwak-compact-preview .ks-band-static { flex: 1; width: 0; min-width: 0; max-width: none; height: 28px; min-height: 28px; padding: 3px 4px; font-size: 11px; font-weight: 400; color: var(--ks-text); }
+    #kwak-compact-preview .ks-band-name select { background: var(--ks-panel); }
+    #kwak-compact-preview .ks-band-static { display: flex; align-items: center; border: 1px solid transparent; white-space: nowrap; }
+    #kwak-compact-preview .ks-knob-shell { position: relative; width: 36px; height: 36px; }
+    #kwak-compact-preview input.ks-knob {
+      appearance: none; writing-mode: vertical-lr; direction: rtl; width: 36px; height: 36px;
+      border-radius: 50%; border: 1px solid var(--ks-line); background: radial-gradient(circle at 35% 25%, var(--ks-panel), var(--ks-inset));
+    }
+    #kwak-compact-preview input.ks-knob::-webkit-slider-runnable-track { background: transparent; }
+    #kwak-compact-preview input.ks-knob::-webkit-slider-thumb { appearance: none; width: 1px; height: 1px; background: transparent; }
+    #kwak-compact-preview input.ks-knob::-moz-range-track { background: transparent; }
+    #kwak-compact-preview input.ks-knob::-moz-range-thumb { opacity: 0; }
+    #kwak-compact-preview .ks-knob-needle { position: absolute; inset: 4px; pointer-events: none; transform: rotate(var(--ks-angle, 0deg)); }
+    #kwak-compact-preview .ks-knob-needle::before { content: ""; display: block; width: 2px; height: 10px; margin: 0 auto; border-radius: 1px; background: var(--ks-accent); }
+    #kwak-compact-preview .ks-band output { font-variant-numeric: tabular-nums; font-size: 12px; }
+    #kwak-compact-preview .ks-frequency { display: flex; align-items: center; justify-content: center; gap: 3px; color: var(--ks-muted); font-size: 11px; width: 100%; }
+    #kwak-compact-preview .ks-frequency input { min-width: 0; width: 68px; font-size: 12px; min-height: 25px; padding: 3px 4px; }
+    #kwak-compact-preview .ks-timing { display: flex; align-items: center; gap: 6px; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--ks-line); flex-wrap: wrap; }
+    #kwak-compact-preview .ks-timing .ks-field { flex: 0 0 auto; gap: 4px; font-size: 11px; white-space: nowrap; }
+    #kwak-compact-preview .ks-timing input { width: 42px; min-width: 0; margin-left: 0; padding: 4px 3px; font-size: 11px; }
+    #kwak-compact-preview .ks-timing input.ks-fade-input { width: 46px; }
+    #kwak-compact-preview .ks-status { display: flex; align-items: center; gap: 7px; color: var(--ks-muted); font-size: 11px; font-weight: 400; margin-top: 3px; overflow-wrap: anywhere; }
+    #kwak-compact-preview .ks-status:empty { display: none; }
+    #kwak-compact-preview .ks-overlay {
+      position: absolute; inset: 0; z-index: 5; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; padding: 12px;
+      background: light-dark(#c9d4e299, #030810bd);
+    }
+    #kwak-compact-preview .ks-dialog {
+      width: 100%; max-width: 540px; background: var(--ks-panel); border: 1px solid var(--ks-line);
+      padding: 18px; border-radius: 8px; box-shadow: 0 10px 40px light-dark(#10243e22, #00000066);
+    }
+    #kwak-compact-preview .ks-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    #kwak-compact-preview .ks-dialog-head h3 { margin: 0; font-size: 15px; font-weight: 500; }
+    #kwak-compact-preview .ks-dialog-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #kwak-compact-preview .ks-dialog-fields label { display: flex; flex-direction: column; gap: 5px; color: var(--ks-muted); font-size: 12px; min-width: 0; }
+    #kwak-compact-preview .ks-dialog-fields input, #kwak-compact-preview .ks-dialog-fields select { width: 100%; }
+    #kwak-compact-preview .ks-dialog-check { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 12px; }
+    #kwak-compact-preview .ks-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    #kwak-compact-preview .ks-dialog-note { margin: 0 0 12px; color: var(--ks-muted); font-size: 12px; }
+    #kwak-compact-preview .ks-settings-group + .ks-settings-group { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--ks-line); }
+    #kwak-compact-preview .ks-settings-group h4 { margin: 0 0 9px; color: var(--ks-muted); font-size: 12px; font-weight: 500; }
+    #kwak-compact-preview .ks-folder-row { display: flex; align-items: center; gap: 8px; }
+    #kwak-compact-preview .ks-folder-row input { flex: 1; min-width: 0; width: 100%; }
+    #kwak-compact-preview .ks-folder-row button { flex: none; }
+    #kwak-compact-preview .ks-folder-list { display: grid; gap: 8px; }
+    #kwak-compact-preview .ks-folder-choice { display: flex; align-items: center; gap: 9px; padding: 10px; border: 1px solid var(--ks-line); border-radius: 5px; background: var(--ks-inset); cursor: pointer; }
+    #kwak-compact-preview .ks-folder-choice:has(input:checked) { border-color: var(--ks-accent); background: var(--ks-active); }
+    #kwak-compact-preview .ks-folder-choice input { margin: 0; accent-color: var(--ks-accent); flex: none; }
+    #kwak-compact-preview .ks-settings-group .ks-dialog-check { margin-top: 9px; }
+    #kwak-compact-preview .ks-export-options { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    #kwak-compact-preview .ks-menu-items { display: grid; gap: 7px; }
+    #kwak-compact-preview .ks-menu-items button { justify-content: flex-start; }
+    @media (max-width: 740px) {
+      #kwak-compact-preview .ks-editors { grid-template-columns: minmax(0, 1fr) !important; }
+      #kwak-compact-preview .ks-brand { font-size: 14px; }
+      #kwak-compact-preview .ks-split { margin-left: 0; }
+      #kwak-compact-preview .ks-rangebar { gap: 7px; }
+      #kwak-compact-preview .ks-appbar { gap: 7px; }
+    }
+    @media (max-width: 640px) {
+      #kwak-compact-preview .ks-track { flex-basis: 100%; }
+      #kwak-compact-preview .ks-rangebar { width: 100%; }
+      #kwak-compact-preview .ks-overlay { align-items: flex-start; }
+    }
+    @media (max-width: 440px) {
+      #kwak-compact-preview .ks-timing { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+    }
+    @media (max-width: 400px) {
+      #kwak-compact-preview .ks-band-name { gap: 2px; padding: 0; }
+      #kwak-compact-preview .ks-band-name select, #kwak-compact-preview .ks-band-static { padding-left: 2px; padding-right: 0; }
+      #kwak-compact-preview .ks-app-actions .ks-button { padding-left: 7px; padding-right: 7px; }
+      #kwak-compact-preview .ks-app-actions .ks-primary svg, #kwak-compact-preview .ks-app-actions .ks-primary i { display: none; }
+      #kwak-compact-preview .ks-export-options { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+      #kwak-compact-preview .ks-app-actions { margin-left: 0; width: 100%; justify-content: space-between; }
+      #kwak-compact-preview .ks-app-actions .ks-divider { display: none; }
+      #kwak-compact-preview .ks-timeline-head { gap: 6px; }
+      #kwak-compact-preview .ks-track { width: 100%; flex-basis: 100%; }
+      #kwak-compact-preview #ks-stems { gap: 4px; }
+      #kwak-compact-preview .ks-dialog { padding: 12px; }
+      #kwak-compact-preview .ks-dialog-fields { gap: 8px; }
+      #kwak-compact-preview .ks-panel, #kwak-compact-preview .ks-editors { padding: 8px; }
+      #kwak-compact-preview .ks-tag { margin-left: auto; }
+    }
+    @media (pointer: coarse) {
+      #kwak-compact-preview .ks-button { min-height: 44px; }
+      #kwak-compact-preview .ks-stem-buttons button { width: 44px; min-height: 44px; }
+      #kwak-compact-preview input, #kwak-compact-preview select { min-height: 36px; font-size: 16px; }
+      #kwak-compact-preview .ks-stem-buttons { flex-wrap: wrap; justify-content: center; }
+      #kwak-compact-preview .ks-fader input { width: 44px; margin-left: 12px; }
+      #kwak-compact-preview .ks-fader-scale { left: calc(50% - 31px); }
+      #kwak-compact-preview .ks-knob-shell, #kwak-compact-preview input.ks-knob { width: 44px; height: 44px; }
+      #kwak-compact-preview .ks-eq-node { width: 44px; height: 44px; padding: 13px; }
+      #kwak-compact-preview .ks-frequency input { font-size: 16px; min-height: 36px; }
+    }
+  </style>
+  <div id="ks-app-content">
+    <header class="ks-appbar">
+      <div class="ks-brand"><i data-lucide="audio-lines" aria-hidden="true"></i>KWAK Split</div>
+      <div class="ks-app-actions">
+        <button type="button" class="ks-button" id="ks-open"><i data-lucide="folder-open" aria-hidden="true"></i>Open Audio</button>
+        <span class="ks-divider" aria-hidden="true"></span>
+        <button type="button" class="ks-button ks-quiet ks-icon-button" id="ks-settings" aria-label="Settings" data-tooltip="Settings"><i data-lucide="settings-2" aria-hidden="true"></i></button>
+        <button type="button" class="ks-button ks-primary" id="ks-export-wav" aria-label="Export WAV to save folder"><i data-lucide="download" aria-hidden="true"></i>WAV</button>
+        <button type="button" class="ks-button ks-primary" id="ks-export-mp3" aria-label="Export MP3 to save folder"><i data-lucide="download" aria-hidden="true"></i>MP3</button>
+      </div>
+    </header>
+    <section class="ks-timeline" aria-label="Waveform and selection">
+      <div class="ks-timeline-head">
+        <div class="ks-track"><div class="ks-track-line"><span class="ks-track-name" id="ks-track-name" title="demo-track.wav">demo-track.wav</span><small>03:12 · Stereo</small></div><div class="ks-status" id="ks-status" aria-live="polite"></div></div>
+        <div class="ks-rangebar">
+          <label class="ks-field">Start<input type="number" id="ks-start" min="0" max="191" step="0.1" value="36" aria-label="Selection start in seconds"></label>
+          <label class="ks-field">End<input type="number" id="ks-end" min="1" max="192" step="0.1" value="72" aria-label="Selection end in seconds"></label>
+          <span class="ks-time" id="ks-duration">36.00s</span>
+          <button type="button" class="ks-button" id="ks-play" aria-pressed="false" style="margin-left: auto"><span class="ks-transport-icon" id="ks-play-icon" aria-hidden="true"><i data-lucide="play"></i></span><span class="ks-transport-icon" id="ks-pause-icon" aria-hidden="true" hidden><i data-lucide="pause"></i></span><span id="ks-play-label">Play</span></button>
+        </div>
+      </div>
+      <div class="ks-wave" id="ks-wave-container" tabindex="0" role="group" aria-label="Waveform view. Scroll to zoom at pointer; plus and minus keys zoom; 0 fits full track." title="Scroll to zoom; + / - to zoom; 0 to fit">
+        <svg id="ks-wave-svg" role="img" aria-label="Illustrative stereo waveform: left channel above, right channel below, with a shared selected range">
+          <rect class="ks-selection" id="ks-wave-selection"></rect>
+          <path class="ks-wave-bars" id="ks-wave-bars-l"></path>
+          <path class="ks-wave-bars" id="ks-wave-bars-r"></path>
+          <g id="ks-wave-channel-labels" aria-hidden="true"></g>
+          <path class="ks-wave-base" id="ks-wave-base"></path>
+          <path class="ks-wave-handle" id="ks-wave-handles"></path>
+          <path class="ks-wave-cursor" id="ks-wave-cursor"></path>
+          <g id="ks-wave-ticks"></g>
+        </svg>
+      </div>
+    </section>
+    <div class="ks-editors" id="ks-editors">
+      <section class="ks-panel" aria-label="Three-band equalizer, pitch, and speed">
+        <div class="ks-panel-head"><h3>EQUALIZER</h3><button type="button" class="ks-button ks-quiet" id="ks-advanced">Advanced<i data-lucide="sliders-horizontal" aria-hidden="true"></i></button></div>
+        <div class="ks-eq-graph" id="ks-eq-graph">
+          <svg id="ks-eq-svg" role="img" aria-label="Illustrative EQ response. Logarithmic frequency from 20 Hz to 20 kHz; gain from minus 24 to plus 24 dB. Not an audio spectrum."><path class="ks-eq-grid" id="ks-eq-grid"></path><path id="ks-eq-zero"></path><path id="ks-eq-line"></path><g id="ks-eq-labels"></g></svg>
+          <button type="button" class="ks-eq-node" data-eq-node="low" aria-label="Low EQ point" data-tooltip="Drag to adjust Low frequency and gain"><span>1</span></button>
+          <button type="button" class="ks-eq-node" data-eq-node="mid" aria-label="Mid EQ point" data-tooltip="Drag to adjust Mid frequency and gain"><span>2</span></button>
+          <button type="button" class="ks-eq-node" data-eq-node="high" aria-label="High EQ point" data-tooltip="Drag to adjust High frequency and gain"><span>3</span></button>
+        </div>
+        <div class="ks-band-controls">
+          <div class="ks-band"><label for="ks-low-type" class="ks-band-name">1<select id="ks-low-type" aria-label="Low band filter type"><option value="shelf">Low Shelf</option><option value="pass" selected>High Pass</option></select></label><div class="ks-knob-shell" data-knob="low"><input type="range" class="ks-knob" id="ks-low" min="12" max="48" step="12" value="24" aria-label="Low filter slope" aria-orientation="vertical"><span class="ks-knob-needle" aria-hidden="true"></span></div><output id="ks-low-value" for="ks-low">24 dB/oct</output><label class="ks-frequency"><input type="number" id="ks-low-freq" min="20" max="2000" step="10" value="120" aria-label="Low frequency in Hz">Hz</label></div>
+          <div class="ks-band"><label for="ks-mid" class="ks-band-name">2<span class="ks-band-static">Mid Bell</span></label><div class="ks-knob-shell" data-knob="mid"><input type="range" class="ks-knob" id="ks-mid" min="-12" max="12" step="0.5" value="0" aria-label="Mid EQ gain" aria-orientation="vertical"><span class="ks-knob-needle" aria-hidden="true"></span></div><output id="ks-mid-value" for="ks-mid">0 dB</output><label class="ks-frequency"><input type="number" id="ks-mid-freq" min="250" max="8000" step="50" value="1000" aria-label="Mid frequency in Hz">Hz</label></div>
+          <div class="ks-band"><label for="ks-high-type" class="ks-band-name">3<select id="ks-high-type" aria-label="High band filter type"><option value="shelf">High Shelf</option><option value="pass" selected>Low Pass</option></select></label><div class="ks-knob-shell" data-knob="high"><input type="range" class="ks-knob" id="ks-high" min="12" max="48" step="12" value="24" aria-label="High filter slope" aria-orientation="vertical"><span class="ks-knob-needle" aria-hidden="true"></span></div><output id="ks-high-value" for="ks-high">24 dB/oct</output><label class="ks-frequency"><input type="number" id="ks-high-freq" min="1000" max="20000" step="100" value="8000" aria-label="High frequency in Hz">Hz</label></div>
+        </div>
+        <div class="ks-timing">
+          <label class="ks-field">Speed<input type="number" id="ks-speed" min="50" max="200" step="1" value="100">%</label>
+          <label class="ks-field">Pitch<input type="number" id="ks-pitch" min="-12" max="12" step="1" value="0">st</label>
+          <label class="ks-field">Fade in<input type="number" class="ks-fade-input" id="ks-fade-in" min="0" max="10" step="0.01" value="0.02" aria-label="Fade in seconds">s</label>
+          <label class="ks-field">Fade out<input type="number" class="ks-fade-input" id="ks-fade-out" min="0" max="10" step="0.01" value="0.02" aria-label="Fade out seconds">s</label>
+        </div>
+      </section>
+      <section class="ks-panel ks-mixer" aria-label="Stem mixer">
+        <div class="ks-panel-head">
+          <h3>STEM MIXER</h3>
+          <button type="button" class="ks-button" id="ks-split"><i data-lucide="split" aria-hidden="true"></i>Split Stems</button>
+        </div>
+        <div id="ks-stems" aria-label="Vertical stem faders">
+          <div class="ks-stem-row" data-stem="vocals" style="--ks-stem-color:var(--ks-vocals)">
+            <span class="ks-stem-name"><span class="ks-stem-dot"></span>Vocals</span>
+            <output data-level="vocals">0.0 dB</output>
+            <div class="ks-fader"><div class="ks-fader-scale" aria-hidden="true"><span style="--ks-mark:0%">+12</span><span style="--ks-mark:16.5%">+6</span><span class="ks-fader-unity" style="--ks-mark:33%">0</span><span style="--ks-mark:46.4%">−12</span><span style="--ks-mark:59.8%">−24</span><span style="--ks-mark:86.6%">−48</span><span style="--ks-mark:100%">−∞</span></div><input type="range" min="0" max="100" step="0.25" value="67" data-volume="vocals" aria-label="Vocals volume" aria-orientation="vertical"></div>
+            <div class="ks-stem-buttons"><button type="button" class="ks-button" data-mute="vocals" aria-pressed="false" aria-label="Mute vocals">M</button><button type="button" class="ks-button" data-solo="vocals" aria-pressed="false" aria-label="Solo vocals">S</button></div>
+          </div>
+          <div class="ks-stem-row" data-stem="drums" style="--ks-stem-color:var(--ks-drums)">
+            <span class="ks-stem-name"><span class="ks-stem-dot"></span>Drums</span>
+            <output data-level="drums">0.0 dB</output>
+            <div class="ks-fader"><div class="ks-fader-scale" aria-hidden="true"><span style="--ks-mark:0%">+12</span><span style="--ks-mark:16.5%">+6</span><span class="ks-fader-unity" style="--ks-mark:33%">0</span><span style="--ks-mark:46.4%">−12</span><span style="--ks-mark:59.8%">−24</span><span style="--ks-mark:86.6%">−48</span><span style="--ks-mark:100%">−∞</span></div><input type="range" min="0" max="100" step="0.25" value="67" data-volume="drums" aria-label="Drums volume" aria-orientation="vertical"></div>
+            <div class="ks-stem-buttons"><button type="button" class="ks-button" data-mute="drums" aria-pressed="false" aria-label="Mute drums">M</button><button type="button" class="ks-button" data-solo="drums" aria-pressed="false" aria-label="Solo drums">S</button></div>
+          </div>
+          <div class="ks-stem-row" data-stem="bass" style="--ks-stem-color:var(--ks-bass)">
+            <span class="ks-stem-name"><span class="ks-stem-dot"></span>Bass</span>
+            <output data-level="bass">0.0 dB</output>
+            <div class="ks-fader"><div class="ks-fader-scale" aria-hidden="true"><span style="--ks-mark:0%">+12</span><span style="--ks-mark:16.5%">+6</span><span class="ks-fader-unity" style="--ks-mark:33%">0</span><span style="--ks-mark:46.4%">−12</span><span style="--ks-mark:59.8%">−24</span><span style="--ks-mark:86.6%">−48</span><span style="--ks-mark:100%">−∞</span></div><input type="range" min="0" max="100" step="0.25" value="67" data-volume="bass" aria-label="Bass volume" aria-orientation="vertical"></div>
+            <div class="ks-stem-buttons"><button type="button" class="ks-button" data-mute="bass" aria-pressed="false" aria-label="Mute bass">M</button><button type="button" class="ks-button" data-solo="bass" aria-pressed="false" aria-label="Solo bass">S</button></div>
+          </div>
+          <div class="ks-stem-row" data-stem="other" style="--ks-stem-color:var(--ks-other)">
+            <span class="ks-stem-name"><span class="ks-stem-dot"></span>Other</span>
+            <output data-level="other">0.0 dB</output>
+            <div class="ks-fader"><div class="ks-fader-scale" aria-hidden="true"><span style="--ks-mark:0%">+12</span><span style="--ks-mark:16.5%">+6</span><span class="ks-fader-unity" style="--ks-mark:33%">0</span><span style="--ks-mark:46.4%">−12</span><span style="--ks-mark:59.8%">−24</span><span style="--ks-mark:86.6%">−48</span><span style="--ks-mark:100%">−∞</span></div><input type="range" min="0" max="100" step="0.25" value="67" data-volume="other" aria-label="Other volume" aria-orientation="vertical"></div>
+            <div class="ks-stem-buttons"><button type="button" class="ks-button" data-mute="other" aria-pressed="false" aria-label="Mute other stems">M</button><button type="button" class="ks-button" data-solo="other" aria-pressed="false" aria-label="Solo other stems">S</button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div class="ks-overlay" id="ks-overlay" hidden>
+    <section class="ks-dialog" role="dialog" aria-modal="true" aria-labelledby="ks-dialog-title">
+      <div class="ks-dialog-head"><h3 id="ks-dialog-title">Settings</h3><button type="button" class="ks-button ks-quiet ks-icon-button" id="ks-dialog-close" aria-label="Close dialog"><i data-lucide="x" aria-hidden="true"></i></button></div>
+      <div id="ks-dialog-advanced" hidden>
+        <div class="ks-dialog-fields">
+          <label>Mid Q<input type="number" id="ks-mid-q" min="0.3" max="6" value="1" step="0.1"></label>
+          <label>Low filter Q<input type="number" id="ks-low-pass-q" min="0.3" max="4" value="0.71" step="0.01"></label>
+          <label>High filter Q<input type="number" id="ks-high-pass-q" min="0.3" max="4" value="0.71" step="0.01"></label>
+        </div>
+        <label class="ks-dialog-check"><input type="checkbox" checked>Limiter</label>
+        <div class="ks-dialog-actions"><button type="button" class="ks-button ks-primary" data-close>Done</button></div>
+      </div>
+      <div id="ks-dialog-settings" hidden>
+        <section class="ks-settings-group" aria-labelledby="ks-save-heading">
+          <h4 id="ks-save-heading">Save folder</h4>
+          <p class="ks-dialog-note" id="ks-folder-error" role="alert" hidden>Enter a save folder before exporting.</p>
+          <div class="ks-folder-row">
+            <input type="text" id="ks-save-folder" value="output" placeholder="Choose an output path" spellcheck="false" aria-labelledby="ks-save-heading" aria-describedby="ks-folder-error">
+            <button type="button" class="ks-button" id="ks-browse-folder" aria-label="Choose save folder"><i data-lucide="folder-open" aria-hidden="true"></i>Browse</button>
+          </div>
+        </section>
+        <section class="ks-settings-group" aria-labelledby="ks-output-heading">
+          <h4 id="ks-output-heading">Output</h4>
+          <div class="ks-dialog-fields ks-export-options">
+            <label>Sample rate<select id="ks-samplerate"><option value="48000">48 kHz</option><option value="44100">44.1 kHz</option></select></label>
+            <label>WAV bit depth<select id="ks-bitdepth"><option value="24">24 bit</option><option value="16">16 bit</option></select></label>
+            <label>MP3 bitrate<select id="ks-bitrate"><option>320 kbps</option><option>256 kbps</option><option>192 kbps</option><option>128 kbps</option></select></label>
+          </div>
+          <label class="ks-dialog-check"><input type="checkbox" id="ks-normalize">Peak Normalize on export</label>
+          <label class="ks-dialog-check"><input type="checkbox">Delete working audio after export</label>
+        </section>
+        <section class="ks-settings-group" aria-labelledby="ks-playback-heading">
+          <h4 id="ks-playback-heading">Playback &amp; editing</h4>
+          <label class="ks-dialog-check"><input type="checkbox" id="ks-loop-playback" checked>Loop playback</label>
+          <label class="ks-dialog-check"><input type="checkbox">Keep adjustments when opening new audio</label>
+        </section>
+        <div class="ks-dialog-actions"><button type="button" class="ks-button" id="ks-log">View Log</button><button type="button" class="ks-button ks-primary" data-close>Done</button></div>
+      </div>
+      <div id="ks-dialog-folder" hidden>
+        <p class="ks-dialog-note">Demo folders for this UI preview.</p>
+        <div class="ks-folder-list" role="radiogroup" aria-label="Preview save folders">
+          <label class="ks-folder-choice"><input type="radio" name="ks-save-location" value="output" checked><i data-lucide="folder" aria-hidden="true"></i><span>output</span></label>
+          <label class="ks-folder-choice"><input type="radio" name="ks-save-location" value="Music/KWAK Split"><i data-lucide="folder" aria-hidden="true"></i><span>Music/KWAK Split</span></label>
+          <label class="ks-folder-choice"><input type="radio" name="ks-save-location" value="Desktop/Exports"><i data-lucide="folder" aria-hidden="true"></i><span>Desktop/Exports</span></label>
+        </div>
+        <div class="ks-dialog-actions"><button type="button" class="ks-button" data-close>Cancel</button><button type="button" class="ks-button ks-primary" id="ks-folder-use">Select Folder</button></div>
+      </div>
+      <div id="ks-dialog-open" hidden>
+        <p class="ks-dialog-note">Demo audio · 03:12 · Stereo</p>
+        <div class="ks-dialog-actions"><button type="button" class="ks-button" data-close>Cancel</button><button type="button" class="ks-button ks-primary" id="ks-demo">Use Demo Track</button></div>
+      </div>
+    </section>
+  </div>
+  <script>
+    (() => {
+      const root = document.getElementById("kwak-compact-preview");
+      const get = id => root.querySelector("#" + id);
+      const stemNames = ["vocals", "drums", "bass", "other"];
+      const design = { width: "820 px", fader: 174, waveform: 112 };
+      const playbackSettings = { loop: true };
+      const state = {
+        start: 36, end: 72, playing: false,
+        low: 0, mid: 0, high: 0, speed: 100, pitch: 0,
+        frequencies: { low: 120, mid: 1000, high: 8000 }, midQ: 1,
+        filterTypes: { low: "pass", high: "pass" }, passQ: { low: .71, high: .71 },
+        slopes: { low: 24, high: 24 },
+        stems: Object.fromEntries(stemNames.map(name => [name, { volume: 100, mute: false, solo: false }]))
+      };
+      const waveView = { zoom: 1, start: 0 };
+      let undo = [], redo = [], dialogTrigger = null;
+      const snapshot = () => JSON.stringify(state);
+      let committed = snapshot();
+      function commit() {
+        const next = snapshot();
+        if (next !== committed) { undo.push(committed); redo = []; committed = next; }
+      }
+      const time = seconds => String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(Math.floor(seconds % 60)).padStart(2, "0");
+      const gain = number => (number > 0 ? "+" : "") + number + " dB";
+      const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+      const faderUnity = 67;
+      const faderDb = position => (position - faderUnity) * (position <= faderUnity ? 60 / faderUnity : 12 / (100 - faderUnity));
+      const faderPosition = volume => {
+        if (volume <= 0) return 0;
+        const db = 20 * Math.log10(volume / 100);
+        return clamp(faderUnity + db * (db <= 0 ? faderUnity / 60 : (100 - faderUnity) / 12), 0, 100);
+      };
+      function setStatus(message) { get("ks-status").textContent = message; }
+      function renderStems() {
+        const solo = stemNames.some(name => state.stems[name].solo);
+        for (const name of stemNames) {
+          const data = state.stems[name];
+          const fader = root.querySelector('[data-volume="' + name + '"]');
+          fader.value = faderPosition(data.volume);
+          const dbValue = data.volume <= 0 ? -Infinity : 20 * Math.log10(data.volume / 100);
+          const db = data.volume <= 0 ? "−∞ dB" : (dbValue > .01 ? "+" : "") + dbValue.toFixed(1) + " dB";
+          root.querySelector('[data-level="' + name + '"]').textContent = db;
+          fader.setAttribute("aria-valuetext", db + ", " + Math.round(data.volume) + " percent");
+          root.querySelector('[data-mute="' + name + '"]').setAttribute("aria-pressed", String(data.mute));
+          root.querySelector('[data-solo="' + name + '"]').setAttribute("aria-pressed", String(data.solo));
+          root.querySelector('[data-stem="' + name + '"]').dataset.audible = String(!data.mute && (!solo || data.solo));
+        }
+      }
+      function drawWave() {
+        const svg = get("ks-wave-svg");
+        const width = svg.getBoundingClientRect().width;
+        if (!width) return;
+        const height = design.waveform, plotHeight = height - 22;
+        svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+        const duration = 192 / waveView.zoom;
+        const start = waveView.start;
+        const x = second => (second - start) / duration * width;
+        const left = Math.max(0, x(state.start)), right = Math.min(width, x(state.end));
+        const selection = get("ks-wave-selection");
+        selection.setAttribute("x", left); selection.setAttribute("y", 1);
+        selection.setAttribute("width", Math.max(0, right - left)); selection.setAttribute("height", plotHeight);
+        const channelHeight = plotHeight / 2;
+        for (const [channel, phase] of [["l", 0], ["r", .8]]) {
+          const center = channelHeight * (channel === "l" ? .5 : 1.5);
+          let bars = "";
+          for (let pos = 18; pos < width; pos += 3) {
+            const t = start + pos / width * duration;
+            const envelope = .24 + .43 * Math.abs(Math.sin(t * .105 + phase)) + .15 * Math.cos(t * .71 + phase);
+            const pulse = .45 + .55 * Math.abs(Math.sin(t * 6.13 + phase) * Math.cos(t * 1.97));
+            const size = Math.max(.7, envelope * pulse * channelHeight * .42);
+            bars += "M" + pos.toFixed(1) + "," + (center - size).toFixed(1) + "h1.7v" + (size * 2).toFixed(1) + "h-1.7z";
+          }
+          get("ks-wave-bars-" + channel).setAttribute("d", bars);
+        }
+        get("ks-wave-base").setAttribute("d", "M18," + channelHeight * .5 + "H" + width + "M18," + channelHeight * 1.5 + "H" + width);
+        const channelLabels = get("ks-wave-channel-labels");
+        channelLabels.replaceChildren();
+        for (const [name, center] of [["L", channelHeight * .5], ["R", channelHeight * 1.5]]) {
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", 4); label.setAttribute("y", center + 3);
+          label.textContent = name; channelLabels.append(label);
+        }
+        get("ks-wave-handles").setAttribute("d", "M" + x(state.start) + ",0V" + plotHeight + "M" + x(state.end) + ",0V" + plotHeight);
+        get("ks-wave-cursor").setAttribute("d", "M" + x(state.start + (state.playing ? (state.end - state.start) * .15 : 0)) + ",0V" + plotHeight);
+        const ticks = get("ks-wave-ticks"); ticks.replaceChildren();
+        const count = width < 450 ? 4 : 7;
+        for (let i = 0; i < count; i++) {
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", i / (count - 1) * (width - 4) + 2);
+          label.setAttribute("y", height - 5);
+          label.setAttribute("text-anchor", i === 0 ? "start" : i === count - 1 ? "end" : "middle");
+          label.textContent = time(start + i / (count - 1) * duration);
+          ticks.append(label);
+        }
+      }
+      function eqGeometry() {
+        const rect = get("ks-eq-svg").getBoundingClientRect();
+        return { width: rect.width, height: rect.height, left: 34, top: 20, plotWidth: rect.width - 46, plotHeight: rect.height - 42 };
+      }
+      // Illustrative response for the design preview; this does not process audio.
+      const isPass = band => band !== "mid" && state.filterTypes[band] === "pass";
+      const eqValue = band => isPass(band) ? state.slopes[band] : state[band];
+      const eqValueLabel = band => isPass(band) ? state.slopes[band] + " dB/oct" : gain(state[band]);
+      function setEqValue(band, value) {
+        if (isPass(band)) state.slopes[band] = Math.round(clamp(value, 12, 48) / 12) * 12;
+        else state[band] = Math.round(clamp(value, -12, 12) * 2) / 2;
+      }
+      function resetEqValue(band) { setEqValue(band, isPass(band) ? 24 : 0); renderEqControls(); commit(); }
+      function passResponse(frequency, band) {
+        const ratio = frequency / state.frequencies[band];
+        const order = state.slopes[band] / 6;
+        let response = 0;
+        // Flat Butterworth response at the default Q; Advanced Q scales section resonance.
+        for (let section = 0; section < order / 2; section++) {
+          const sectionQ = 1 / (2 * Math.cos((2 * section + 1) * Math.PI / (2 * order))) * state.passQ[band] / .71;
+          const denominator = Math.pow(1 - ratio * ratio, 2) + Math.pow(ratio / sectionQ, 2);
+          response += 10 * Math.log10(Math.max(1e-20, (band === "low" ? Math.pow(ratio, 4) : 1) / denominator));
+        }
+        return response;
+      }
+      function eqResponse(frequency) {
+        const low = isPass("low") ? passResponse(frequency, "low") : state.low / (1 + Math.pow(frequency / state.frequencies.low, 2));
+        const mid = state.mid * Math.exp(-Math.pow(Math.log2(frequency / state.frequencies.mid) * state.midQ / 1.3, 2));
+        const high = isPass("high") ? passResponse(frequency, "high") : state.high / (1 + Math.pow(state.frequencies.high / frequency, 2));
+        return low + mid + high;
+      }
+      function renderEqControls() {
+        for (const band of ["low", "mid", "high"]) {
+          const knob = get("ks-" + band), pass = isPass(band), value = eqValue(band);
+          knob.min = pass ? 12 : -12; knob.max = pass ? 48 : 12; knob.step = pass ? 12 : .5;
+          knob.value = value;
+          knob.setAttribute("aria-label", band + (pass ? " filter slope" : " EQ gain"));
+          get("ks-" + band + "-value").textContent = eqValueLabel(band);
+          get("ks-" + band + "-freq").value = state.frequencies[band];
+          knob.setAttribute("aria-valuetext", eqValueLabel(band));
+          root.querySelector('[data-knob="' + band + '"]').style.setProperty("--ks-angle", ((value - Number(knob.min)) / (Number(knob.max) - Number(knob.min)) * 270 - 135) + "deg");
+          if (band !== "mid") {
+            get("ks-" + band + "-type").value = state.filterTypes[band];
+            get("ks-" + band + "-pass-q").value = state.passQ[band];
+            get("ks-" + band + "-pass-q").disabled = !pass;
+          }
+        }
+        get("ks-mid-q").value = state.midQ;
+        drawEq();
+      }
+      function drawEq() {
+        const svg = get("ks-eq-svg"), g = eqGeometry();
+        if (g.plotWidth <= 0) return;
+        svg.setAttribute("viewBox", "0 0 " + g.width + " " + g.height);
+        const x = frequency => g.left + Math.log10(frequency / 20) / 3 * g.plotWidth;
+        const y = db => g.top + (24 - clamp(db, -24, 24)) / 48 * g.plotHeight;
+        const labels = get("ks-eq-labels"); labels.replaceChildren();
+        const label = (text, px, py, anchor = "middle") => {
+          const item = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          item.setAttribute("x", px); item.setAttribute("y", py); item.setAttribute("text-anchor", anchor); item.textContent = text; labels.append(item);
+        };
+        let grid = "";
+        for (const db of [-24, -12, 0, 12, 24]) {
+          grid += "M" + g.left + "," + y(db) + "H" + (g.left + g.plotWidth);
+          label(db > 0 ? "+" + db : String(db), g.left - 7, y(db) + 4, "end");
+        }
+        label("dB", 5, 10, "start");
+        for (const frequency of [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]) grid += "M" + x(frequency) + "," + g.top + "V" + y(-24);
+        for (const frequency of (g.width < 310 ? [20, 200, 2000, 20000] : [20, 100, 1000, 10000, 20000])) {
+          const text = frequency === 20 ? "20 Hz" : frequency >= 1000 ? frequency / 1000 + "k" : String(frequency);
+          label(text, x(frequency), g.height - 6, frequency === 20 ? "start" : frequency === 20000 ? "end" : "middle");
+        }
+        get("ks-eq-grid").setAttribute("d", grid);
+        get("ks-eq-zero").setAttribute("d", "M" + g.left + "," + y(0) + "H" + (g.left + g.plotWidth));
+        let curve = "";
+        const steps = Math.ceil(g.plotWidth / 2);
+        for (let step = 0; step <= steps; step++) {
+          const frequency = 20 * Math.pow(1000, step / steps);
+          curve += (step ? "L" : "M") + x(frequency).toFixed(2) + "," + y(eqResponse(frequency)).toFixed(2);
+        }
+        get("ks-eq-line").setAttribute("d", curve);
+        for (const band of ["low", "mid", "high"]) {
+          const node = root.querySelector('[data-eq-node="' + band + '"]');
+          node.style.left = x(state.frequencies[band]) + "px";
+          node.style.top = y(eqResponse(state.frequencies[band])) + "px";
+          const parameter = isPass(band) ? "slope" : "gain";
+          node.setAttribute("aria-label", band + " EQ point, " + state.frequencies[band] + " Hz, " + eqValueLabel(band) + ". Arrow keys adjust; double click resets " + parameter + ".");
+          node.setAttribute("data-tooltip", "Drag to adjust frequency and " + parameter);
+        }
+      }
+      function renderSummary() {
+        get("ks-duration").textContent = (state.end - state.start).toFixed(2) + "s";
+      }
+      function renderAll() {
+        renderStems();
+        for (const field of ["start", "end", "speed", "pitch", "low", "mid", "high"]) get("ks-" + field).value = state[field];
+        renderEqControls();
+        get("ks-loop-playback").checked = playbackSettings.loop;
+        get("ks-play").title = playbackSettings.loop ? "Loop playback" : "Normal playback";
+        get("ks-play").setAttribute("aria-pressed", String(state.playing));
+        get("ks-play-icon").hidden = state.playing;
+        get("ks-pause-icon").hidden = !state.playing;
+        get("ks-play-label").textContent = state.playing ? "Pause" : "Play";
+        drawWave(); drawEq(); renderSummary();
+      }
+      function applyDesign() {
+        root.style.maxWidth = parseInt(design.width, 10) + "px";
+        root.style.setProperty("--ks-fader-height", design.fader + "px");
+        get("ks-wave-svg").style.height = design.waveform + "px";
+        drawWave(); drawEq();
+      }
+      function closeDialog() {
+        if (!get("ks-dialog-folder").hidden) {
+          showDialogPanel("settings", "Settings");
+          get("ks-browse-folder").focus();
+          return;
+        }
+        get("ks-overlay").hidden = true; get("ks-app-content").inert = false;
+        if (dialogTrigger) dialogTrigger.focus();
+      }
+      function showDialogPanel(name, title) {
+        for (const kind of ["advanced", "settings", "folder", "open"]) get("ks-dialog-" + kind).hidden = kind !== name;
+        get("ks-dialog-title").textContent = title;
+      }
+      function openDialog(name, title) {
+        dialogTrigger = document.activeElement;
+        showDialogPanel(name, title);
+        get("ks-overlay").hidden = false; get("ks-app-content").inert = true;
+        get("ks-dialog-close").focus(); renderSummary();
+      }
+      get("ks-dialog-close").addEventListener("click", closeDialog);
+      root.querySelectorAll("[data-close]").forEach(button => button.addEventListener("click", closeDialog));
+      root.addEventListener("keydown", event => { if (event.key === "Escape" && !get("ks-overlay").hidden) closeDialog(); });
+      get("ks-overlay").addEventListener("click", event => { if (event.target === get("ks-overlay")) closeDialog(); });
+      function exportDirect(format) {
+        const folder = get("ks-save-folder").value.trim();
+        if (!folder) {
+          openDialog("settings", "Settings");
+          get("ks-save-folder").setAttribute("aria-invalid", "true");
+          get("ks-folder-error").hidden = false;
+          get("ks-save-folder").focus();
+          setStatus("Choose a save folder in Settings.");
+          return;
+        }
+        const separator = folder.includes("\\") ? "\\" : "/";
+        const filename = "demo-track_" + state.start.toFixed(2) + "-" + state.end.toFixed(2) + "." + format;
+        const path = folder.replace(/[\\/]+$/, "") + separator + filename;
+        setStatus(format.toUpperCase() + " export preview · " + path + " · no file created");
+      }
+      get("ks-export-wav").addEventListener("click", () => exportDirect("wav"));
+      get("ks-export-mp3").addEventListener("click", () => exportDirect("mp3"));
+      get("ks-save-folder").addEventListener("input", () => {
+        if (get("ks-save-folder").value.trim()) {
+          get("ks-save-folder").removeAttribute("aria-invalid");
+          get("ks-folder-error").hidden = true;
+        }
+      });
+      get("ks-browse-folder").addEventListener("click", () => {
+        const folder = get("ks-save-folder").value.trim();
+        const choices = [...root.querySelectorAll('input[name="ks-save-location"]')];
+        for (const choice of choices) choice.checked = choice.value === folder;
+        const selected = choices.find(choice => choice.checked);
+        get("ks-folder-use").disabled = !selected;
+        showDialogPanel("folder", "Choose Save Folder");
+        (selected || choices[0]).focus();
+      });
+      root.querySelectorAll('input[name="ks-save-location"]').forEach(choice => choice.addEventListener("change", () => { get("ks-folder-use").disabled = false; }));
+      get("ks-folder-use").addEventListener("click", () => {
+        const selected = root.querySelector('input[name="ks-save-location"]:checked');
+        if (!selected) return;
+        get("ks-save-folder").value = selected.value;
+        get("ks-save-folder").removeAttribute("aria-invalid");
+        get("ks-folder-error").hidden = true;
+        closeDialog();
+      });
+      get("ks-advanced").addEventListener("click", () => openDialog("advanced", "Advanced Effects"));
+      get("ks-settings").addEventListener("click", () => openDialog("settings", "Settings"));
+      get("ks-open").addEventListener("click", () => openDialog("open", "Open Audio"));
+      get("ks-demo").addEventListener("click", () => { closeDialog(); setStatus("Demo track loaded"); });
+      get("ks-log").addEventListener("click", () => { closeDialog(); setStatus("Design preview · no processing log"); });
+      get("ks-play").addEventListener("click", () => { state.playing = !state.playing; renderAll(); });
+      get("ks-loop-playback").addEventListener("change", event => { playbackSettings.loop = event.target.checked; renderAll(); });
+      for (const name of stemNames) {
+        const slider = root.querySelector('[data-volume="' + name + '"]');
+        slider.addEventListener("input", () => {
+          const position = Number(slider.value);
+          state.stems[name].volume = position === 0 ? 0 : Math.pow(10, faderDb(position) / 20) * 100;
+          renderStems();
+        });
+        for (const eventName of ["change", "keyup", "pointerup"]) slider.addEventListener(eventName, commit);
+        slider.addEventListener("dblclick", () => { state.stems[name].volume = 100; renderStems(); commit(); });
+        for (const mode of ["mute", "solo"]) root.querySelector("[data-" + mode + '="' + name + '"]').addEventListener("click", () => {
+          state.stems[name][mode] = !state.stems[name][mode]; renderStems(); commit();
+        });
+      }
+      for (const band of ["low", "high"]) get("ks-" + band + "-type").addEventListener("change", event => {
+        state.filterTypes[band] = event.target.value; renderEqControls(); commit();
+      });
+      for (const band of ["low", "mid", "high"]) {
+        get("ks-" + band).addEventListener("input", event => { setEqValue(band, Number(event.target.value)); renderEqControls(); });
+        for (const eventName of ["change", "keyup", "pointerup"]) get("ks-" + band).addEventListener(eventName, commit);
+        get("ks-" + band).addEventListener("dblclick", () => resetEqValue(band));
+        const frequencyInput = get("ks-" + band + "-freq");
+        frequencyInput.addEventListener("input", () => {
+          const value = frequencyInput.valueAsNumber;
+          if (!Number.isFinite(value) || value < Number(frequencyInput.min) || value > Number(frequencyInput.max)) return;
+          state.frequencies[band] = value; drawEq(); commit();
+        });
+        frequencyInput.addEventListener("change", () => {
+          const value = Number(frequencyInput.value);
+          if (Number.isFinite(value)) state.frequencies[band] = clamp(value, Number(frequencyInput.min), Number(frequencyInput.max));
+          renderEqControls(); commit();
+        });
+        const node = root.querySelector('[data-eq-node="' + band + '"]');
+        node.addEventListener("dblclick", () => resetEqValue(band));
+        node.addEventListener("keydown", event => {
+          if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
+          event.preventDefault();
+          if (event.key === "ArrowUp" || event.key === "ArrowDown") setEqValue(band, eqValue(band) + (event.key === "ArrowUp" ? 1 : -1) * (isPass(band) ? 12 : .5));
+          else state.frequencies[band] = clamp(Math.round(state.frequencies[band] * (event.key === "ArrowRight" ? 1.1 : 1 / 1.1)), Number(frequencyInput.min), Number(frequencyInput.max));
+          renderEqControls(); commit();
+        });
+        let drag = null;
+        node.addEventListener("pointerdown", event => {
+          if (event.button !== 0) return;
+          drag = { x: event.clientX, y: event.clientY, value: eqValue(band), frequency: state.frequencies[band], id: event.pointerId };
+          node.setPointerCapture(event.pointerId);
+        });
+        node.addEventListener("pointermove", event => {
+          if (!drag || event.pointerId !== drag.id) return;
+          const g = eqGeometry();
+          state.frequencies[band] = clamp(Math.round(drag.frequency * Math.pow(1000, (event.clientX - drag.x) / g.plotWidth)), Number(frequencyInput.min), Number(frequencyInput.max));
+          setEqValue(band, drag.value - (event.clientY - drag.y) / g.plotHeight * (isPass(band) ? 36 : 48 / (band === "mid" ? 1 : .5)));
+          renderEqControls();
+        });
+        for (const eventName of ["pointerup", "pointercancel", "lostpointercapture"]) node.addEventListener(eventName, () => { if (drag) { drag = null; commit(); } });
+      }
+      for (const band of ["low", "high"]) {
+        const qInput = get("ks-" + band + "-pass-q");
+        qInput.addEventListener("input", () => {
+          const value = qInput.valueAsNumber;
+          if (Number.isFinite(value) && value >= .3 && value <= 4) { state.passQ[band] = value; drawEq(); commit(); }
+        });
+        qInput.addEventListener("change", () => {
+          const value = qInput.valueAsNumber;
+          state.passQ[band] = Number.isFinite(value) ? clamp(value, .3, 4) : .71;
+          renderEqControls(); commit();
+        });
+      }
+      get("ks-mid-q").addEventListener("change", event => { state.midQ = clamp(Number(event.target.value) || 1, .3, 6); renderEqControls(); commit(); });
+      get("ks-mid-q").addEventListener("input", event => {
+        const value = event.target.valueAsNumber;
+        if (Number.isFinite(value) && value >= .3 && value <= 6) { state.midQ = value; drawEq(); commit(); }
+      });
+      for (const field of ["start", "end", "speed", "pitch"]) get("ks-" + field).addEventListener("change", event => {
+        let value = Number(event.target.value);
+        if (!Number.isFinite(value)) { renderAll(); return; }
+        value = Math.max(Number(event.target.min), Math.min(Number(event.target.max), value));
+        state[field] = value;
+        if (state.start >= state.end) {
+          if (field === "start") state.end = Math.min(192, state.start + 1);
+          else state.start = Math.max(0, state.end - 1);
+        }
+        renderAll(); commit();
+      });
+      function zoomWave(factor, fraction = .5) {
+        const duration = 192 / waveView.zoom;
+        const anchor = waveView.start + fraction * duration;
+        waveView.zoom = clamp(waveView.zoom * factor, 1, 8);
+        waveView.start = clamp(anchor - fraction * 192 / waveView.zoom, 0, 192 - 192 / waveView.zoom);
+        drawWave();
+      }
+      function fitWave() { waveView.zoom = 1; waveView.start = 0; drawWave(); }
+      get("ks-wave-container").addEventListener("wheel", event => {
+        if (event.ctrlKey || event.metaKey || !event.deltaY) return;
+        event.preventDefault();
+        const rect = get("ks-wave-svg").getBoundingClientRect();
+        if (!rect.width) return;
+        const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
+        zoomWave(Math.exp(-clamp(delta, -240, 240) * .003), clamp((event.clientX - rect.left) / rect.width, 0, 1));
+      }, { passive: false });
+      get("ks-wave-container").addEventListener("keydown", event => {
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        if (!["+", "=", "-", "0"].includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === "0") fitWave();
+        else zoomWave(event.key === "-" ? 1 / 1.5 : 1.5);
+      });
+      get("ks-split").addEventListener("click", () => setStatus("Split preview complete · " + (time(state.start) + "-" + time(state.end)) + " · demo preview"));
+      document.addEventListener("keydown", event => {
+        if (!(event.ctrlKey || event.metaKey) || event.altKey || event.isComposing) return;
+        if (!get("ks-overlay").hidden) return;
+        const target = event.target;
+        if (target instanceof Element && (target.closest('textarea, select, [contenteditable]:not([contenteditable="false"])') ||
+            (target.matches('input') && !target.matches('input[type="range"], input[type="checkbox"], input[type="button"]')))) return;
+        const key = event.key.toLowerCase();
+        const isUndo = key === "z" && !event.shiftKey;
+        const isRedo = (key === "y" && !event.shiftKey) || (key === "z" && event.shiftKey);
+        if (!isUndo && !isRedo) return;
+        event.preventDefault();
+        const from = isUndo ? undo : redo, to = isUndo ? redo : undo;
+        if (!from.length) return;
+        to.push(snapshot());
+        Object.assign(state, JSON.parse(from.pop()));
+        committed = snapshot();
+        renderAll();
+        setStatus(isUndo ? "Undo" : "Redo");
+      });
+      new ResizeObserver(() => { drawWave(); drawEq(); }).observe(root);
+      applyDesign(); renderAll();
+      if (globalThis.Tweak) {
+        const tweak = new Tweak({ container: root, onChange: applyDesign });
+        tweak.addSelect(design, "width", { label: "Window width", options: ["820 px", "780 px"] });
+        const mixerTweak = new Tweak({ container: get("ks-stems"), onChange: applyDesign });
+        mixerTweak.addSlider(design, "fader", { label: "Fader height", min: 160, max: 200, step: 2, unit: "px" });
+        const waveTweak = new Tweak({ container: get("ks-wave-container"), onChange: applyDesign });
+        waveTweak.addSlider(design, "waveform", { label: "Waveform height", min: 104, max: 140, step: 2, unit: "px" });
+      }
+    })();
+  </script>
+</div>
+
+<script src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
+<script src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
+<script>
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (target) =>
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest("[data-tooltip]")
+      : null;
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) => {
+    lastPointerWasTouch =
+      event.type === "pointerdown" && event.pointerType === "touch";
+  };
+  const handleTouchClick = (event) => {
+    const isTouch = event.pointerType === "touch" || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch && activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() => {
+      if (activeTrigger === trigger && !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) => {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    document.removeEventListener("pointerover", handlePointerOpen);
+    document.removeEventListener("pointerdown", handlePointer);
+    document.removeEventListener("pointercancel", handlePointer);
+    document.removeEventListener("click", handleTouchClick);
+    document.removeEventListener("pointerout", handleLeave);
+    document.removeEventListener("focusin", handleFocusIn);
+    document.removeEventListener("focusout", handleLeave);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener("pointerover", handlePointerOpen);
+  document.addEventListener("pointerdown", handlePointer);
+  document.addEventListener("pointercancel", handlePointer);
+  document.addEventListener("click", handleTouchClick);
+  document.addEventListener("pointerout", handleLeave);
+  document.addEventListener("focusin", handleFocusIn);
+  document.addEventListener("focusout", handleLeave);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("contextmenu", handleContextMenu);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-tabs">
+(() => {
+  const selector = '.nav[role="tablist"] [role="tab"]';
+  const disabled = ':disabled,[aria-disabled="true"]';
+  const selectTab = (selected) => {
+    const panelId = selected.getAttribute("aria-controls");
+    for (const tab of selected.closest('[role="tablist"]').querySelectorAll('[role="tab"]')) {
+      const active = tab === selected;
+      tab.classList.toggle("active", active);
+      tab.setAttribute("aria-selected", String(active));
+      const id = tab.getAttribute("aria-controls");
+      const panel = id && document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden && selected.id) {
+          panel.setAttribute("aria-labelledby", selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) => {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === "click") {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]'),
+    ).filter((candidate) => !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll('.nav[role="tablist"]')) {
+    const selected =
+      list.querySelector('[role="tab"][aria-selected="true"]') ??
+      list.querySelector('[role="tab"].active') ??
+      list.querySelector('[role="tab"]');
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener("click", interact);
+  document.addEventListener("keydown", interact);
+  window.addEventListener("pagehide", () => {
+    document.removeEventListener("click", interact);
+    document.removeEventListener("keydown", interact);
+  }, { once: true });
+})();
+</script>
+<script id="codex-visualization-lucide" async src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"></script>
+<script>
+(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+
+</body>
+</html>

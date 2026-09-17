@@ -11,6 +11,8 @@ from typing import Any
 DEFAULT_SETTINGS: dict[str, Any] = {
     "delete_temp_after_render": False,
     "output_dir": "",
+    "keep_adjustments": False,
+    "recent_project": "",
 }
 
 
@@ -104,6 +106,6 @@ class AppPaths:
         if not self.models.exists():
             return False
         for path in self.models.rglob("*"):
-            if path.is_file() and path.name != ".gitkeep":
+            if path.is_file() and path.suffix.lower() in {".th", ".pt", ".pth", ".bin", ".safetensors"} and path.stat().st_size > 1024 * 1024:
                 return True
         return False

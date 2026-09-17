@@ -11,6 +11,8 @@ bin/*
 backend/demucs_runtime/
 *.spec
 settings.json
+*.kwaksplit
+*.kwaksplit.assets/
 
 !temp/.gitkeep
 !output/.gitkeep

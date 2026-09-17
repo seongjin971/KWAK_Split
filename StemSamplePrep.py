@@ -11,6 +11,7 @@ import sys
 import threading
 import time
 import traceback
+import uuid
 import winsound
 import ctypes
 from ctypes import wintypes
@@ -21,6 +22,8 @@ import tkinter as tk
 from tkinter import ttk
 
 from backend.app_paths import AppPaths
+from backend.ui_helpers import ScrollableFrame, ToolTip
+from backend.workspace_features import WorkspaceFeatures
 from backend.audio_processing import STEMS
 from backend.audio_processing.ffmpeg_tools import (
     AudioEffects,
@@ -29,6 +32,7 @@ from backend.audio_processing.ffmpeg_tools import (
     OperationCancelled,
     ToolMissingError,
     convert_to_work_wav,
+    extract_audio_range,
     read_duration,
     render_mix,
     safe_name,
@@ -133,7 +137,7 @@ def draw_round_rect(
 
 class EqCurveEditor(tk.Canvas):
     MIN_WIDTH = 320
-    MIN_HEIGHT = 330
+    MIN_HEIGHT = 220
     MIN_FREQ = 20.0
     MAX_FREQ = 20000.0
     MIN_DB = -12.0
@@ -233,7 +237,6 @@ class EqCurveEditor(tk.Canvas):
 
         self.create_rectangle(0, 0, width, height, fill="#101219", outline="")
         self.create_rectangle(left, top, right, bottom, fill="#141821", outline="#252b36")
-        self._draw_spectrum_texture(left, top, right, bottom)
         self._draw_grid(left, top, right, bottom)
         self._draw_band_fills(left, top, right, bottom)
         self._draw_response_curve(left, top, right, bottom)
@@ -273,14 +276,6 @@ class EqCurveEditor(tk.Canvas):
             self.create_line(left, y, right, y, fill=color)
             self.create_text(right + 7, y, text=f"{db:+d}", anchor="w", fill="#7b8495", font=("Segoe UI", 7))
         self.create_text(left, 10, text="Graphic EQ", anchor="w", fill="#f4c95d", font=("Segoe UI", 9, "bold"))
-
-    def _draw_spectrum_texture(self, left: int, top: int, right: int, bottom: int) -> None:
-        span = right - left
-        for index in range(96):
-            x = left + span * index / 95
-            energy = 0.18 + 0.18 * math.sin(index * 0.37) ** 2 + 0.11 * math.sin(index * 1.13 + 0.6) ** 2
-            y = bottom - (bottom - top) * min(energy, 0.72)
-            self.create_line(x, bottom, x, y, fill="#2b303c")
 
     def _draw_band_fills(self, left: int, top: int, right: int, bottom: int) -> None:
         for band in ("low", "mid", "high", "hp", "lp"):
@@ -1256,7 +1251,7 @@ class StemFader(tk.Canvas):
         self.variable.set(round(ratio * 200.0))
 
 
-class StemSamplePrepApp(tk.Tk):
+class StemSamplePrepApp(WorkspaceFeatures, tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.paths = AppPaths.from_runtime()
@@ -1291,6 +1286,8 @@ class StemSamplePrepApp(tk.Tk):
         self.playback_started_at: float | None = None
         self.playback_start_seconds = 0.0
         self.playback_duration_seconds = 0.0
+        self.playback_tempo_ratio = 1.0
+        self.playback_output_duration_seconds = 0.0
         self.playback_cursor_manual = False
         self.playback_seek_dragging = False
         self.fade_control_dragging = False
@@ -1316,7 +1313,7 @@ class StemSamplePrepApp(tk.Tk):
         self.waveform_resize_after_id: str | None = None
         self.waveform_fade_after_id: str | None = None
 
-        self.status_var = tk.StringVar(value="Drop audio here or click Insert.")
+        self.status_var = tk.StringVar(value="Drop an audio file or click Open Audio.")
         self.step_var = tk.StringVar(value="")
         self.file_label_var = tk.StringVar(value="No file")
         self.progress_var = tk.DoubleVar(value=0.0)
@@ -1357,10 +1354,11 @@ class StemSamplePrepApp(tk.Tk):
         self.effect_widgets: list[tk.Widget] = []
         self.preset_widgets: list[tk.Widget] = []
         self.render_settings_window: tk.Toplevel | None = None
+        self._init_workspace()
 
         self.title("KWAK Split")
-        self.geometry("1400x960")
-        self.minsize(1120, 820)
+        self.geometry(f"{min(1280, self.winfo_screenwidth() - 80)}x{min(900, self.winfo_screenheight() - 120)}")
+        self.minsize(640, 480)
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         self._configure_theme()
         self._build_ui()
@@ -1372,6 +1370,7 @@ class StemSamplePrepApp(tk.Tk):
         self.worker_queue_after_id = self.after(100, self._process_worker_queue)
         self.drop_queue_after_id = self.after(100, self._process_drop_queue)
         self.playback_progress_after_id = self.after(100, self._process_playback_progress)
+        self._finish_workspace()
 
     def _configure_logging(self) -> None:
         log_file = self.paths.logs / "app.log"
@@ -1445,6 +1444,17 @@ class StemSamplePrepApp(tk.Tk):
         style.configure("Accent.TButton", background=accent, foreground="#08111f", bordercolor=accent, padding=(12, 5))
         style.configure("Danger.TButton", background="#7f3342", foreground="#fff2f4", bordercolor="#9f4656", padding=(10, 5))
         style.configure("TCheckbutton", background=bg, foreground=fg)
+        style.configure("TNotebook", background=bg, borderwidth=0)
+        style.configure("TNotebook.Tab", background=card, foreground=muted, padding=(14, 8))
+        style.map("TNotebook.Tab", background=[("selected", "#223449"), ("active", "#1a293b")],
+                  foreground=[("selected", "#ffffff"), ("active", fg)])
+        style.configure("TCombobox", fieldbackground=field, foreground=fg, background=card,
+                        arrowcolor=fg, bordercolor="#344052")
+        style.map("TCombobox", fieldbackground=[("readonly", field)], foreground=[("readonly", fg)],
+                  selectbackground=[("readonly", field)], selectforeground=[("readonly", fg)])
+        for name in ("Vertical.TScrollbar", "Horizontal.TScrollbar"):
+            style.configure(name, background="#344052", troughcolor=field, arrowcolor=muted, bordercolor=bg)
+            style.map(name, background=[("active", "#55708f")])
         style.configure("TScale", background=bg, troughcolor="#303948")
         style.configure("TSpinbox", fieldbackground=field, foreground=fg, arrowcolor=fg, bordercolor="#344052")
         style.configure(
@@ -1502,11 +1512,13 @@ class StemSamplePrepApp(tk.Tk):
 
     def _build_ui(self) -> None:
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(1, weight=0, minsize=255)
-        self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=0)
+        self.rowconfigure(0, weight=1)
+        self.workspace_scroll = ScrollableFrame(self)
+        self.workspace_scroll.grid(row=0, column=0, sticky="nsew")
+        body = self.workspace_scroll.content
+        body.columnconfigure(0, weight=1)
 
-        toolbar = ttk.Frame(self, padding=(12, 10, 12, 8), style="Root.TFrame")
+        toolbar = ttk.Frame(body, padding=(12, 10, 12, 8), style="Root.TFrame")
         toolbar.grid(row=0, column=0, sticky="ew")
         toolbar.columnconfigure(0, weight=1)
         toolbar.columnconfigure(1, weight=0)
@@ -1516,31 +1528,32 @@ class StemSamplePrepApp(tk.Tk):
         ttk.Label(title_area, text="KWAK Split", style="Title.TLabel").grid(row=0, column=0, sticky="w")
         ttk.Label(title_area, textvariable=self.file_label_var, style="Muted.TLabel").grid(row=1, column=0, sticky="w")
 
-        ttk.Label(toolbar, textvariable=self.status_var, style="Status.TLabel").grid(row=0, column=1, sticky="e")
+        ttk.Label(toolbar, textvariable=self.status_var, style="Status.TLabel", wraplength=680).grid(row=3, column=0, columnspan=2, sticky="w", pady=(6, 0))
 
         primary_actions = ttk.Frame(toolbar, style="Root.TFrame")
         primary_actions.grid(row=1, column=0, sticky="w", pady=(10, 0))
-        self.load_button = PillButton(primary_actions, "Insert", self.load_file, variant="primary", width=88, bg="#090d14")
+        self.load_button = PillButton(primary_actions, "Open Audio", self.load_file, variant="primary", width=88, bg="#090d14")
         self.load_button.grid(row=0, column=0, padx=(0, 6))
-        self.separate_button = PillButton(primary_actions, "Stem Split", self.separate_stems, width=104, bg="#090d14")
+        self.separate_button = PillButton(primary_actions, "Split Stems", self.separate_stems, width=104, bg="#090d14")
         self.separate_button.grid(row=0, column=1, padx=6)
-        self.render_button = PillButton(primary_actions, "WAV Render", self.render_wav, variant="primary", width=112, bg="#090d14")
+        self.render_button = PillButton(primary_actions, "Export WAV", self.render_wav, variant="primary", width=112, bg="#090d14")
         self.render_button.grid(row=0, column=2, padx=6)
-        self.render_mp3_button = PillButton(primary_actions, "MP3 Render", self.render_mp3, variant="primary", width=112, bg="#090d14")
+        self.render_mp3_button = PillButton(primary_actions, "Export MP3", self.render_mp3, variant="primary", width=112, bg="#090d14")
         self.render_mp3_button.grid(row=0, column=3, padx=6)
 
         utility_actions = ttk.Frame(toolbar, style="Root.TFrame")
-        utility_actions.grid(row=1, column=1, sticky="e", pady=(10, 0))
+        utility_actions.grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
         self.cleanup_button = PillButton(utility_actions, "New Project", self.cleanup_current_temp, variant="ghost", width=112, bg="#090d14")
         self.cleanup_button.grid(row=0, column=0, padx=6)
         self.cancel_button = PillButton(utility_actions, "Cancel", self.cancel_current_operation, variant="danger", width=82, bg="#090d14")
         self.cancel_button.grid(row=0, column=1, padx=6)
 
-        waveform_frame = ttk.LabelFrame(self, text="Waveform", padding=8, style="Panel.TLabelframe")
+        self._build_workspace_toolbar(utility_actions, toolbar)
+        waveform_frame = ttk.LabelFrame(body, text="Waveform · Left-click to seek / Right-drag to select", padding=8, style="Panel.TLabelframe")
         waveform_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 8))
         waveform_frame.columnconfigure(0, weight=1)
         waveform_frame.rowconfigure(0, weight=1)
-        self.wave_canvas = tk.Canvas(waveform_frame, height=190, background="#0b1018", highlightthickness=0)
+        self.wave_canvas = tk.Canvas(waveform_frame, height=140, background="#0b1018", highlightthickness=0)
         self.wave_canvas.grid(row=0, column=0, sticky="nsew")
         self.wave_canvas.bind("<Configure>", self._schedule_waveform_resize_draw)
         self.wave_canvas.bind("<Button-1>", self._wave_seek_to_event)
@@ -1633,26 +1646,24 @@ class StemSamplePrepApp(tk.Tk):
             widget.bind("<Return>", lambda _event: self._selection_changed())
             widget.bind("<FocusOut>", lambda _event: self._selection_changed())
 
-        controls = ttk.Frame(self, padding=(10, 0))
+        self._build_range_tools(waveform_frame)
+        controls = ttk.Notebook(body)
+        self.editor_tabs = controls
         controls.grid(row=2, column=0, sticky="nsew")
-        controls.rowconfigure(0, weight=1)
-        controls.columnconfigure(0, weight=2, minsize=300)
-        controls.columnconfigure(1, weight=2, minsize=220)
-        controls.columnconfigure(2, weight=6, minsize=500)
 
         mixer = ttk.Frame(controls, padding=8, style="Panel.TFrame")
-        mixer.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
+        controls.add(mixer, text="  Stem Mixer  ")
         self._build_mixer(mixer)
 
         quick_box = ttk.LabelFrame(controls, text="Preset / Monitor", padding=8, style="Panel.TLabelframe")
-        quick_box.grid(row=0, column=1, sticky="nsew", padx=8)
+        controls.add(quick_box, text="  Presets · Pitch · Fades  ")
         self._build_quick_actions(quick_box)
 
         render_box = ttk.Frame(controls, padding=8, style="Panel.TFrame")
-        render_box.grid(row=0, column=2, sticky="nsew", padx=(8, 0))
+        controls.add(render_box, text="  EQ · Filters  ")
         self._build_render_options(render_box)
 
-        progress_frame = ttk.Frame(self, padding=(10, 8))
+        progress_frame = ttk.Frame(body, padding=(10, 8))
         progress_frame.grid(row=3, column=0, sticky="nsew")
         progress_frame.columnconfigure(0, weight=1)
         progress_frame.rowconfigure(2, weight=1)
@@ -1661,7 +1672,7 @@ class StemSamplePrepApp(tk.Tk):
         log_toolbar = ttk.Frame(progress_frame)
         log_toolbar.grid(row=1, column=0, sticky="ew")
         log_toolbar.columnconfigure(0, weight=1)
-        ttk.Label(log_toolbar, text="Details stay hidden unless something needs checking.", style="Muted.TLabel").grid(
+        ttk.Label(log_toolbar, text="Check processing status and exported files below.", style="Muted.TLabel").grid(
             row=0, column=0, sticky="w"
         )
         self.settings_button = PillButton(
@@ -1696,6 +1707,7 @@ class StemSamplePrepApp(tk.Tk):
         )
         self.log_text.grid(row=2, column=0, sticky="nsew", pady=(8, 0))
         self.log_text.grid_remove()
+        self._build_result_area(body)
 
         self.action_buttons = [
             self.load_button,
@@ -1991,6 +2003,7 @@ class StemSamplePrepApp(tk.Tk):
         self.low_pass_spinbox.grid(row=0, column=4, sticky="ew")
 
         eq_shape_grid = ttk.Frame(parent, style="Panel.TFrame")
+        self.eq_detail_frame = eq_shape_grid
         eq_shape_grid.grid(row=2, column=0, sticky="ew", pady=(10, 0))
         for column in range(5):
             eq_shape_grid.columnconfigure(column, weight=1, uniform="eq_shape")
@@ -2001,10 +2014,12 @@ class StemSamplePrepApp(tk.Tk):
         self._add_eq_band_controls(eq_shape_grid, 2, "Mid", EqCurveEditor.COLORS["mid"], self.eq_mid_shape_var, self.eq_mid_q_var)
         self._add_eq_band_controls(eq_shape_grid, 3, "High", EqCurveEditor.COLORS["high"], self.eq_high_shape_var, self.eq_high_q_var)
         self._add_filter_q_control(eq_shape_grid, 4, "LP", EqCurveEditor.COLORS["lp"], self.low_pass_q_var)
+        eq_shape_grid.bind("<Configure>", self._layout_eq_details)
 
         eq_footer = ttk.Frame(parent, style="Panel.TFrame")
         eq_footer.grid(row=3, column=0, sticky="ew", pady=(8, 0))
         eq_footer.columnconfigure(0, weight=1)
+        ttk.Label(eq_footer, text="EQ response curve · Not an audio spectrum analyzer", style="Muted.TLabel").grid(row=0, column=0, sticky="w")
         self.eq_reset_button = PillButton(
             eq_footer,
             "Reset EQ",
@@ -2014,7 +2029,7 @@ class StemSamplePrepApp(tk.Tk):
             height=30,
             bg="#101722",
         )
-        self.eq_reset_button.grid(row=0, column=0, sticky="e")
+        self.eq_reset_button.grid(row=0, column=1, sticky="e")
 
         self.effect_widgets = [
             self.eq_reset_button,
@@ -2056,6 +2071,18 @@ class StemSamplePrepApp(tk.Tk):
             self.limiter_ceiling_var,
         ):
             variable.trace_add("write", lambda *_args: self._schedule_live_preview_restart())
+    def _layout_eq_details(self, event) -> None:
+        columns = 5 if self.workspace_scroll.canvas.winfo_width() >= 1100 else 3
+        frame = self.eq_detail_frame
+        if getattr(frame, "_layout_columns", None) == columns:
+            return
+        frame._layout_columns = columns
+        for column in range(5):
+            frame.columnconfigure(column, weight=1 if column < columns else 0,
+                                  uniform="eq_detail" if column < columns else "", minsize=0)
+        for index, cell in enumerate(frame.winfo_children()):
+            cell.grid(row=index // columns, column=index % columns, sticky="ew", padx=4, pady=4)
+
     def _add_eq_band_controls(
         self,
         parent: ttk.Frame,
@@ -2632,11 +2659,13 @@ class StemSamplePrepApp(tk.Tk):
         if input_path.suffix.lower() not in AUDIO_EXTENSIONS:
             messagebox.showwarning("Open Audio", "Only WAV, MP3, FLAC, and M4A files are supported.")
             return
+        if not self._opening_project and not self._guard_project(lambda: self.load_audio_path(input_path)):
+            return
         self.stop_preview(show_status=False)
-        session_name = f"{time.strftime('%Y%m%d_%H%M%S')}_{safe_name(input_path.stem)}"
+        session_name = f"{time.strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}_{safe_name(input_path.stem)}"
 
         def worker() -> None:
-            self._queue_status("Preparing working WAV")
+            self._queue_status("Converting working audio")
             source_dir = self.paths.temp / "sessions" / session_name
             source_wav = source_dir / "source.wav"
             convert_to_work_wav(
@@ -2648,7 +2677,7 @@ class StemSamplePrepApp(tk.Tk):
                 self._register_process,
             )
             duration = read_duration(self.paths, source_wav)
-            self._queue_status("Building waveform")
+            self._queue_status("Preparing waveform")
             peaks = waveform_peaks(
                 self.paths,
                 source_wav,
@@ -2676,8 +2705,16 @@ class StemSamplePrepApp(tk.Tk):
         if not self.source_wav:
             messagebox.showwarning("Audio required", "Load an audio file first.")
             return
+        if not StemSeparator(self.paths).available_command():
+            self.environment_details()
+            return
+        try:
+            split_start, split_end = self._selection_bounds() if self.split_scope_var.get() == "Selection" else (0.0, self.duration_seconds)
+        except (ValueError, tk.TclError, AudioProcessingError) as exc:
+            messagebox.showerror("Split Range", str(exc))
+            return
         existing_stems = self._ready_stem_paths()
-        if existing_stems:
+        if existing_stems and self.stem_range[0] <= split_start and self.stem_range[1] >= split_end:
             self.stem_paths = existing_stems
             self.status_var.set("Stem Split already ready.")
             self.append_log("Stem Split skipped: using existing stem files.")
@@ -2687,28 +2724,37 @@ class StemSamplePrepApp(tk.Tk):
         if not self.paths.models_have_payload():
             proceed = messagebox.askyesno(
                 "Model Download",
-                "The models folder is empty.\n\n"
-                "If the Demucs runtime is ready, the first split can download models into this app's models folder. "
-                "Check your internet connection and available D: drive space before continuing.",
+                "The first split needs to download model weights.\n\n"
+                f"Check your internet connection and free space on the app drive.\nModel folder: {self.paths.models}",
             )
             if not proceed:
                 return
 
-        self._clear_stem_state("Splitting")
         source_wav = self.source_wav
-        session_name = self.session_name
+        source_duration = self.duration_seconds
+        job_id = uuid.uuid4().hex[:12]
+        session_name = f"{self.session_name}/{job_id}"
+        crop_path = self.paths.temp / "sessions" / self.session_name / f"split_{job_id}.wav"
 
         def worker() -> None:
+            input_wav = source_wav
+            if split_start > 0 or split_end < source_duration:
+                self._queue_status("Preparing selection audio")
+                extract_audio_range(self.paths, source_wav, crop_path, split_start, split_end - split_start,
+                                    self.cancel_event, self._register_process, self._queue_log)
+                input_wav = crop_path
+            self._queue_status("Preparing model / Separating stems")
             separator = StemSeparator(self.paths)
             stems = separator.separate(
-                source_wav,
+                input_wav,
                 session_name,
                 log=self._queue_log,
                 progress=self._queue_progress,
                 cancel_event=self.cancel_event,
                 process_callback=self._register_process,
             )
-            self.worker_queue.put(("stems_ready", {name: str(path) for name, path in stems.items()}))
+            self.worker_queue.put(("stems_ready", {"paths": {name: str(path) for name, path in stems.items()},
+                                                   "range": [split_start, split_end]}))
 
         self._run_worker("Stem Split", worker)
 
@@ -2750,10 +2796,13 @@ class StemSamplePrepApp(tk.Tk):
             fade_in = float(self.fade_in_var.get())
             fade_out = float(self.fade_out_var.get())
             effects = self._build_audio_effects()
-        except (ValueError, AudioProcessingError) as exc:
+            self._validate_stem_range(start, end)
+        except (ValueError, tk.TclError, AudioProcessingError) as exc:
             messagebox.showerror("Export settings", str(exc))
             return
 
+        if not self._confirm_render(individual=True):
+            return
         self.stop_preview(show_status=False)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         input_label = safe_name(self.current_input.stem if self.current_input else "stem")
@@ -2778,7 +2827,7 @@ class StemSamplePrepApp(tk.Tk):
                 self._queue_status(f"Exporting {stem} ({index}/{total})")
                 render_mix(
                     self.paths,
-                    [MixStem(stem, path, gain)],
+                    [MixStem(stem, path, gain, self.stem_range[0])],
                     out_path,
                     start_seconds=start,
                     duration_seconds=duration,
@@ -2788,6 +2837,7 @@ class StemSamplePrepApp(tk.Tk):
                     cancel_event=self.cancel_event,
                     process_callback=self._register_process,
                     effects=effects,
+                    include_silent=True,
                 )
                 outputs.append(str(out_path))
             self.worker_queue.put(("stems_exported", outputs))
@@ -2807,11 +2857,13 @@ class StemSamplePrepApp(tk.Tk):
             fade_in = float(self.fade_in_var.get())
             fade_out = float(self.fade_out_var.get())
             effects = self._build_audio_effects()
-        except (ValueError, AudioProcessingError) as exc:
+        except (ValueError, tk.TclError, AudioProcessingError) as exc:
             self.pending_preview_mode = None
             messagebox.showerror("Render settings", str(exc))
             return
 
+        if not self._confirm_render():
+            return
         input_label = safe_name(self.current_input.stem if self.current_input else "render")
         default_output_path = self._unique_output_path(self.output_dir / f"{input_label}_current_mix.{extension}")
         output_path_text = filedialog.asksaveasfilename(
@@ -2873,7 +2925,7 @@ class StemSamplePrepApp(tk.Tk):
         try:
             self.pending_preview_mode = ("mix", None)
             self._start_preview(self._build_mix_stems(), "Current Mix")
-        except (ValueError, AudioProcessingError) as exc:
+        except (ValueError, tk.TclError, AudioProcessingError) as exc:
             messagebox.showerror("Preview settings", str(exc))
 
     def toggle_stem_bypass(self) -> None:
@@ -2898,7 +2950,7 @@ class StemSamplePrepApp(tk.Tk):
             return
         try:
             self._start_context_preview()
-        except (ValueError, AudioProcessingError) as exc:
+        except (ValueError, tk.TclError, AudioProcessingError) as exc:
             messagebox.showerror("Preview settings", str(exc))
 
     def _start_context_preview(self) -> None:
@@ -2915,8 +2967,8 @@ class StemSamplePrepApp(tk.Tk):
         return self._build_mix_stems(), "Current Mix", ("mix", None)
 
     def _restart_context_preview_from_cursor(self) -> None:
-        cursor = float(self.playback_position_var.get())
         self.stop_preview(show_status=False)
+        cursor = float(self.playback_position_var.get())
         self._set_playback_position(cursor)
         self.playback_cursor_manual = True
         try:
@@ -2975,6 +3027,8 @@ class StemSamplePrepApp(tk.Tk):
         self.playback_started_at = time.monotonic()
         self.playback_start_seconds = start
         self.playback_duration_seconds = duration
+        self.playback_tempo_ratio = effects.tempo_ratio
+        self.playback_output_duration_seconds = duration / effects.tempo_ratio
         self._set_playback_position(start)
         self.status_var.set(f"Realtime preview: {label}")
         self._refresh_action_states()
@@ -3012,6 +3066,7 @@ class StemSamplePrepApp(tk.Tk):
                 process_callback=self._register_process,
                 effects=effects,
             )
+            output_duration = read_duration(self.paths, output_path)
             self.worker_queue.put(
                 (
                     "preview_ready",
@@ -3019,6 +3074,8 @@ class StemSamplePrepApp(tk.Tk):
                         "path": str(output_path),
                         "start": start,
                         "duration": duration,
+                        "output_duration": output_duration,
+                        "tempo_ratio": effects.tempo_ratio,
                         "label": label,
                     },
                 )
@@ -3027,6 +3084,9 @@ class StemSamplePrepApp(tk.Tk):
         self._run_worker("Prepare Preview", worker)
 
     def stop_preview(self, show_status: bool = True) -> None:
+        if getattr(self, "_loop_after", None):
+            self.after_cancel(self._loop_after)
+            self._loop_after = None
         self._cancel_live_preview_restart()
         was_playing = self.preview_playing
         if was_playing:
@@ -3039,6 +3099,9 @@ class StemSamplePrepApp(tk.Tk):
             winsound.PlaySound(None, 0)
         self.preview_playing = False
         self.playback_started_at = None
+        if getattr(self, "_loop_after", None):
+            self.after_cancel(self._loop_after)
+            self._loop_after = None
         if show_status:
             self.status_var.set("Playback stopped.")
         self._refresh_action_states()
@@ -3078,10 +3141,10 @@ class StemSamplePrepApp(tk.Tk):
             self.status_var.set(f"Preview settings need attention: {exc}")
             return
 
-        cursor = float(self.playback_position_var.get())
         preview_mode = self.last_preview_mode
         preview_stem = self.last_preview_stem
         self.stop_preview(show_status=False)
+        cursor = float(self.playback_position_var.get())
         self._set_playback_position(cursor)
         self.playback_cursor_manual = True
         try:
@@ -3193,7 +3256,7 @@ class StemSamplePrepApp(tk.Tk):
             if not path or not path.exists():
                 raise AudioProcessingError("Stem file is missing. Run Stem Split again.")
             gain = max(float(self.stem_vars[stem]["volume"].get()) / 100.0, 0.0)
-            return [MixStem(stem, path, gain)], stem
+            return [MixStem(stem, path, gain, self.stem_range[0])], stem
 
         if self.last_preview_mode == "mix":
             return self._build_mix_stems(), self.last_preview_label or "Current Mix"
@@ -3208,6 +3271,7 @@ class StemSamplePrepApp(tk.Tk):
             return [MixStem("source", self.source_wav, 1.0)]
 
         soloed = {stem for stem in STEMS if bool(self.stem_vars[stem]["solo"].get())}
+        self._validate_stem_range(*self._selection_bounds())
         selected = soloed or {stem for stem in STEMS if not bool(self.stem_vars[stem]["mute"].get())}
 
         mix_stems: list[MixStem] = []
@@ -3220,7 +3284,7 @@ class StemSamplePrepApp(tk.Tk):
                 missing_files.append(stem)
                 continue
             gain = max(float(self.stem_vars[stem]["volume"].get()) / 100.0, 0.0)
-            mix_stems.append(MixStem(stem, path, gain))
+            mix_stems.append(MixStem(stem, path, gain, self.stem_range[0]))
         if missing_files:
             self._clear_stem_state("Waiting")
             raise AudioProcessingError(
@@ -3231,6 +3295,7 @@ class StemSamplePrepApp(tk.Tk):
         return mix_stems
 
     def _build_audio_effects(self) -> AudioEffects:
+        self._edit_snapshot()  # Reject incomplete/non-finite entries before starting audio work.
         low_db = max(min(float(self.eq_low_var.get()), 12.0), -12.0)
         mid_db = max(min(float(self.eq_mid_var.get()), 12.0), -12.0)
         high_db = max(min(float(self.eq_high_var.get()), 12.0), -12.0)
@@ -3268,6 +3333,9 @@ class StemSamplePrepApp(tk.Tk):
             peak_normalize=bool(self.peak_normalize_var.get()),
             limiter_enabled=bool(self.limiter_enabled_var.get()),
             limiter_ceiling=max(min(float(self.limiter_ceiling_var.get()), 1.0), 0.05),
+            sample_rate=int(self.sample_rate_var.get()),
+            bit_depth=int(self.bit_depth_var.get()),
+            mp3_bitrate=int(self.mp3_bitrate_var.get()),
         )
 
     def _eq_shape(self, variable: tk.StringVar) -> str:
@@ -3290,9 +3358,10 @@ class StemSamplePrepApp(tk.Tk):
         if cursor >= self.duration_seconds:
             cursor = selection_start
             self._set_playback_position(cursor)
-        if selection_start <= cursor < selection_end:
-            return cursor, selection_end
-        return cursor, self.duration_seconds
+        if not selection_start <= cursor < selection_end:
+            cursor = selection_start
+            self._set_playback_position(cursor)
+        return cursor, selection_end
 
     def open_output_folder(self) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -3328,14 +3397,19 @@ class StemSamplePrepApp(tk.Tk):
 
         window = tk.Toplevel(self)
         self.render_settings_window = window
-        window.title("Render Settings")
+        window.title("Export and Project Settings")
         window.configure(background="#10141c")
-        window.resizable(False, False)
+        window.resizable(True, True)
+        window.geometry(f"700x{min(650, self.winfo_screenheight() - 120)}")
+        window.minsize(480, 360)
         window.transient(self)
         window.protocol("WM_DELETE_WINDOW", self._close_render_settings)
 
-        frame = ttk.Frame(window, padding=12)
-        frame.grid(row=0, column=0, sticky="nsew")
+        window.rowconfigure(0, weight=1)
+        window.columnconfigure(0, weight=1)
+        scroll = ScrollableFrame(window, minimum_width=580)
+        scroll.grid(row=0, column=0, sticky="nsew")
+        frame = scroll.content
         frame.columnconfigure(1, weight=1)
 
         ttk.Label(frame, text="Save To").grid(row=0, column=0, sticky="w", pady=(0, 10))
@@ -3376,11 +3450,12 @@ class StemSamplePrepApp(tk.Tk):
 
         delete_temp_check = ttk.Checkbutton(
             frame,
-            text="Delete temp after render",
+            text="Delete working audio after export (save your project first)",
             variable=self.delete_temp_var,
             style="TCheckbutton",
         )
         delete_temp_check.grid(row=3, column=0, columnspan=3, sticky="w", pady=(0, 12))
+        self._build_extra_render_settings(frame)
 
         close_button = PillButton(
             frame,
@@ -3391,7 +3466,7 @@ class StemSamplePrepApp(tk.Tk):
             height=30,
             bg="#101722",
         )
-        close_button.grid(row=4, column=0, columnspan=3, sticky="e")
+        close_button.grid(row=11, column=0, columnspan=3, sticky="e", pady=12)
 
     def _close_render_settings(self) -> None:
         if self.render_settings_window and self.render_settings_window.winfo_exists():
@@ -3410,11 +3485,20 @@ class StemSamplePrepApp(tk.Tk):
         if not self.session_name:
             messagebox.showinfo("New Project", "There is no current project.")
             return
-        if not messagebox.askyesno("New Project", "Close the current project and start a new one?"):
+        if not self._guard_project(self.cleanup_current_temp):
             return
         self.stop_preview(show_status=False)
         self._cleanup_session_files(clear_state=True)
-        self.status_var.set("New project ready.")
+        if not self.keep_adjustments_var.get():
+            self._reset_edits()
+        self.project_file = None
+        self._saved_edits = None
+        self.project_dirty = False
+        from backend.project_store import EditHistory
+        self.history = EditHistory(self._edit_snapshot())
+        self._update_project_label()
+        self._update_workspace_summary()
+        self.status_var.set("New project ready" + (" · Adjustments kept" if self.keep_adjustments_var.get() else " · Adjustments reset"))
         self.append_log("New project started.")
         self._refresh_action_states()
 
@@ -3511,8 +3595,6 @@ class StemSamplePrepApp(tk.Tk):
             self.progressbar.configure(mode="indeterminate")
             self.progressbar.start(12)
             self._start_busy_animation()
-            if title == "Stem Split":
-                self._start_loading_messages()
         else:
             self._stop_loading_messages()
             self._stop_busy_animation()
@@ -3595,7 +3677,7 @@ class StemSamplePrepApp(tk.Tk):
         percent = ""
         if self.busy_progress_percent is not None:
             percent = f" {self.busy_progress_percent:.0f}%"
-        base = self.loading_message_text or self.busy_status_base or f"{self.busy_title} running"
+        base = self.busy_status_base or f"{self.busy_title} in progress"
         self.status_var.set(f"{base}{dots} {spinner} {elapsed}{percent}")
 
     def _busy_elapsed_label(self) -> str:
@@ -3646,6 +3728,7 @@ class StemSamplePrepApp(tk.Tk):
                 self._set_state(widget, enabled)
 
         self._update_step_text()
+        self._update_workspace_summary()
 
     def _set_state(self, widget: tk.Widget, enabled: bool) -> None:
         if hasattr(widget, "set_enabled"):
@@ -3663,6 +3746,8 @@ class StemSamplePrepApp(tk.Tk):
         self.playback_started_at = None
         self.playback_start_seconds = 0.0
         self.playback_duration_seconds = 0.0
+        self.playback_tempo_ratio = 1.0
+        self.playback_output_duration_seconds = 0.0
         self.playback_cursor_manual = False
         self.playback_seek_dragging = False
         self.last_preview_stems = None
@@ -3673,6 +3758,7 @@ class StemSamplePrepApp(tk.Tk):
 
     def _clear_stem_state(self, _status: str = "Waiting") -> None:
         self.stem_paths = {}
+        self.stem_range = (0.0, self.duration_seconds)
         self.last_preview_stems = None
         self.last_preview_label = ""
         self._refresh_action_states()
@@ -3682,14 +3768,38 @@ class StemSamplePrepApp(tk.Tk):
             return
         elapsed = max(time.monotonic() - self.playback_started_at, 0.0)
         play_end = self.playback_start_seconds + self.playback_duration_seconds
-        position = min(self.playback_start_seconds + elapsed, play_end)
+        # The waveform uses source time, while the player uses output time.
+        # Keep the speed captured at playback start until a restart applies edits.
+        position = min(self.playback_start_seconds + elapsed * self.playback_tempo_ratio, play_end)
         self._set_playback_position(position)
 
-        if elapsed >= self.playback_duration_seconds:
+        failed = False
+        if self.realtime_processes:
+            # start_realtime_mix returns [FFplay, FFmpeg]. FFmpeg can finish
+            # while FFplay is still draining buffered audio; only the player
+            # tells us the output has ended, including tempo-filter tail audio.
+            finished = self.realtime_processes[0].poll() is not None
+            if finished:
+                failed = any(process.poll() not in (None, 0) for process in self.realtime_processes)
+        else:
+            # winsound does not expose completion, so use the rendered WAV's
+            # measured duration, not the selected source range's duration.
+            finished = elapsed >= self.playback_output_duration_seconds
+
+        if finished:
+            self._cancel_live_preview_restart()
             self._stop_realtime_playback()
             self.preview_playing = False
             self.playback_started_at = None
-            self.status_var.set("Playback finished.")
+            if failed:
+                self.status_var.set("Preview failed. Check the audio settings and output device.")
+                self.append_log("Realtime preview failed: FFplay or FFmpeg exited with an error.")
+            else:
+                self._set_playback_position(play_end)
+                self.status_var.set("Playback finished.")
+                loop_var = getattr(self, "loop_var", None)
+                if loop_var is not None and loop_var.get() and not self.closing:
+                    self._loop_after = self.after(80, self._loop_preview)
             self._refresh_action_states()
 
     def _set_playback_position(self, position: float, redraw: bool = True) -> None:
@@ -3765,6 +3875,10 @@ class StemSamplePrepApp(tk.Tk):
             self.step_var.set("")
 
     def _queue_log(self, message: str) -> None:
+        if "Downloading:" in message:
+            self.worker_queue.put(("status", "Downloading stem model"))
+        elif "Separating track" in message:
+            self.worker_queue.put(("status", "Separating stems"))
         self.worker_queue.put(("log", message))
 
     def _queue_status(self, message: str) -> None:
@@ -3796,19 +3910,19 @@ class StemSamplePrepApp(tk.Tk):
                     self._handle_render_ready(Path(str(payload)))
                 elif kind == "stems_exported":
                     self._handle_stems_exported(payload)  # type: ignore[arg-type]
+                elif kind == "project_saved":
+                    self._handle_project_saved(payload)
                 elif kind == "preview_ready":
                     self._handle_preview_ready(payload)  # type: ignore[arg-type]
                 elif kind == "temp_cleaned":
                     self._clear_after_temp_delete()
                     self.append_log("Deleted current temp after render.")
                 elif kind == "cancelled":
-                    if self.busy_title == "Stem Split":
-                        self._clear_stem_state("Waiting")
+                    self._pending_project = None
                     self.status_var.set("Task cancelled.")
                     self.append_log(str(payload))
                 elif kind == "error":
-                    if self.busy_title == "Stem Split":
-                        self._clear_stem_state("Waiting")
+                    self._pending_project = None
                     self.status_var.set("Error. Check the detailed log.")
                     self.set_log_visible(True)
                     messagebox.showerror("Error", str(payload))
@@ -3836,10 +3950,12 @@ class StemSamplePrepApp(tk.Tk):
         self.draw_waveform()
         self.status_var.set(f"Loaded: {self.current_input.name}")
         self.append_log(f"Loaded: {self.current_input}")
+        self._source_workspace_ready()
         self._refresh_action_states()
 
-    def _handle_stems_ready(self, payload: dict[str, str]) -> None:
-        self.stem_paths = {name: Path(path) for name, path in payload.items() if Path(path).exists()}
+    def _handle_stems_ready(self, payload: dict) -> None:
+        self.stem_paths = {name: Path(path) for name, path in payload["paths"].items() if Path(path).exists()}
+        self.stem_range = tuple(payload["range"])
         missing = [stem for stem in STEMS if stem not in self.stem_paths]
         if missing:
             self._clear_stem_state("Waiting")
@@ -3847,16 +3963,20 @@ class StemSamplePrepApp(tk.Tk):
             return
         self.status_var.set("Stem Split complete.")
         self.append_log("Stem Split complete.")
+        self._saved_edits = None
+        self._commit_edit()
         self._refresh_action_states()
 
     def _handle_render_ready(self, output_path: Path) -> None:
         self.status_var.set(f"Rendered: {output_path.name}")
         self.append_log(f"Rendered: {output_path}")
+        self._show_results([output_path])
 
     def _handle_stems_exported(self, outputs: list[str]) -> None:
         self.status_var.set(f"Stem export complete: {len(outputs)} files")
         for path in outputs:
             self.append_log(f"Exported stem: {path}")
+        self._show_results(outputs)
 
     def _handle_preview_ready(self, payload: dict[str, object]) -> None:
         preview_path = Path(str(payload["path"]))
@@ -3873,6 +3993,8 @@ class StemSamplePrepApp(tk.Tk):
         self.playback_started_at = time.monotonic()
         self.playback_start_seconds = start_seconds
         self.playback_duration_seconds = duration_seconds
+        self.playback_tempo_ratio = float(payload["tempo_ratio"])
+        self.playback_output_duration_seconds = float(payload["output_duration"])
         self._set_playback_position(start_seconds)
         self.status_var.set(f"Preview playing: {preview_path.name}")
         self._refresh_action_states()
@@ -3925,6 +4047,12 @@ class StemSamplePrepApp(tk.Tk):
         self.playback_scale.configure(to=limit)
 
     def _selection_changed(self) -> None:
+        try:
+            if not all(math.isfinite(float(variable.get())) for variable in (self.selection_start_var, self.selection_end_var)):
+                raise ValueError("Non-finite selection")
+        except (tk.TclError, ValueError):
+            self.status_var.set("Enter numeric start and end times.")
+            return
         if self.duration_seconds > 0:
             start = round(max(0.0, min(float(self.selection_start_var.get()), self.duration_seconds)), 2)
             end = round(max(0.0, min(float(self.selection_end_var.get()), self.duration_seconds)), 2)
@@ -3981,6 +4109,10 @@ class StemSamplePrepApp(tk.Tk):
         canvas.delete("all")
         width = max(canvas.winfo_width(), 1)
         height = max(canvas.winfo_height(), 1)
+        view_start, view_end = self._wave_view_bounds()
+        view_span = view_end - view_start
+        if self.duration_seconds > 0:
+            self.wave_scroll.set(view_start / self.duration_seconds, min(view_end / self.duration_seconds, 1.0))
         mid = height // 2
         canvas.create_rectangle(0, 0, width, height, fill="#0b1018", outline="")
         for y in (height // 4, mid, height * 3 // 4):
@@ -4003,14 +4135,14 @@ class StemSamplePrepApp(tk.Tk):
                 width // 2,
                 mid - 12,
                 fill="#d7dee8",
-                text="Drop audio here",
+                text="Drop an audio file here",
                 font=("Segoe UI", 14, "bold"),
             )
             canvas.create_text(
                 width // 2,
                 mid + 16,
                 fill="#8c99a8",
-                text="or click Open to load WAV, MP3, FLAC, or M4A",
+                text="or Open Audio · WAV, MP3, FLAC, M4A supported",
                 font=("Segoe UI", 9),
             )
             return
@@ -4021,8 +4153,8 @@ class StemSamplePrepApp(tk.Tk):
             selection_start, selection_end = self._selection_bounds_no_error()
         peak_count = len(self.peaks)
         for x in range(0, width, 2):
-            index = min(int(x / width * peak_count), peak_count - 1)
-            seconds = self.duration_seconds * x / width if self.duration_seconds > 0 else 0.0
+            seconds = view_start + view_span * x / width
+            index = min(int(seconds / self.duration_seconds * peak_count), peak_count - 1)
             raw_peak = self.peaks[index]
             gain = self._fade_display_gain(seconds, selection_start, selection_end)
             peak = raw_peak * gain
@@ -4032,8 +4164,8 @@ class StemSamplePrepApp(tk.Tk):
             canvas.create_line(x, mid - spectral_height, x, mid + spectral_height, fill=color)
 
         for x in range(width):
-            index = min(int(x / width * peak_count), peak_count - 1)
-            seconds = self.duration_seconds * x / width if self.duration_seconds > 0 else 0.0
+            seconds = view_start + view_span * x / width
+            index = min(int(seconds / self.duration_seconds * peak_count), peak_count - 1)
             peak = self.peaks[index] * self._fade_display_gain(seconds, selection_start, selection_end)
             y = max(int(peak * (height * 0.44)), 1)
             canvas.create_line(x, mid - y, x, mid + y, fill="#54a3ff")
@@ -4041,7 +4173,7 @@ class StemSamplePrepApp(tk.Tk):
         if self.duration_seconds > 0:
             tick_count = max(2, min(12, width // 100))
             for tick in range(tick_count + 1):
-                seconds = self.duration_seconds * tick / tick_count
+                seconds = view_start + view_span * tick / tick_count
                 x = int(width * tick / tick_count)
                 canvas.create_line(x, height - 12, x, height, fill="#455165")
                 canvas.create_text(
@@ -4053,8 +4185,8 @@ class StemSamplePrepApp(tk.Tk):
                     font=("Segoe UI", 7),
                 )
             start, end = selection_start, selection_end
-            x1 = int(start / self.duration_seconds * width)
-            x2 = int(end / self.duration_seconds * width)
+            x1 = int((start - view_start) / view_span * width)
+            x2 = int((end - view_start) / view_span * width)
             canvas.create_rectangle(x1, 0, x2, height, outline="#ffd166", width=2)
             canvas.create_rectangle(0, 0, x1, height, fill="#000000", stipple="gray50", outline="")
             canvas.create_rectangle(x2, 0, width, height, fill="#000000", stipple="gray50", outline="")
@@ -4069,8 +4201,9 @@ class StemSamplePrepApp(tk.Tk):
         start, end = self._selection_bounds_no_error()
         width = max(canvas.winfo_width(), 1)
         height = max(canvas.winfo_height(), 1)
-        x1 = int(start / self.duration_seconds * width)
-        x2 = int(end / self.duration_seconds * width)
+        view_start, view_end = self._wave_view_bounds()
+        x1 = int((start - view_start) / (view_end - view_start) * width)
+        x2 = int((end - view_start) / (view_end - view_start) * width)
         self._draw_fade_overlay(canvas, x1, x2, height, max(end - start, 0.0))
         self._draw_playback_cursor()
 
@@ -4117,7 +4250,10 @@ class StemSamplePrepApp(tk.Tk):
         width = max(canvas.winfo_width(), 1)
         height = max(canvas.winfo_height(), 1)
         position = max(0.0, min(float(self.playback_position_var.get()), self.duration_seconds))
-        play_x = int(position / self.duration_seconds * width)
+        view_start, view_end = self._wave_view_bounds()
+        if not view_start <= position <= view_end:
+            return
+        play_x = int((position - view_start) / (view_end - view_start) * width)
         canvas.create_line(play_x, 0, play_x, height, fill="#ff4d6d", width=2, tags=("playback_cursor",))
         canvas.create_polygon(
             play_x - 5,
@@ -4132,8 +4268,13 @@ class StemSamplePrepApp(tk.Tk):
         )
 
     def _selection_bounds_no_error(self) -> tuple[float, float]:
-        start = min(self.selection_start_var.get(), self.selection_end_var.get())
-        end = max(self.selection_start_var.get(), self.selection_end_var.get())
+        try:
+            values = (float(self.selection_start_var.get()), float(self.selection_end_var.get()))
+            if not all(math.isfinite(value) for value in values):
+                return 0.0, self.duration_seconds
+        except (tk.TclError, ValueError):
+            return 0.0, self.duration_seconds
+        start, end = min(values), max(values)
         start = max(0.0, min(start, self.duration_seconds))
         end = max(0.0, min(end, self.duration_seconds))
         return start, end
@@ -4172,7 +4313,8 @@ class StemSamplePrepApp(tk.Tk):
     def _event_to_seconds(self, event: tk.Event) -> float:
         width = max(self.wave_canvas.winfo_width(), 1)
         ratio = max(0.0, min(float(event.x) / width, 1.0))
-        return ratio * self.duration_seconds
+        start, end = self._wave_view_bounds()
+        return start + ratio * (end - start)
 
     def _cancel_main_after_callbacks(self) -> None:
         for attr in (
@@ -4192,7 +4334,20 @@ class StemSamplePrepApp(tk.Tk):
             setattr(self, attr, None)
         self._stop_loading_messages()
 
+        # Include widget-specific idle redraws in this application's interpreter.
+        if self.closing:
+            for after_id in self.tk.call("after", "info"):
+                # The child widget owns its registered Python command and
+                # removes it during destroy; only cancel the Tcl timer here.
+                self.tk.call("after", "cancel", after_id)
+
     def on_close(self) -> None:
+        if self.busy:
+            messagebox.showinfo("Task in Progress", "Close the window after the current task finishes or is cancelled.")
+            return
+        if not self._guard_project(self.on_close):
+            return
+        self._workspace_close()
         self.closing = True
         self._cancel_main_after_callbacks()
         self.stop_preview(show_status=False)
@@ -4202,9 +4357,12 @@ class StemSamplePrepApp(tk.Tk):
         self.settings["delete_temp_after_render"] = bool(self.delete_temp_var.get())
         self.settings["output_dir"] = str(self.output_dir)
         self.paths.write_settings(self.settings)
+        self._cancel_main_after_callbacks()
         self.destroy()
 
 
 if __name__ == "__main__":
     app = StemSamplePrepApp()
+    if "--smoke-test" in sys.argv:
+        app.after(750, app.on_close)
     app.mainloop()

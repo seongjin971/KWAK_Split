@@ -159,6 +159,7 @@ class StemSeparator:
                     log(text)
             exit_code = process.wait()
         finally:
+            process.stdout.close()
             if process_callback:
                 process_callback(None)
 
