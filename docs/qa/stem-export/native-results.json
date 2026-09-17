@@ -1,0 +1,62 @@
+{
+  "method": "Windows Computer Use; actual compact-fix4 EXE; generated audio; both Export actions",
+  "format_preference_saved": "MP3",
+  "files": [
+    {
+      "name": "native demo_2.50-3.50_bass.mp3",
+      "duration": 0.8,
+      "codec": "mp3",
+      "sample_rate": 48000,
+      "bytes": 34605
+    },
+    {
+      "name": "native demo_2.50-3.50_bass.wav",
+      "duration": 0.8,
+      "codec": "pcm_s24le",
+      "sample_rate": 48000,
+      "bytes": 230502
+    },
+    {
+      "name": "native demo_2.50-3.50_drums.mp3",
+      "duration": 0.8,
+      "codec": "mp3",
+      "sample_rate": 48000,
+      "bytes": 34605
+    },
+    {
+      "name": "native demo_2.50-3.50_drums.wav",
+      "duration": 0.8,
+      "codec": "pcm_s24le",
+      "sample_rate": 48000,
+      "bytes": 230502
+    },
+    {
+      "name": "native demo_2.50-3.50_other.mp3",
+      "duration": 0.8,
+      "codec": "mp3",
+      "sample_rate": 48000,
+      "bytes": 34605
+    },
+    {
+      "name": "native demo_2.50-3.50_other.wav",
+      "duration": 0.8,
+      "codec": "pcm_s24le",
+      "sample_rate": 48000,
+      "bytes": 230502
+    },
+    {
+      "name": "native demo_2.50-3.50_vocals.mp3",
+      "duration": 0.8,
+      "codec": "mp3",
+      "sample_rate": 48000,
+      "bytes": 34605
+    },
+    {
+      "name": "native demo_2.50-3.50_vocals.wav",
+      "duration": 0.8,
+      "codec": "pcm_s24le",
+      "sample_rate": 48000,
+      "bytes": 230502
+    }
+  ]
+}

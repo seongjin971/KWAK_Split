@@ -8,6 +8,7 @@ import random
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import traceback
@@ -2799,16 +2800,23 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
     def export_individual_stems(self) -> None:
         if self.busy:
             return
-        if not self.stem_paths:
-            messagebox.showwarning("Stem required", "Run Stem Split first.")
+        ready_stems = self._ready_stem_paths()
+        if not ready_stems:
+            self.status_var.set("All four stems are required. Click Split Stems first.")
+            self._refresh_action_states()
             return
         try:
+            output_format = self.stem_export_format_var.get()
+            if output_format not in ("WAV", "MP3"):
+                raise ValueError("Choose WAV or MP3 in Settings > Stem format.")
             start, end = self._selection_bounds()
             duration = end - start
             fade_in = float(self.fade_in_var.get())
             fade_out = float(self.fade_out_var.get())
             effects = self._build_audio_effects()
             self._validate_stem_range(start, end)
+            stems = [MixStem(stem, ready_stems[stem], max(float(self.stem_vars[stem]["volume"].get()) / 100.0, 0.0),
+                             self.stem_range[0]) for stem in STEMS]
         except StemRangeError as exc:
             self.status_var.set(str(exc))
             return
@@ -2818,46 +2826,55 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
 
         if not self._confirm_render(individual=True):
             return
-        self.stop_preview(show_status=False)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        input_label = safe_name(self.current_input.stem if self.current_input else "stem")
-        targets: list[tuple[str, Path, float, Path]] = []
-        for stem in STEMS:
-            path = self.stem_paths.get(stem)
-            if not path or not path.exists():
-                continue
-            gain = max(float(self.stem_vars[stem]["volume"].get()) / 100.0, 0.0)
-            out_path = self._unique_output_path(self.output_dir / f"{input_label}_{stem}.wav")
-            targets.append((stem, path, gain, out_path))
-        if not targets:
-            messagebox.showwarning("Stem required", "No stem files to export.")
+        output_dir = self.output_dir
+        try:
+            output_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            self.status_var.set(f"Cannot save to this folder: {exc}")
             return
+        self.stop_preview(show_status=False)
+        input_label = self.current_input.stem if self.current_input else "audio"
+        extension = output_format.lower()
+        delete_temp = self.delete_temp_var.get()
 
         def worker() -> None:
-            outputs: list[str] = []
-            total = len(targets)
-            for index, (stem, path, gain, out_path) in enumerate(targets, start=1):
-                if self.cancel_event and self.cancel_event.is_set():
-                    raise OperationCancelled("Task cancelled.")
-                self._queue_status(f"Exporting {stem} ({index}/{total})")
-                render_mix(
-                    self.paths,
-                    [MixStem(stem, path, gain, self.stem_range[0])],
-                    out_path,
-                    start_seconds=start,
-                    duration_seconds=duration,
-                    fade_in=fade_in,
-                    fade_out=fade_out,
-                    log=self._queue_log,
-                    cancel_event=self.cancel_event,
-                    process_callback=self._register_process,
-                    effects=effects,
-                    include_silent=True,
-                )
-                outputs.append(str(out_path))
-            self.worker_queue.put(("stems_exported", outputs))
+            outputs: list[Path] = []
+            # Render the whole batch before exposing final files. Failed or
+            # cancelled jobs remove only files created by this export.
+            with tempfile.TemporaryDirectory(prefix=".kwak-stems-", dir=output_dir) as staging_dir:
+                staged = []
+                for index, stem in enumerate(stems, start=1):
+                    if self.cancel_event.is_set():
+                        raise OperationCancelled("Task cancelled.")
+                    self._queue_status(f"Exporting {stem.name} ({index}/4) · {output_format}")
+                    path = Path(staging_dir) / f"{input_label}_{start:.2f}-{end:.2f}_{stem.name}.{extension}"
+                    render_mix(
+                        self.paths, [stem], path,
+                        start_seconds=start, duration_seconds=duration,
+                        fade_in=fade_in, fade_out=fade_out, log=self._queue_log,
+                        cancel_event=self.cancel_event, process_callback=self._register_process,
+                        effects=effects, include_silent=True,
+                    )
+                    staged.append(path)
+                try:
+                    for path in staged:
+                        if self.cancel_event.is_set():
+                            raise OperationCancelled("Task cancelled.")
+                        destination = self._unique_output_path(output_dir / path.name)
+                        # Windows rename fails on a collision, preserving existing files.
+                        path.rename(destination)
+                        outputs.append(destination)
+                except Exception:
+                    for path in outputs:
+                        path.unlink(missing_ok=True)
+                    raise
+            if delete_temp:
+                self._cleanup_session_files(clear_state=False)
+            self.worker_queue.put(("stems_exported", [str(path) for path in outputs]))
+            if delete_temp:
+                self.worker_queue.put(("temp_cleaned", None))
 
-        self._run_worker("Export Stems", worker)
+        self._run_worker(f"Export Stems · {output_format}", worker)
 
     def render_audio(self, extension: str, label: str, filetypes: list[tuple[str, str]]) -> None:
         if self.busy:

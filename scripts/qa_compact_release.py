@@ -83,6 +83,26 @@ def main():
                 exports[kind]={"duration":duration,"sample_rate":stream["sample_rate"],
                                "codec":stream["codec_name"],"bytes":path.stat().st_size}
             results["exports"]=exports
+            individual={}
+            for kind in ("WAV","MP3"):
+                app.stem_export_format_var.set(kind)
+                app.export_stems_button.invoke();case.wait_idle()
+                assert len(app.result_files)==4
+                tracks={}
+                for name,path in zip(("vocals","drums","bass","other"),app.result_files):
+                    assert path.name.endswith(f"_{name}.{kind.lower()}")
+                    probe=subprocess.run([str(release/"bin/ffprobe.exe"),"-v","error","-show_streams",
+                        "-of","json",str(path)],env=env,capture_output=True,text=True,
+                        check=True,creationflags=subprocess.CREATE_NO_WINDOW)
+                    stream=json.loads(probe.stdout)["streams"][0]
+                    duration=read_duration(app.paths,path)
+                    assert abs(duration-1.6)<.06 and int(stream["sample_rate"])==48000
+                    if kind=="WAV":assert stream["codec_name"]=="pcm_s24le"
+                    else:assert stream["codec_name"]=="mp3" and int(stream["bit_rate"])==320000
+                    tracks[name]={"duration":duration,"codec":stream["codec_name"],"bytes":path.stat().st_size}
+                individual[kind]=tracks
+            results["individual_stem_exports"]=individual
+            print("Four separate WAVs and four separate MP3s verified.",flush=True)
             app.toggle_playback();case.wait_idle();pump(app,.25)
             assert app.preview_playing
             app.toggle_playback();paused=app.playback_position_var.get()

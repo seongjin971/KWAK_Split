@@ -7,10 +7,11 @@ Accepted UI and behavior: docs/compact-ui-implementation.md
 Verification: docs/qa/compact/verification.md
 Latest interaction audit: docs/qa/interaction-audit/verification.md
 Latest editing corrections: docs/qa/precision-controls/verification.md
+Four-track export: docs/qa/stem-export/verification.md
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact-fix3/KWAK Split/KWAK Split.exe,
+1. Run "Run KWAK Split.cmd". It selects release/compact-fix4/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
 3. Right-drag the waveform or edit Start/End to select a range. The initial
@@ -27,6 +28,9 @@ Quick Start
 7. WAV or MP3 immediately exports the current selection and mix to Save folder.
    Existing names get numbered suffixes. Click the saved-path status to open
    its folder. Errors and progress appear in the same contextual area.
+8. To save the four tracks separately, choose WAV or MP3 in Settings > Stem format,
+   then click Export beside Split Stems in the Stem Mixer. All four separated
+   tracks must be available. This does not start another separation.
 
 Window Size and Displays
 ------------------------
@@ -58,7 +62,7 @@ Editing and Monitoring
 - Stem faders span silence to +12 dB. Unity is one-third down the scale;
   double-click or Home resets a focused fader to 0 dB.
 - Mute is yellow; Solo is red. Mute wins if both are enabled. With any Solo
-  active, only unmuted soloed stems play/export. An entirely excluded mix is
+  active, only unmuted soloed stems play or export in the mixed result. An entirely excluded mix is
   rejected with an error. Limiter prevents peaks above its ceiling without
   automatically increasing quiet audio. Peak Normalize applies on export only.
 - Selection/cursor coordinates use the original track. Speed changes output
@@ -109,6 +113,18 @@ Defaults: 48 kHz / 24 bit, MP3 320 kbps, Loop on, Normalize off, Limiter on.
 WAV and MP3 share Save folder and preserve original Unicode filenames.
 Working audio uses float32, avoiding intermediate 16-bit quantization.
 
+Stem Mixer > Export saves vocals, drums, bass and other as four separate files.
+Settings > Stem format chooses WAV (default) or MP3 and is retained on restart.
+It uses the same sample rate, WAV depth / MP3 bitrate and Save folder as mixed
+export. Names include the source filename, selected range and stem name.
+Selection, each fader, EQ, Speed, Pitch, fades and Limiter apply; Mute/Solo are
+ignored so all four tracks are saved. A silent fader still produces a file.
+Peak Normalize, when enabled, normalizes each stem independently. Disable it
+to retain the relative levels between stems. Existing files are preserved with
+numbered suffixes. Cancellation or a processing failure removes the unfinished
+batch; working audio is kept unless the complete export succeeds and cleanup
+was enabled. Click the saved-path status to open the folder containing all four.
+
 Delete working audio after export is off by default. When enabled, successful
 export removes owned temporary audio and ends that editing/recovery session.
 The original source and saved project assets are preserved. Save a project first
@@ -116,7 +132,7 @@ if you want to resume. Settings also retains Keep adjustments and output options
 
 Running on Another PC
 --------------------
-Copy the entire release/compact-fix3/KWAK Split folder, not just the EXE, to a writable
+Copy the entire release/compact-fix4/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;
 the package no longer relies on the developer's Python installation path.

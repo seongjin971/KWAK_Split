@@ -13,6 +13,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "output_dir": "",
     "keep_adjustments": False,
     "split_scope": "Selection",
+    "stem_export_format": "WAV",
     "recent_project": "",
     "loop": True,
     "sample_rate": 48000,

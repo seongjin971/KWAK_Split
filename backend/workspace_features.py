@@ -27,6 +27,8 @@ class WorkspaceFeatures:
         self.keep_adjustments_var = tk.BooleanVar(value=bool(self.settings.get("keep_adjustments", False)))
         scope=self.settings.get("split_scope","Selection")
         self.split_scope_var = tk.StringVar(value=scope if scope in ("Selection","Full track") else "Selection")
+        stem_format = self.settings.get("stem_export_format", "WAV")
+        self.stem_export_format_var = tk.StringVar(value=stem_format if stem_format in ("WAV", "MP3") else "WAV")
         self.mix_summary_var = tk.StringVar(value="Open audio to see the monitor source and export settings.")
         self.project_label_var = tk.StringVar(value="Unsaved project")
         self.view_start = 0.0

@@ -276,6 +276,9 @@ class CompactInterface:
         self._label(heading,"STEM MIXER",kind="bold",color=MUTED).pack(side="left")
         self.separate_button=self._button(heading,"Split Stems",self.separate_stems,width=106,icon_name="split")
         self.separate_button.pack(side="right")
+        self.export_stems_button=self._button(heading,"Export",self.export_individual_stems,width=80,icon_name="export")
+        self.export_stems_button.pack(side="right",padx=(self.px(6),self.px(6)))
+        self.tooltips.append(ToolTip(self.export_stems_button,"Export all four stems. Choose WAV or MP3 in Settings > Stem format."))
         self.stem_cards=tk.Frame(panel,bg=PANEL)
         self.stem_cards.grid(row=1,column=0,sticky="nsew",padx=self.px(8),pady=(0,self.px(8)))
         self.stem_cards.rowconfigure(0,weight=1);self.stem_name_labels={}
@@ -485,6 +488,7 @@ class CompactInterface:
         for widget,enabled in ((self.load_button,idle),(self.settings_button,idle),(self.advanced_button,idle),
                                (self.separate_button,idle and source),(self.play_button,(idle and source) or self.preview_playing),
                                (self.render_button,idle and source),(self.render_mp3_button,idle and source),
+                               (self.export_stems_button,idle and bool(self._ready_stem_paths())),
                                (self.start_spinbox,idle and source),(self.end_spinbox,idle and source)):
             self._set_state(widget,enabled)
         for widget in self.effect_widgets:self._set_state(widget,idle and source)
@@ -654,7 +658,7 @@ class CompactInterface:
         check.grid(row=row,column=0,sticky="w",pady=self.px(3));return check
 
     def open_render_settings(self):
-        window,content=self._new_dialog("Settings",530,475);self.render_settings_window=window
+        window,content=self._new_dialog("Settings",530,515);self.render_settings_window=window
         group=self._group(content,"Save folder",0)
         row=tk.Frame(group,bg=PANEL);row.grid(row=1,column=0,sticky="ew");row.columnconfigure(0,weight=1)
         self.settings_folder_var=tk.StringVar(value=str(self.output_dir))
@@ -676,8 +680,12 @@ class CompactInterface:
                 lambda v=variable,items=ordered:items.index(v.get()),
                 lambda value,v=variable,items=ordered:v.set(items[int(value)]),
                 lambda items=ordered:(0,len(items)-1),lambda:1,1)
-        self._check(group,"Peak Normalize on export",self.peak_normalize_var,2)
-        self._check(group,"Delete working audio after export",self.delete_temp_var,3)
+        stem_format=tk.Frame(group,bg=PANEL);stem_format.grid(row=2,column=0,sticky="w",pady=self.px(6))
+        self._label(stem_format,"Stem format",kind="small",color=MUTED).pack(side="left",padx=(0,self.px(8)))
+        ttk.Combobox(stem_format,values=("WAV","MP3"),textvariable=self.stem_export_format_var,
+                     state="readonly",width=8,font=self.fonts["body"]).pack(side="left")
+        self._check(group,"Peak Normalize on export",self.peak_normalize_var,3)
+        self._check(group,"Delete working audio after export",self.delete_temp_var,4)
         group=self._group(content,"Playback & editing",2)
         self._check(group,"Loop playback",self.loop_var,1)
         self._check(group,"Keep adjustments when opening new audio",self.keep_adjustments_var,2)
@@ -695,6 +703,8 @@ class CompactInterface:
                   "Amber lines/markers show fades on the waveform.\n"
                   "Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z: undo / redo.\nDouble-click a fader: 0 dB. Q controls resonance.\n"
                   "Selection times use the original audio timeline.\nNormalize is applied on export only.\n"
+                  "Stem Mixer > Export saves all four tracks to Save folder.\n"
+                  "Stem exports apply selection, faders and effects, ignoring Mute/Solo.\n"
                   "Ctrl+S: save session; Ctrl+Shift+O: open session.\nCtrl+Shift+R: restore the last session.")
         self._label(self.help_content,helptext,kind="small",color=MUTED,justify="left",wraplength=self.px(450)).pack(anchor="w",pady=self.px(6))
         self._button(self.help_content,"Environment Check",self.environment_details,width=145).pack(anchor="w")
@@ -727,7 +737,7 @@ class CompactInterface:
         for name,variable in (("loop",self.loop_var),("sample_rate",self.sample_rate_var),("bit_depth",self.bit_depth_var),
                                ("mp3_bitrate",self.mp3_bitrate_var),("peak_normalize",self.peak_normalize_var),
                                ("keep_adjustments",self.keep_adjustments_var),("delete_temp_after_render",self.delete_temp_var),
-                               ("split_scope",self.split_scope_var)):
+                               ("split_scope",self.split_scope_var),("stem_export_format",self.stem_export_format_var)):
             self.settings[name]=variable.get()
     def open_advanced(self):
         _,content=self._new_dialog("Advanced Effects",420,305)
