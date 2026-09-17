@@ -49,8 +49,20 @@ class CompactInterface:
 
     def _button(self,parent,text="",command=None,**kwargs):
         widget=CompactButton(parent,self,text,command,**kwargs)
+        self._track_edit_widget(widget)
         self.compact_buttons.append(widget)
         return widget
+
+    def _track_edit_widget(self,widget):
+        # Tk dispatches a widget's binding before the global binding. Take the
+        # initial snapshot first, before a fader jump/spin arrow/toggle mutates it.
+        tag="KwakEditStart"
+        if not getattr(self,"_edit_tag_bound",False):
+            for button in (1,3):
+                self.bind_class(tag,f"<ButtonPress-{button}>",self._begin_edit_drag)
+            self._edit_tag_bound=True
+        tags=widget.bindtags()
+        if tag not in tags:widget.bindtags((tag,*tags))
 
     def _spin(self,parent,variable,minimum,maximum,step=1,width=6,fmt=None):
         display=tk.StringVar(value=(fmt % variable.get()) if fmt else f"{variable.get():g}")
@@ -59,6 +71,7 @@ class CompactInterface:
                      justify="left",font=self.fonts["body"])
         if fmt: options["format"]=fmt
         widget=ttk.Spinbox(parent,**options)
+        self._track_edit_widget(widget)
         def to_model(*_args):
             if updating[0] or not widget.winfo_exists():return
             try:value=float(display.get())
@@ -154,6 +167,7 @@ class CompactInterface:
         self.play_button=self._button(self.selection_controls,"Play",self.toggle_playback,width=76,icon_name="play")
         self.play_button.pack(side="left")
         self.wave_canvas=tk.Canvas(self.timeline,bg=INSET,highlightbackground=LINE,highlightthickness=1,bd=0,takefocus=1)
+        self._track_edit_widget(self.wave_canvas)
         self.wave_canvas.grid(row=1,column=0,sticky="nsew",pady=(0,self.px(8)))
         self.wave_canvas.bind("<Configure>",self._schedule_waveform_resize_draw)
         self.wave_canvas.bind("<Button-1>",self._wave_seek_to_event)
@@ -286,6 +300,9 @@ class CompactInterface:
 
     def _finish_workspace(self):
         self._history_suspended=False;self.history=EditHistory(self._edit_snapshot())
+        for widget in (self.eq_editor,*self.effect_widgets,
+                       *(widgets[0] for widgets in self.stem_widgets.values())):
+            self._track_edit_widget(widget)
         for variable in self._edit_variables():
             variable.trace_add("write",self._queue_edit)
             variable.trace_add("write",self._schedule_compact_render)
@@ -295,7 +312,6 @@ class CompactInterface:
                 getattr(self,name+"_var").trace_add("write",lambda *a:self._schedule_live_preview_restart())
         for variable in (self.fade_in_var,self.fade_out_var):variable.trace_add("write",lambda *a:self._schedule_fade_live_preview_restart())
         for button in (1,3):
-            self.bind_all(f"<ButtonPress-{button}>",self._begin_edit_drag,add="+")
             self.bind_all(f"<ButtonRelease-{button}>",self._end_edit_drag,add="+")
         for chord,action in (("<Control-z>",self.undo_edit),("<Control-y>",self.redo_edit),("<Control-Shift-Z>",self.redo_edit),
                               ("<Control-o>",self.open_audio),("<Control-s>",self.save_current_project),
@@ -422,9 +438,17 @@ class CompactInterface:
             self.eq_editor.draw()
         except (ValueError,tk.TclError):pass
 
+    def _set_eq_validation_error(self,error):
+        previous=getattr(self,"_eq_validation_error","")
+        message=f"EQ: {error}" if error else ""
+        self._eq_validation_error=message
+        if message:
+            if self.status_var.get()!=message:self.status_var.set(message)
+        elif previous and self.status_var.get()==previous:self.status_var.set("")
+
     def _status_changed(self,*_args):
         message=self.status_var.get()
-        routine=message.startswith(("Loaded:","Preview playing:","Playing:","Playback stopped.","Playback complete.","Stem Split complete.","Stem Split already ready.","Ready"))
+        routine=message.startswith(("Loaded:","Preview playing:","Realtime preview:","Playing:","Playback stopped.","Playback complete.","Playback finished.","Stem Split complete.","Stem Split already ready.","Ready"))
         if (message and not routine) or self.busy:self.status_frame.grid(row=2,column=0,sticky="ew")
         else:self.status_frame.grid_remove()
         if self.busy:self.progressbar.grid();self.cancel_button.grid()
@@ -555,6 +579,7 @@ class CompactInterface:
     def _check(self,parent,text,variable,row):
         check=tk.Checkbutton(parent,text=text,variable=variable,bg=PANEL,fg=TEXT,selectcolor=INSET,
                              activebackground=PANEL,activeforeground=TEXT,font=self.fonts["body"],anchor="w",bd=0,highlightthickness=0)
+        self._track_edit_widget(check)
         check.grid(row=row,column=0,sticky="w",pady=self.px(3));return check
 
     def open_render_settings(self):
@@ -618,7 +643,7 @@ class CompactInterface:
                                ("keep_adjustments",self.keep_adjustments_var),("delete_temp_after_render",self.delete_temp_var)):
             self.settings[name]=variable.get()
     def open_advanced(self):
-        _,content=self._new_dialog("Advanced Effects",420,275)
+        _,content=self._new_dialog("Advanced Effects",420,305)
         box=self._group(content,"Q",0)
         fields=tk.Frame(box,bg=PANEL);fields.grid(row=1,column=0,sticky="ew")
         for i,(label,variable,lo,hi,step) in enumerate((("Mid Q",self.eq_mid_q_var,.3,6,.1),
@@ -628,9 +653,23 @@ class CompactInterface:
             self._label(cell,label,kind="small",color=MUTED).pack(anchor="w")
             self._spin(cell,variable,lo,hi,step,9,"%.2f").pack(anchor="w",pady=self.px(4))
         self._check(box,"Limiter",self.limiter_enabled_var,2)
-        self._button(content,"Done",self._close_render_settings,width=70,primary=True).grid(row=1,column=0,sticky="e",padx=self.px(16),pady=self.px(10))
+        self.advanced_error_var=tk.StringVar()
+        self._label(content,variable=self.advanced_error_var,kind="small",color="#ffc1ac",wraplength=self.px(380)).grid(row=1,column=0,sticky="ew",padx=self.px(16))
+        self._button(content,"Done",self._close_render_settings,width=70,primary=True).grid(row=2,column=0,sticky="e",padx=self.px(16),pady=self.px(10))
     def _close_render_settings(self):
         if self._dialog and self._dialog.winfo_exists():
+            # Dialog fields disappear from validation when destroyed; never
+            # leave an invalid Q accepted in the model after dismissing Advanced.
+            for widget,display,variable,fmt in self._numeric_fields:
+                if not widget.winfo_exists() or widget.winfo_toplevel()!=self._dialog:continue
+                try:
+                    value=float(display.get())
+                    if not math.isfinite(value) or not float(widget.cget("from"))<=value<=float(widget.cget("to")):
+                        raise ValueError()
+                except ValueError:
+                    self.advanced_error_var.set(f"Enter a Q value from {widget.cget('from')} to {widget.cget('to')}.")
+                    widget.focus_set();return
+            self._commit_edit()
             self._dialog.grab_release();self._dialog.destroy()
         self._dialog=None;self.render_settings_window=None
         self.compact_buttons=[w for w in self.compact_buttons if w.winfo_exists()]

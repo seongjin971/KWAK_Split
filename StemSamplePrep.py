@@ -2656,19 +2656,20 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             return
         self.load_audio_path(Path(file_path))
 
-    def load_audio_path(self, input_path: Path) -> None:
+    def load_audio_path(self, input_path: Path) -> bool:
+        """Return whether a load started, so rejected project relinks cannot linger."""
         if self.busy:
             self.status_var.set("Wait for the current task to finish.")
-            return
+            return False
         input_path = input_path.resolve()
         if not input_path.exists() or not input_path.is_file():
             messagebox.showwarning("Open Audio", "This is not a loadable audio file.")
-            return
+            return False
         if input_path.suffix.lower() not in AUDIO_EXTENSIONS:
             messagebox.showwarning("Open Audio", "Only WAV, MP3, FLAC, and M4A files are supported.")
-            return
+            return False
         if not self._opening_project and not self._guard_project(lambda: self.load_audio_path(input_path)):
-            return
+            return False
         self.stop_preview(show_status=False)
         session_name = f"{time.strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}_{safe_name(input_path.stem)}"
 
@@ -2707,6 +2708,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             )
 
         self._run_worker("Open Audio", worker)
+        return True
 
     def separate_stems(self) -> None:
         if self.busy:
@@ -3599,10 +3601,11 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         threading.Thread(target=wrapped, daemon=True).start()
 
     def _register_process(self, process: subprocess.Popen | None) -> None:
-        if self.closing and process is not None:
-            self._terminate_owned_process(process)
-            return
+        # Publish first: Cancel/Close either sees this child, or its signal is
+        # already set when we check below. Neither ordering leaves an orphan.
         self.current_process = process
+        if process is not None and (self.closing or (self.cancel_event and self.cancel_event.is_set())):
+            self._terminate_owned_process(process)
 
     def _terminate_owned_process(self, process: subprocess.Popen) -> None:
         if process.poll() is not None:
@@ -4333,6 +4336,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
     def _wave_mouse_down(self, event: tk.Event) -> None:
         if self.duration_seconds <= 0 or self.busy:
             return
+        self.wave_canvas.focus_set()
         seconds = self._event_to_seconds(event)
         self.playback_cursor_manual = False
         self.drag_start_seconds = seconds
@@ -4349,11 +4353,20 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self._selection_changed()
 
     def _wave_mouse_up(self, _event: tk.Event) -> None:
+        selecting = self.drag_start_seconds is not None
         self.drag_start_seconds = None
+        if selecting and self.preview_playing and not self.busy:
+            self.stop_preview(show_status=False)
+            self.playback_cursor_manual = False
+            try:
+                self._start_context_preview()
+            except (ValueError, tk.TclError, AudioProcessingError) as exc:
+                self.status_var.set(f"Preview settings need attention: {exc}")
 
     def _wave_seek_to_event(self, event: tk.Event) -> None:
         if self.duration_seconds <= 0 or self.busy:
             return
+        self.wave_canvas.focus_set()
         self.drag_start_seconds = None
         seconds = self._event_to_seconds(event)
         self.playback_cursor_manual = True

@@ -8,6 +8,7 @@ from tkinter import ttk
 
 from backend.compact_model import position_to_volume, volume_to_position
 from backend.audio_processing.equalizer import effect_biquads, response_db
+from backend.audio_processing.ffmpeg_tools import AudioProcessingError
 
 BG = "#0b1018"
 PANEL = "#141c28"
@@ -89,7 +90,8 @@ class CompactButton(tk.Canvas):
         self.bind("<Configure>", lambda e:self.draw())
         self.bind("<Enter>", lambda e:self._hover(True)); self.bind("<Leave>", lambda e:self._hover(False))
         self.bind("<Button-1>", self._click)
-        self.bind("<Key-space>", self._click); self.bind("<Return>", self._click)
+        # Space belongs to the editor transport, including after Tab navigation.
+        self.bind("<Return>", self._key_activate)
         self.bind("<FocusIn>", lambda e:self.draw()); self.bind("<FocusOut>", lambda e:self.draw())
         if toggle:
             toggle.trace_add("write", lambda *a:self.draw())
@@ -104,7 +106,18 @@ class CompactButton(tk.Canvas):
 
     def _click(self, _event=None):
         if self.enabled:
-            self.focus_set(); self.invoke()
+            # A mouse click finishes text editing without leaving this button
+            # selected. Keyboard navigation can still focus it and use Enter.
+            self.winfo_toplevel().focus_set()
+            try:
+                self.invoke()
+            finally:
+                # A native file dialog can consume the matching mouse release.
+                self.app._end_edit_drag()
+        return "break"
+
+    def _key_activate(self, _event=None):
+        self.invoke()
         return "break"
 
     def invoke(self):
@@ -262,6 +275,7 @@ class CompactEq(tk.Canvas):
             x,_=self.xy(freq,0)
             self.create_text(x,b+12*s,text=label,anchor="w" if freq==20 else "e" if freq==20000 else "center",fill=MUTED,font=self.app.fonts["small"])
         self.create_text(4*s,7*s,text="dB",anchor="w",fill=MUTED,font=self.app.fonts["small"])
+        sections=None
         try:
             effects=self.app._build_audio_effects(); sections=effect_biquads(effects)
             points=[]
@@ -269,9 +283,19 @@ class CompactEq(tk.Canvas):
                 freq=20*10**(3*i/180)
                 points.extend(self.xy(freq,response_db(sections,freq,effects.sample_rate)))
             self.create_line(*points,fill=BLUE,width=max(1.5,2*s))
+            self.app._set_eq_validation_error("")
+        except AudioProcessingError as exc:
+            self.app._set_eq_validation_error(str(exc))
+        except (ValueError,tk.TclError):
+            pass
+        try:
+            # Keep the frequency handles reachable while an invalid pass pair
+            # is being corrected; no response curve is drawn for invalid audio.
             for index,band in enumerate(("low","mid","high"),1):
                 freq=getattr(self.app,"eq_"+band+"_freq_var").get()
-                gain=response_db(sections,freq,effects.sample_rate) if self.app._band_is_pass(band) else getattr(self.app,"eq_"+band+"_var").get()
+                if self.app._band_is_pass(band):
+                    gain=response_db(sections,freq,effects.sample_rate) if sections is not None else 0
+                else:gain=getattr(self.app,"eq_"+band+"_var").get()
                 x,y=self.xy(freq,gain); self.handles[band]=(x,y)
                 self.create_oval(x-9*s,y-9*s,x+9*s,y+9*s,fill=BLUE if self.enabled else "#536e92",outline="")
                 self.create_text(x,y,text=str(index),fill="#12233b",font=self.app.fonts["small"])

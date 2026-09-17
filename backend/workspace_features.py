@@ -344,8 +344,10 @@ class WorkspaceFeatures:
                 messagebox.showwarning("Separate Stems Again", "Some saved stems are missing. You can reopen the original audio and separate it again.")
             self._pending_project = (None if recovery else path, document)
             self._opening_project = True
-            self.load_audio_path(source)
+            if not self.load_audio_path(source):
+                self._pending_project = None
         except (OSError, ValueError, json.JSONDecodeError) as exc:
+            self._pending_project = None
             messagebox.showerror("Open Project", str(exc))
         finally:
             self._opening_project = False

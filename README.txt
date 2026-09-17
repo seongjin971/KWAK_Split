@@ -5,10 +5,11 @@ Edition: 2026-09-17
 Goals and status: project.md
 Accepted UI and behavior: docs/compact-ui-implementation.md
 Verification: docs/qa/compact/verification.md
+Latest interaction audit: docs/qa/interaction-audit/verification.md
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact-fix1/KWAK Split/KWAK Split.exe,
+1. Run "Run KWAK Split.cmd". It selects release/compact-fix2/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
 3. Right-drag the waveform or edit Start/End to select a range. The initial
@@ -58,6 +59,7 @@ Editing and Monitoring
 Keyboard and Waveform
 ---------------------
 Space                  Play / Pause (outside text inputs and dialogs)
+Tab / Enter            Focus a button / activate it; mouse clicks leave no button selection
 Ctrl+O                 Open Audio
 Ctrl+Z                 Undo
 Ctrl+Y / Ctrl+Shift+Z   Redo
@@ -98,7 +100,7 @@ if you want to resume. Settings also retains Keep adjustments and output options
 
 Running on Another PC
 --------------------
-Copy the entire release/compact-fix1/KWAK Split folder, not just the EXE, to a writable
+Copy the entire release/compact-fix2/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;
 the package no longer relies on the developer's Python installation path.

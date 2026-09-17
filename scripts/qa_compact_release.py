@@ -24,7 +24,8 @@ def pump(app,seconds):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--release",type=Path,required=True)
-    release=parser.parse_args().release.resolve()
+    parser.add_argument("--evidence-dir",type=Path,default=ROOT/"docs/qa/compact")
+    args=parser.parse_args();release=args.release.resolve()
     class ReleaseAssets(AppPaths):
         @property
         def backend(self):return release/"backend"
@@ -32,7 +33,8 @@ def main():
         def models(self):return release/"models"
         @property
         def bin(self):return release/"bin"
-    evidence=ROOT/"docs/qa/compact";evidence.mkdir(exist_ok=True)
+    evidence=args.evidence_dir.resolve();evidence.mkdir(parents=True,exist_ok=True)
+    (evidence/"captures").mkdir(exist_ok=True)
     results={"release":str(release.relative_to(ROOT)),"external_pc_tested":False,
              "method":"packaged EXE startup; real source UI with bundled audio engines; dummy playback device"}
     minimal_path=str(release/"bin")+os.pathsep+os.path.join(os.environ["SystemRoot"],"System32")
