@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import pytest
+from test_audit_audio import assert_empty_header
 
 import test_workspace
 from StemSamplePrep import StemSamplePrepApp
@@ -210,7 +211,7 @@ def test_coverage_notice_tracks_scope_and_clears_for_valid_selection(session):
     app._selection_changed()
     assert not app._stem_coverage_notice
     assert app.status_var.get() == ""
-    assert not app.status_label.grid_info()
+    assert_empty_header(app)
     app.status_var.set("Saved: previous.wav")
     app._sync_stem_range_notice()
     assert app.status_var.get() == "Saved: previous.wav"

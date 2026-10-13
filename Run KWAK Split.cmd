@@ -1,5 +1,5 @@
 @echo off
-set "APP_DIR=%~dp0release\compact-fix29\KWAK Split"
+set "APP_DIR=%~dp0release\compact-fix30\KWAK Split"
 if exist "%APP_DIR%\KWAK Split.exe" (
     start "" "%APP_DIR%\KWAK Split.exe"
 ) else (

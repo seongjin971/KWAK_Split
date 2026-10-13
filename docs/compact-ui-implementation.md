@@ -4,7 +4,7 @@ Date: 2026-09-17
 
 ## Authorization and preservation
 
-The user approved the UI and requested a completed application, documentation, a baseline commit before implementation, and resizing support from 1920×1080 through 3840×2160. Continue through implementation, validation, and a separate local release. Preserve the earlier release, runtime/models, user settings/audio/projects, all previous source work and QA evidence. Do not reset, stash, force-push, or modify the promotional site.
+The user approved the UI and requested a completed application, documentation, a baseline commit before implementation, and resizing support from 1920×1080 through 3840×2160. Continue through implementation, validation, and a separate local release. The final accepted version is compact-fix30. Preserve its runtime/models, current source, user audio/settings and approved design references. The October 13 cleanup supersedes the earlier instruction to retain every intermediate release and raw QA file. Do not reset, stash, force-push, or modify the promotional site.
 
 Accepted design sources (preserve and track all three):
 
@@ -20,19 +20,19 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
   dragging a range. On release during playback, use the current audio clock and
   the existing live-seek handoff to apply the new bounds/fades in the same output
   device. The cursor returns to the new start only when outside the new range.
-  Evidence: `qa/range-playback/verification.md`.
+  Evidence: `qa/stabilization/verification.md`.
 
 - The October 3 native-input repair distinguishes Windows Num Lock from Alt.
   Lock keys must not change handle drags into seeks or block Shift+click/bracket
   marking. Preserve intentional Control/Alt exclusions and test actual native
   input as well as generated events with the observed lock state.
-  Evidence: `qa/selection-lock-keys/verification.md`.
+  Evidence: `qa/stabilization/verification.md`.
 
 - The October 3 header correction removes the white rectangle left by hiding
   the status label on Windows. Keep an empty dark label painted while idle,
   with an ordinary pointer and no detail action. Retain progress text, Cancel,
   completion links and errors. Verify the current display only.
-  Evidence: `qa/header-blank/verification.md`.
+  Evidence: `qa/stabilization/verification.md`.
 
 - The October 3 simplification makes boundary handles larger and fully visible
   at the file ends. Plain handle clicks/jitter keep the playback cursor; dragging
@@ -40,7 +40,7 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
   Remove all hover tooltips; consolidate control instructions in README, opened
   from Settings beside Environment Check. Live task/error details stay available.
   This delivery checks the current display only, without extending/rerunning the
-  resolution matrix. Evidence: `qa/simple-handles/verification.md`.
+  resolution matrix. Evidence: `qa/stabilization/verification.md`.
 
 - The October 3 trackpad update adds click then Shift+click to select between
   source positions. The last explicit click/drag seek is a fixed anchor, unaffected
@@ -50,7 +50,7 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
   does not switch modes when crossing a handle during a held drag. Shift+click
   keeps the current stream running and changes the next play/loop/export range.
   Preserve right-button behavior, history, point selections and stem limits.
-  Evidence: `qa/trackpad-selection/verification.md`.
+  Evidence: `qa/stabilization/verification.md`.
 
 - The October 3 waveform selection update adds wide, proportional targets for
   independently dragging either blue boundary with the right button. Right-drag
@@ -61,7 +61,7 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
   next playback, loop or export. Keep left-button seeking, input/dialog focus,
   complete-stem bounds and one Undo action per gesture/mark. Display stays at
   two decimals; movement and history preserve precise file/stem boundaries.
-  Evidence: `qa/waveform-selection/verification.md`.
+  Evidence: `qa/stabilization/verification.md`.
 
 - The October 2 resize performance request uses a temporary in-memory editor
   image during native border dragging. Capture the complete client before its
@@ -69,11 +69,11 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
   then restore live controls once at the final size. Playback keeps its stream;
   cursor/spectrum/status visuals catch up after the drag. Keep aspect/bounds,
   DPI support and no-scroll composition. Batch redundant geometry and drawing.
-  Evidence: `qa/smooth-resize/verification.md`.
+  Evidence: `qa/stabilization/verification.md`.
 
 - Top row: KWAK Split, Open Audio, Settings icon, WAV, MP3.
 - Above the stereo waveform: filename, length/channel information; Start, End, selection duration; Play/Pause at right. Left click or left drag seeks; right drag selects; wheel zoom follows the pointer; keyboard shortcuts remain usable without hijacking text entry.
-- The October 2 seek request keeps the output player open. A background worker prepares another decoder at the requested source position, then a 10 ms PCM crossfade hands over without restarting the output device. A held drag completes in-flight preparation and retains only the latest pending position. Source cursor and spectrum follow the output clock; EQ, mixer, partial-stem offsets and selection fades survive the handoff. See `qa/live-seek/verification.md`.
+- The October 2 seek request keeps the output player open. A background worker prepares another decoder at the requested source position, then a 10 ms PCM crossfade hands over without restarting the output device. A held drag completes in-flight preparation and retains only the latest pending position. Source cursor and spectrum follow the output clock; EQ, mixer, partial-stem offsets and selection fades survive the handoff. See `qa/stabilization/verification.md`.
 - The October 1 waveform request removes L/R text and its reserved left space. Keep the upper/lower stereo channels and draw samples from the visible left edge, including the beginning of zoomed and panned views. Preserve source-time mapping, selection, cursor and fades.
 - Equalizer left, Stem Mixer right; Split Stems at the right of the mixer heading. The October 1 request supersedes narrow-window stacking: keep these panels side by side and uniformly shrink fonts, controls, spacing and graphs to fit. Speed, Pitch, Fade in, Fade out are one row under EQ.
 - No extra transport bar, selection panel, Project/preset/Loop/Undo/Redo buttons or duplicate persistent status. Loop and output preferences are in Settings. History uses Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z. Project save/open/recovery and their shortcuts were removed on October 13; only per-file Undo/Redo remains.
@@ -84,7 +84,7 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
 - Stem faders span silence through +12 dB, with 0 dB at 33% from the top and the accepted scale labels. The later October 1 request replaces their double-click reset with Ctrl+click, following the Cubase Windows control default. EQ knobs/value labels and stem faders/value labels reset with Ctrl+click: 0 dB for gain/volume, 24 dB/oct for Pass slope. Reset once per Undo step without starting a drag or jumping the fader track; disabled controls remain inactive. Mute is yellow and Solo red. Mute takes precedence over Solo, matching the accepted preview. Playback and mixed export use the same stem selection.
 - Before splitting, play/export use the loaded audio and the stem controls are disabled. Split Stems defaults to the selected source-time range (initially the entire file). Settings offers Full track for one longer split followed by unrestricted selection edits. As of 2026-09-26, complete stems constrain all selection editing and restored history to their available range; choose Full track and explicitly split to expand coverage. Incomplete/unavailable stem audio retains the safety guard and is never silently substituted. No automatic separation.
 - Time inputs retain two decimal places by the user's explicit choice. Numeric values support vertical dragging and wheel adjustment; Start/End increments follow the visible timeline span down to 0.01 seconds. Preserve typing, supported-value limits, disabled states and one Undo per drag.
-- The October 3 numeric reset request adds Ctrl+click to EQ frequency (120/1000/8000 Hz), Speed (100%), Pitch (0 st), Fade in and Fade out (0.02 s each). Reset only the clicked field, using shared edit defaults and one Undo step. Consume the held gesture even when Ctrl is released first, including clicks over spin arrows. Keep normal text selection, typing, arrows, wheel, vertical scrubbing and disabled-state guards. Verify Num Lock and the current display only. See `qa/numeric-reset/verification.md`.
+- The October 3 numeric reset request adds Ctrl+click to EQ frequency (120/1000/8000 Hz), Speed (100%), Pitch (0 st), Fade in and Fade out (0.02 s each). Reset only the clicked field, using shared edit defaults and one Undo step. Consume the held gesture even when Ctrl is released first, including clicks over spin arrows. Keep normal text selection, typing, arrows, wheel, vertical scrubbing and disabled-state guards. Verify Num Lock and the current display only. See `qa/stabilization/verification.md`.
 - Show fades by attenuating the waveform and drawing amber envelope lines. A small endpoint marker keeps subpixel fades discoverable without exaggerating their duration. Preview and export fades stay anchored to the selected source range, including after seeking and at different speeds.
 - WAV/MP3 export the current selection and mix directly to the shared Save folder with the selected encoding options. Browse opens the real Windows folder chooser. Cancel retains the old folder. Preserve existing files using numbered names. Show completion/path or errors beside the logo; hide the text when idle without moving the header buttons.
 - The later four-track-export request adds Export beside Split Stems and Settings > Stem format (WAV/MP3). Save all four stems individually using the selection, faders and shared effects, ignoring Mute/Solo. A silent fader still produces a file. Peak Normalize is independent per stem. Require complete, in-range stems; publish only after all four renders succeed. Keep the accepted HTML references unchanged as historical design sources.
@@ -95,9 +95,9 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
 
 - The approved October 1 window policy uses a fixed 10:7 client aspect and a 1000x700 reference composition. Scale fonts, controls, spacing and graphs together when resizing, with EQ and Stem Mixer side by side and no main-editor scrollbar.
 - Use monitor work area and DPI to choose the initial window. Bound all windows/dialogs to available space. Scale fonts, targets and drawn controls together.
-- The October 2 header decision replaces the lower status reservation with one line between the logo and Open Audio. Show task text and a real percentage when known, with a small Cancel button while busy; omit the progress bar. Keep header height and action-button positions fixed, shorten long text while preserving the percentage, and expose full details on click. Saved-file text opens its folder. Give the reclaimed lower height to EQ/mixer while retaining the 10:7 window ratio. Audio loading, filenames, progress and errors must not change editor geometry or fonts. See `qa/header-status/verification.md`.
+- The October 2 header decision replaces the lower status reservation with one line between the logo and Open Audio. Show task text and a real percentage when known, with a small Cancel button while busy; omit the progress bar. Keep header height and action-button positions fixed, shorten long text while preserving the percentage, and expose full details on click. Saved-file text opens its folder. Give the reclaimed lower height to EQ/mixer while retaining the 10:7 window ratio. Audio loading, filenames, progress and errors must not change editor geometry or fonts. See `qa/stabilization/verification.md`.
 - At 100% DPI, use nominal 760x532 minimum, 1000x700 startup and 1400x980 maximum client sizes. Scale these by monitor DPI, subtract decorations and margins from its work area, and reduce even the minimum when necessary to fit. Windows edge/corner resizing and maximization must preserve 10:7 and these bounds; maximize to the bounded size centered in the work area. This supersedes the earlier 480x360 minimum.
-- Verify FHD 1920×1080, QHD 2560×1440 and 4K 3840×2160 work areas at Windows-equivalent 100%, 125%, 150%, 175% and 200% scaling. Check startup/minimum/maximum sizes, maximization, reachable controls and contextual progress/errors. Settings and Advanced retain independent sizing and scrollable viewports. See `qa/aspect-bounds/verification.md`.
+- Verify FHD 1920×1080, QHD 2560×1440 and 4K 3840×2160 work areas at Windows-equivalent 100%, 125%, 150%, 175% and 200% scaling. Check startup/minimum/maximum sizes, maximization, reachable controls and contextual progress/errors. Settings and Advanced retain independent sizing and scrollable viewports. See `qa/stabilization/verification.md`.
 - Do not change the user's desktop resolution or global Windows scaling during automated QA. Distinguish app viewport/scaling tests from physical multi-monitor/DPI transition acceptance.
 
 ## Ordered delivery and evidence
@@ -117,11 +117,7 @@ Automated tests, actual window captures, silent playback-process checks and dire
 - Legacy project-file utilities remain available for historical QA but are not imported by the application. Existing saved project assets are preserved; current releases open audio files only.
 - Startup and minimum sizes share the same work-area bounds; this avoids a 1080p/200% minimum-height clamp expanding the window beyond the screen.
 - The new release bundles a separate interpreter and standard library with isolated import paths, removing the development venv's absolute Python dependency. The original runtime and earlier release remain untouched.
-- Detailed results and remaining physical-device checks are in `docs/qa/compact/verification.md`.
-
-## Loading and close correction
-
-The user's subsequent report supersedes the earlier close guard: closing the window immediately cancels active work and closes, retaining a temporary recovery snapshot when possible. It does not require waiting for a job, pressing Cancel first, or responding to an unsaved-project prompt. Permanent projects still use Ctrl+S. A fractional-duration validation error that stranded loading after worker completion is fixed; worker result handling also remains alive after an unexpected UI exception. See `docs/qa/loading-fix/verification.md`.
+- Current results and physical-device limits are in `qa/stabilization/verification.md`. Historical raw evidence and implementation records remain in Git history.
 
 ## October 13 lightweight workflow
 
@@ -136,5 +132,5 @@ Project save/open, recent projects, recovery writes/restore, their shortcuts and
 Keep adjustments were removed. Launch always starts empty. Output and playback
 preferences persist, while only working audio owned by the current process is
 cleaned after replacement/exit. Original inputs, exports and historical project
-files remain intact. This supersedes the historical recovery behavior above.
-Verification: `qa/lightweight-workflow/verification.md`.
+files remain intact. This supersedes the earlier project/recovery workflow.
+Verification: `qa/stabilization/verification.md`.

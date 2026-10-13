@@ -1,4 +1,0 @@
-  0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%    0%  
-Copied app-local runtime imports verified.
-Build complete with app-local Python (verify on each target PC):
-  C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix25\KWAK Split\KWAK Split.exe

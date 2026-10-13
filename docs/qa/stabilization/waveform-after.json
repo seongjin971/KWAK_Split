@@ -1,0 +1,13 @@
+{
+  "source": "release\\compact-fix26\\KWAK Split\\temp\\sessions\\20261005_022550_bd344021_Mihka_X_Kyoto_Black_Kodokushi_4A4ZiZwPejY\\source.wav",
+  "seconds": [
+    0.6239006999821868,
+    0.6018015000154264,
+    0.6637830999970902
+  ],
+  "median_seconds": 0.6239006999821868,
+  "baseline_median_seconds": 2.702241299994057,
+  "exact_peak_equality": true,
+  "bucket_count": 4096,
+  "speedup": 4.331204148466591
+}

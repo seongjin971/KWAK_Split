@@ -13,6 +13,7 @@ import subprocess
 import wave
 from array import array
 from dataclasses import dataclass, fields, replace
+from itertools import chain
 from pathlib import Path
 from threading import Event
 from typing import Callable, Iterable
@@ -336,6 +337,8 @@ def _waveform_peaks_wav(audio_path: Path, bucket_count: int, cancel_event: Event
 def stereo_waveform_peaks(paths: AppPaths, audio_path: Path, bucket_count: int = 4096,
                           cancel_event: Event | None = None, process_callback=None) -> list[tuple[float, float]]:
     """Read the working PCM WAV without summing channels or discarding highs."""
+    if _is_cancelled(cancel_event):
+        raise OperationCancelled("Waveform preparation cancelled.")
     try:
         handle = wave.open(str(audio_path), "rb")
     except wave.Error:
@@ -370,6 +373,8 @@ def _stereo_float_peaks(paths, source, count, cancel_event, process_callback):
         raise ToolMissingError("FFmpeg is required for floating-point working audio.")
     rate = 48000
     bucket_size = max(1, math.ceil(read_duration(paths, source) * rate / count))
+    if _is_cancelled(cancel_event):
+        raise OperationCancelled("Waveform preparation cancelled.")
     left, right = [0.0]*count, [0.0]*count
     process = subprocess.Popen([ffmpeg, "-v", "error", "-i", str(source), "-vn", "-ac", "2", "-ar", str(rate),
                                 "-f", "f32le", "-"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
@@ -380,12 +385,24 @@ def _stereo_float_peaks(paths, source, count, cancel_event, process_callback):
         while raw := process.stdout.read(65536):
             if _is_cancelled(cancel_event):
                 raise OperationCancelled("Waveform preparation cancelled.")
-            values = array("f"); values.frombytes(raw)
-            for offset in range(0, len(values)-1, 2):
-                bucket = min(index//bucket_size, count-1)
-                left[bucket] = max(left[bucket], abs(values[offset]))
-                right[bucket] = max(right[bucket], abs(values[offset+1]))
-                index += 1
+            values = array("f")
+            values.frombytes(raw)
+            offset, frames = 0, len(values) // 2
+            while offset < frames:
+                bucket = min(index // bucket_size, count - 1)
+                take = frames - offset
+                if bucket < count - 1:
+                    take = min(take, (bucket + 1) * bucket_size - index)
+                end = offset + take
+                # Aggregate each bucket in native min/max loops, preserving both
+                # channels and peaks above unity. Seed with zero to ignore NaNs,
+                # as the previous per-sample max did.
+                for peaks, channel in ((left, 0), (right, 1)):
+                    samples = values[2 * offset + channel:2 * end:2]
+                    peaks[bucket] = max(peaks[bucket], -min(chain((0.0,), samples)),
+                                        max(chain((0.0,), samples)))
+                offset = end
+                index += take
         if _is_cancelled(cancel_event):
             raise OperationCancelled("Waveform preparation cancelled.")
         if process.wait() != 0:

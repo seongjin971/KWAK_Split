@@ -1,6 +1,0 @@
-{
-  "exe_sha256": "bc9a1c7fca1e4ebdfc108f92a4ff3dee515acf7dfc3d6cb6efa5068c5a485f71",
-  "method": "Frozen EXE live EQ and Tk startup/exit with development Python excluded",
-  "no_development_python": true,
-  "exit_code": 0
-}

@@ -3,6 +3,12 @@ release/
 backups/
 __pycache__/
 *.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
 temp/*
 output/*
 logs/*
@@ -19,3 +25,23 @@ settings.json
 !logs/.gitkeep
 !models/.gitkeep
 !bin/.gitkeep
+
+# The three approved design references are source assets, not generated output.
+!output/ui-preview/
+output/ui-preview/*
+!output/ui-preview/kwak-split-compact-v2.html
+!output/ui-preview/kwak-split-preview.html
+!output/ui-preview/filter-preview/
+output/ui-preview/filter-preview/*
+!output/ui-preview/filter-preview/index.html
+
+# Retain the final verification summary and small result records only.
+docs/qa/**
+!docs/qa/stabilization/
+!docs/qa/stabilization/verification.md
+!docs/qa/stabilization/full-suite.xml
+!docs/qa/stabilization/frozen-source-verification.json
+!docs/qa/stabilization/frozen-checks.json
+!docs/qa/stabilization/waveform-after.json
+!docs/qa/stabilization/packaged-ui/
+!docs/qa/stabilization/packaged-ui/release-results.json

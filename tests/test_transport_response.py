@@ -1,7 +1,7 @@
 """Space controls real audio without an unrelated layout/effect redraw."""
 from unittest.mock import patch
 
-from test_audit_audio import session
+from test_audit_audio import assert_empty_header, session
 from test_spectrum_ui import current_frame,prepare,pump_until
 
 
@@ -51,6 +51,8 @@ def test_context_errors_and_progress_remain_visible_without_editor_relayout(sess
         assert app.cancel_button.winfo_ismapped() and app.status_label.winfo_ismapped()
         assert shape()==original
         app.busy=False;app.status_var.set("");app._refresh_action_states();app.update()
-        assert not app.cancel_button.winfo_ismapped() and not app.status_label.winfo_ismapped()
+        assert not app.cancel_button.winfo_ismapped()
+        assert app.status_label.winfo_ismapped()
+        assert_empty_header(app)
         assert app.play_button.enabled and shape()==original
         layout.assert_not_called()

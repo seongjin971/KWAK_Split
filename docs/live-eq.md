@@ -89,9 +89,5 @@ sentinel wakes an idle spectrum worker on stop, removing its queue polling wait.
 Repeated Space key presses are ignored until release; focus loss also releases
 the latch. Text inputs and dialogs retain their normal key handling.
 
-Verification: [prepared playback evidence](qa/warm-transport/verification.md),
-[transport response evidence](qa/transport-latency/verification.md),
-[waveform seek evidence](qa/live-seek/verification.md),
-[stem mixer evidence](qa/live-mixer/verification.md),
-[mode and slope evidence](qa/live-eq-modes/verification.md) and
-[initial continuous EQ evidence](qa/live-eq/verification.md).
+Verification: [final regression and packaged checks](qa/stabilization/verification.md).
+Earlier per-feature captures and logs are historical material in Git.

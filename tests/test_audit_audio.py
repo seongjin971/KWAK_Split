@@ -1,6 +1,5 @@
 """Independent playback audit with generated audio and isolated hidden windows."""
 from dataclasses import asdict
-from types import SimpleNamespace
 from unittest.mock import patch
 
 import pytest
@@ -50,6 +49,27 @@ class FakePlayer:
 
     def wait(self, timeout=None):
         return self.returncode
+
+
+def assert_empty_header(app):
+    # The accepted fix23 header stays painted to prevent a white native region.
+    assert app.status_label.grid_info()
+    assert app.status_label.cget("text") == ""
+    assert str(app.status_label.cget("takefocus")) == "0"
+    assert app.status_label.cget("cursor") == "arrow"
+
+
+def right_drag(app, start, end):
+    app.deiconify()
+    app.update()
+    view_start, view_end = app._wave_view_bounds()
+    width = app.wave_canvas.winfo_width()
+    x_at = lambda seconds: round((seconds - view_start) / (view_end - view_start) * width)
+    y = app.wave_canvas.winfo_height() // 2
+    app.wave_canvas.event_generate("<ButtonPress-3>", x=x_at(start), y=y)
+    app.wave_canvas.event_generate("<B3-Motion>", x=x_at(end), y=y)
+    app.wave_canvas.event_generate("<ButtonRelease-3>", x=x_at(end), y=y)
+    app.update()
 
 
 @pytest.fixture
@@ -149,50 +169,49 @@ def test_routine_transport_state_does_not_open_duplicate_status_row(session, pla
             for process in app.realtime_processes:
                 process.returncode = 0
             app._update_playback_position()
-    assert not app.status_label.grid_info()
+    assert_empty_header(app)
     app.status_var.set("Preview failed. Check the audio settings and output device.")
-    assert app.status_label.grid_info()
+    assert app.status_label.grid_info() and app.status_label.cget("text")
 
 
 def test_waveform_selection_applies_to_current_playback_on_release(session, playback):
     app = session.app
     with patch("StemSamplePrep.time.monotonic", return_value=100):
         app.toggle_playback()
-        # Exercise the production right-drag callbacks. Mapping positions here
-        # keeps this audio regression independent of hidden-window geometry.
-        with patch.object(app, "_event_to_seconds", side_effect=[2, 3]):
-            app._wave_mouse_down(SimpleNamespace(x=0))
-            app._wave_mouse_drag(SimpleNamespace(x=1))
-            app._wave_mouse_up(SimpleNamespace(x=1))
+        right_drag(app, 2, 3)
     assert app._selection_bounds() == (2, 3)
     assert app.preview_playing
     assert playback.call_args.kwargs["start_seconds"] == pytest.approx(2)
     assert playback.call_args.kwargs["duration_seconds"] == pytest.approx(1)
 
 
-def test_empty_waveform_selection_does_not_keep_old_range_playing(session, playback):
+def test_right_click_preserves_selection_cursor_and_playing_audio(session, playback):
     app = session.app
     with patch("StemSamplePrep.time.monotonic", return_value=100):
         app.toggle_playback()
-        with patch.object(app, "_event_to_seconds", return_value=2):
-            app._wave_mouse_down(SimpleNamespace(x=0))
-            app._wave_mouse_up(SimpleNamespace(x=0))
-    assert not app.preview_playing
+        selection = app._selection_bounds()
+        cursor = app.playback_position_var.get()
+        owner = app.realtime_processes
+        right_drag(app, 2, 2)
+    assert app.preview_playing and app.realtime_processes is owner
+    assert app._selection_bounds() == selection
+    assert app.playback_position_var.get() == cursor
+    assert playback.call_count == 1
     assert not session.callback_errors
 
 
-def test_outside_stem_selection_stops_old_audio_and_explains_range(session, playback):
+def test_drag_beyond_stem_coverage_clamps_range_and_keeps_valid_audio(session, playback):
     app = session.app
-    app.stem_paths = {"vocals": app.source_wav}
+    app.stem_paths = {name: app.source_wav for name in app.stem_vars}
     app.stem_range = (0, 4)
     app.selection_start_var.set(1)
     app.selection_end_var.set(3)
     with patch("StemSamplePrep.time.monotonic", return_value=100):
         app.toggle_playback()
-        with patch.object(app, "_event_to_seconds", side_effect=[4, 5]):
-            app._wave_mouse_down(SimpleNamespace(x=0))
-            app._wave_mouse_drag(SimpleNamespace(x=1))
-            app._wave_mouse_up(SimpleNamespace(x=1))
-    assert not app.preview_playing
-    assert "separate" in app.status_var.get().lower()
+        right_drag(app, 2, 5)
+    assert app.preview_playing
+    assert app._selection_bounds() == (2, 4)
+    assert playback.call_args.kwargs["start_seconds"] == pytest.approx(2)
+    assert playback.call_args.kwargs["duration_seconds"] == pytest.approx(2)
+    assert not app._stem_coverage_notice
     assert not session.callback_errors

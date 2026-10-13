@@ -4,36 +4,14 @@ KWAK Split — Compact Windows Audio and Stem Editor
 Edition: 2026-10-13
 Goals and status: project.md
 Accepted UI and behavior: docs/compact-ui-implementation.md
-Current verification: docs/qa/stem-volume/verification.md
-Lightweight file workflow: docs/qa/lightweight-workflow/verification.md
-Range playback correction: docs/qa/range-playback/verification.md
-Lock-key gesture correction: docs/qa/selection-lock-keys/verification.md
-Header display correction: docs/qa/header-blank/verification.md
-Waveform handles and help: docs/qa/simple-handles/verification.md
-Trackpad selection verification: docs/qa/trackpad-selection/verification.md
-Range editing verification: docs/qa/waveform-selection/verification.md
-Resize verification: docs/qa/smooth-resize/verification.md
-Header feedback verification: docs/qa/header-status/verification.md
-Prepared playback verification: docs/qa/warm-transport/verification.md
-Previous transport UI verification: docs/qa/transport-latency/verification.md
-Waveform seek verification: docs/qa/live-seek/verification.md
-Control reset verification: docs/qa/ctrl-reset/verification.md
+Current verification: docs/qa/stabilization/verification.md
 Continuous EQ: docs/live-eq.md
-Waveform start verification: docs/qa/waveform-left-edge/verification.md
-Window aspect verification: docs/qa/aspect-bounds/verification.md
-Loading composition verification: docs/qa/fixed-composition/verification.md
-Proportional resize verification: docs/qa/proportional-resize/verification.md
 Playback spectrum: docs/realtime-spectrum.md
-Previous release verification: docs/qa/relocation-range/verification.md
-Historical compact UI verification: docs/qa/compact/verification.md
-Latest interaction audit: docs/qa/interaction-audit/verification.md
-Latest editing corrections: docs/qa/precision-controls/verification.md
-Four-track export: docs/qa/stem-export/verification.md
-Status: USER_REVIEW_READY — compact-fix29
+Status: FINAL - compact-fix30
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact-fix29/KWAK Split/KWAK Split.exe,
+1. Run "Run KWAK Split.cmd". It selects release/compact-fix30/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
 3. Drag the large blue left handle to set the start and the right handle to set
@@ -258,7 +236,7 @@ files and exported audio are preserved. Open the input again to start another ed
 
 Running on Another PC
 --------------------
-Copy the entire release/compact-fix29/KWAK Split folder, not just the EXE, to a writable
+Copy the entire release/compact-fix30/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;
 the package no longer relies on the developer's Python installation path.
@@ -267,4 +245,5 @@ An independent laptop run, audio-device listening and physical DPI transitions
 have not been observed by automated local QA.
 
 Source and each release have their own settings, temporary audio, output and logs.
-For change history and verification evidence, see project.md and docs/qa/.
+For current scope and final verification, see project.md and docs/qa/stabilization/verification.md.
+Historical implementation records are available in Git history.
