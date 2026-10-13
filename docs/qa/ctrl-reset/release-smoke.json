@@ -1,0 +1,6 @@
+﻿{
+    "exe_sha256":  "1EE35C365BE33620E2E18A1C4D2E4FA4DF71B5549006AD0304C4E9831FE5912A",
+    "method":  "Frozen EXE --smoke-test startup and scheduled close, isolated PATH/PYTHONHOME/PYTHONPATH",
+    "no_development_python":  true,
+    "exit_code":  0
+}

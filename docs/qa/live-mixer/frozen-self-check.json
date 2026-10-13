@@ -1,0 +1,232 @@
+{
+  "frozen": true,
+  "audio_device": "SDL dummy",
+  "native_listening_tested": false,
+  "pyzmq": "27.2.0",
+  "libzmq": "4.3.5",
+  "updates": [
+    {
+      "gain_db": 12,
+      "measured_delta_db": 11.99980774131576,
+      "spectrum_settle_seconds": 0.515
+    },
+    {
+      "gain_db": -12,
+      "measured_delta_db": -11.984312257590119,
+      "spectrum_settle_seconds": 0.469
+    },
+    {
+      "gain_db": 0,
+      "measured_delta_db": -0.00026676856259655324,
+      "spectrum_settle_seconds": 0.484
+    }
+  ],
+  "audio_clock_per_wall_second": 1.0006811989069488,
+  "minimum_512_sample_rms": 231.77726629649206,
+  "maximum_sample_step": 743,
+  "mode_updates": [
+    {
+      "low_shape": "Low Shelf",
+      "high_shape": "Bell",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": 0.0285,
+      "spectrum_settle_seconds": 0.656
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.1386,
+      "spectrum_settle_seconds": 0.531
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 24,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0,
+      "spectrum_settle_seconds": 0.859
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 36,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0001,
+      "spectrum_settle_seconds": 0.656
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 48,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0,
+      "spectrum_settle_seconds": 0.657
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Bell",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": 0.0,
+      "spectrum_settle_seconds": 0.656
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "High Shelf",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0001,
+      "spectrum_settle_seconds": 0.859
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0414,
+      "spectrum_settle_seconds": 0.515
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 24,
+      "export_error_db": -0.0,
+      "spectrum_settle_seconds": 0.813
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 36,
+      "export_error_db": -0.072,
+      "spectrum_settle_seconds": 0.234
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 48,
+      "export_error_db": 0.018,
+      "spectrum_settle_seconds": 0.312
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Bell",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0492,
+      "spectrum_settle_seconds": 0.687
+    }
+  ],
+  "audio_clock_per_wall_second_including_modes": 0.9973944414748399,
+  "mixer_updates": [
+    {
+      "weights": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "expected_peak_db": -28.283508831159715,
+      "measured_peak_db": -28.283508864251225,
+      "spectrum_settle_seconds": 0.063
+    },
+    {
+      "weights": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_peak_db": -90.0,
+      "measured_peak_db": -90.0,
+      "spectrum_settle_seconds": 0.547
+    },
+    {
+      "weights": [
+        0,
+        0.5,
+        0,
+        0
+      ],
+      "expected_peak_db": -34.30410874443934,
+      "measured_peak_db": -34.3949745705613,
+      "spectrum_settle_seconds": 0.5
+    },
+    {
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ],
+      "expected_peak_db": -28.283508831159715,
+      "measured_peak_db": -28.2892930138542,
+      "spectrum_settle_seconds": 0.562
+    },
+    {
+      "weights": [
+        0,
+        0,
+        0,
+        2
+      ],
+      "expected_peak_db": -22.26290891788009,
+      "measured_peak_db": -22.26753475860076,
+      "spectrum_settle_seconds": 0.563
+    },
+    {
+      "weights": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_peak_db": -90.0,
+      "measured_peak_db": -90.0,
+      "spectrum_settle_seconds": 0.625
+    },
+    {
+      "weights": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "expected_peak_db": -28.283508831159715,
+      "measured_peak_db": -28.37563685729746,
+      "spectrum_settle_seconds": 0.484
+    }
+  ],
+  "same_processes_throughout": true,
+  "clean_shutdown": true,
+  "status": "passed"
+}

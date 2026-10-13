@@ -1,0 +1,23 @@
+[
+  {
+    "flag": "--qa-wave-selection",
+    "exit_code": 0,
+    "status": "passed",
+    "seconds": 84.79700000000048,
+    "exe_sha256": "0ec7fb8029271a558a3de17311b925e700143ccd66584d119bd7a56a44514377"
+  },
+  {
+    "flag": "--qa-transport",
+    "exit_code": 0,
+    "status": "passed",
+    "seconds": 6.344000000000051,
+    "exe_sha256": "0ec7fb8029271a558a3de17311b925e700143ccd66584d119bd7a56a44514377"
+  },
+  {
+    "flag": "--smoke-test",
+    "exit_code": 0,
+    "status": "passed",
+    "seconds": 1.5619999999998981,
+    "exe_sha256": "0ec7fb8029271a558a3de17311b925e700143ccd66584d119bd7a56a44514377"
+  }
+]

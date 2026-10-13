@@ -1,0 +1,67 @@
+{
+  "format": "kwak-split-project",
+  "version": 2,
+  "edits": {
+    "selection_start": 0.0,
+    "selection_end": 238.956563,
+    "fade_in": 0.02,
+    "fade_out": 0.02,
+    "eq_low": 0.0,
+    "eq_mid": 0.0,
+    "eq_high": 0.0,
+    "eq_low_freq": 120.0,
+    "eq_mid_freq": 1000.0,
+    "eq_high_freq": 8000.0,
+    "eq_low_q": 0.8,
+    "eq_mid_q": 1.0,
+    "eq_high_q": 0.8,
+    "eq_low_shape": "Low Shelf",
+    "eq_mid_shape": "Bell",
+    "eq_high_shape": "High Shelf",
+    "high_pass": 0.0,
+    "low_pass": 0.0,
+    "high_pass_q": 0.7,
+    "low_pass_q": 0.7,
+    "high_pass_slope": 24,
+    "low_pass_slope": 24,
+    "pitch_semitones": 0.0,
+    "tempo_percent": 100.0,
+    "peak_normalize": false,
+    "limiter_enabled": true,
+    "limiter_ceiling": 0.98,
+    "stem_bypass": false,
+    "loop": true,
+    "sample_rate": 48000,
+    "bit_depth": 24,
+    "mp3_bitrate": 320,
+    "stems": {
+      "vocals": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "drums": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "bass": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "other": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      }
+    }
+  },
+  "original_input": "C:\\Users\\brian\\Downloads\\LocalTube\\NewJeans (뉴진스) 'Cookie' Official MV [VOmIplFAGeg].mp3",
+  "stem_range": [
+    0.0,
+    238.956563
+  ],
+  "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix18\\KWAK Split\\temp\\sessions\\20261002_194039_694b65e7_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\source.wav",
+  "stems": {}
+}

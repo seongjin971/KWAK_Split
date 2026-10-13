@@ -1,0 +1,17 @@
+{
+  "method": "Isolated Tk app; generated audio; app scale 100%",
+  "captures": [
+    "export-1000x700",
+    "export-760x620",
+    "export-640x480",
+    "settings-stem-format",
+    "four-files-saved"
+  ],
+  "output_names": [
+    "test_2.50-3.50_vocals.mp3",
+    "test_2.50-3.50_drums.mp3",
+    "test_2.50-3.50_bass.mp3",
+    "test_2.50-3.50_other.mp3"
+  ],
+  "callback_errors": 0
+}

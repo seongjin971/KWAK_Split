@@ -1,0 +1,14 @@
+﻿[
+    {
+        "path":  "release\\compact-fix19\\KWAK Split\\KWAK Split.exe",
+        "sha256":  "FCAB9F52FA1599619BB850345BA6771B9DE9F1D3D84F20905B153E05EDA56C02"
+    },
+    {
+        "path":  "release\\compact-fix19\\KWAK Split\\settings.json",
+        "sha256":  "A11ACAACFBE64FD160FF16F29B5A97482A0ACCB756952639682BD9C95657B963"
+    },
+    {
+        "path":  "release\\compact-fix19\\KWAK Split\\temp\\recovery.json",
+        "sha256":  "750078BA83C435B9E44BADC1619501D118DAAA83333BBC7C4AE68EE4CF0C4CCB"
+    }
+]

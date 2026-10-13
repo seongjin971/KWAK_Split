@@ -1,0 +1,20 @@
+{
+  "exe_sha256": "69c6d22ee4549a3c1afc218f02fb60c0530b91d1de1476f1bf6e2e0ab3d46322",
+  "modules": [
+    {
+      "module": "StemSamplePrep",
+      "source_sha256": "842df978fb4f57c179442451b3d0c78468e6353b30ce45c26e4d3e9a40041faa",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.workspace_features",
+      "source_sha256": "f8682e7bb2afc907443a280f91eb02a23ab20a4ac531ec6268bd98f7deb6d45d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_ui",
+      "source_sha256": "e4b4ced054a40362e9644141a93c67927adfc83fc6700ef14f6e9348f7e4cddc",
+      "frozen_code_matches": true
+    }
+  ]
+}

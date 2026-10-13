@@ -1,0 +1,7 @@
+{
+  "release": "compact-fix20",
+  "exit_code": 0,
+  "seconds": 62.297000000000025,
+  "prepared_runtime": "compact-fix19",
+  "includes_point_selection_fix": true
+}

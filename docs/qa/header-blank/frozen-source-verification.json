@@ -1,0 +1,125 @@
+{
+  "exe_sha256": "8c7eabab5673c9d15856831d7395439155ad319cc9c258d5982da11b46123b15",
+  "modules": [
+    {
+      "module": "StemSamplePrep",
+      "source_sha256": "86b5c0cf4fe692e36d4d241b6b2bb91369119679dae53edd300301ecccfb177e",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_ui",
+      "source_sha256": "7c9a25a37da628980716aa1fc15a5ce8fb9924d880805f0168927c85d17fbbbd",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_widgets",
+      "source_sha256": "f44e14cf32dbf404240af0bc38dae6a06fd45ee1a5207263bf77e470d541e14f",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.ui_helpers",
+      "source_sha256": "c030db62ce1d4aafcd6092d76f8367e88cae4403b49d0ba48d9b66139c7e621f",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_model",
+      "source_sha256": "bded2a5b3177219a4f96aa331e261fa86e5bcf745fe4bab96bfae9eeea52a4e6",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.window_bounds",
+      "source_sha256": "158284e4bde1a901df360ad2df12815a3f20992f2abd1c6be1a4ef0aa3f42b0d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.workspace_features",
+      "source_sha256": "6385e7ea3ae42e55e3d7de1b3972d3c60a6f3839d825bc2461bd17e4712db9c6",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.ffmpeg_tools",
+      "source_sha256": "129d0fbb97d35935a1eae6ca5e6e346be39df9b0e70cda27e20422d27b2c293f",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.spectrum",
+      "source_sha256": "271920da6fc579d2ffb2ac427c56ba5220edce1084ae23decf04b43258fec52d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.playback_stream",
+      "source_sha256": "0f762fe755fb11a6ca750b5b0bbfe8d13c83df9df29da1f7978acab21bc3c33b",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.live_eq",
+      "source_sha256": "0d2e4a5b9ccee562e3fda6278cda9c9437b12540893437431a9163951aab9c5f",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.qa_live_eq",
+      "source_sha256": "bb5a6bb6d427e73b8cbc016f017d2320bd015557bc23ef9c634d3439ffc8dad0",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.qa_live_seek",
+      "source_sha256": "7e42fa2570c3ae91474a04d317e577d334b18d079759a232f9f647802057aac2",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.qa_transport",
+      "source_sha256": "89aef55e0203f1977d3bc79510273c26cca209a516b8831d2a6c5112ce8a68ba",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.wave_output",
+      "source_sha256": "30d42c4530a5077c6d34c344a909a7d33c80521871026157c0bd5b7a6c8dbd65",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.warm_transport",
+      "source_sha256": "6b2acda3689341d1dcf636d079cfe3db5ecb2b941296f34cf574417107474683",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.prepared_preview",
+      "source_sha256": "a2474f0bbad22d4bb9c5a15cd9d2057ab1eed12583f81f10991d50a72b8602f3",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.header_status",
+      "source_sha256": "c3941eccb8fee504852f6ab250792495b8726b970729e6cde03f505836e3fca3",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.qa_header_status",
+      "source_sha256": "add9de23186a9620ae657dd7d3c61fbb21ccf9b411ad7f141d408094e728cf50",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.window_snapshot",
+      "source_sha256": "c6e06f8fe4884ab04e78dd41e81652ee7926f628b8ff1c3e5bb1c4aba0bcb225",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.resize_preview",
+      "source_sha256": "eb5ab4baf485a33b8d263e8f6b0effe51f83d5fa903f5ac3334d8bf7efde7227",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.qa_resize",
+      "source_sha256": "4806b5ce6bd7321b184717b0d28c2f10e29e479af1172754e1a8b161a92b0a3d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.wave_selection",
+      "source_sha256": "a42b198da7cb9588fe228be1e7e7e3ebe5bdd8625fe28b2d7e8c47f1b8a8b63a",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.qa_wave_selection",
+      "source_sha256": "7f6bdbba52822e9ddfa911d6951f171d42232271550d6c55e3ba5b12f3ea9aac",
+      "frozen_code_matches": true
+    }
+  ]
+}

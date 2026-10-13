@@ -1,0 +1,335 @@
+{
+  "frozen": true,
+  "method": "real Tk, generated sizing and native modal loop, muted generated audio",
+  "physical_drag_tested": false,
+  "runs": [
+    {
+      "mix_inputs": 1,
+      "frames": 44,
+      "median_ms": 23.492450000048848,
+      "p95_ms": 36.884699999973236,
+      "max_ms": 44.56079999999929,
+      "capture_ms": 2.0353999998405925,
+      "commit_ms": 211.78869999994276,
+      "audio_clock_advance_seconds": 1.123401360544218,
+      "same_audio_stream": true
+    },
+    {
+      "mix_inputs": 4,
+      "frames": 44,
+      "median_ms": 24.09934999991492,
+      "p95_ms": 37.253700000292156,
+      "max_ms": 41.76030000007813,
+      "capture_ms": 2.7309999995850376,
+      "commit_ms": 192.13330000002316,
+      "audio_clock_advance_seconds": 1.0822222222222222,
+      "same_audio_stream": true
+    }
+  ],
+  "modal": [
+    {
+      "ending": "Enter",
+      "steps": [
+        [
+          900,
+          630
+        ],
+        [
+          800,
+          560
+        ],
+        [
+          1100,
+          770
+        ],
+        [
+          1200,
+          840
+        ]
+      ],
+      "finished": true
+    },
+    {
+      "ending": "Escape",
+      "steps": [
+        [
+          900,
+          630
+        ],
+        [
+          800,
+          560
+        ],
+        [
+          1100,
+          770
+        ],
+        [
+          1200,
+          840
+        ]
+      ],
+      "finished": true
+    }
+  ],
+  "complete_snapshot_pixel_match": true,
+  "capture_and_image_failure_fallback": true,
+  "status_updated_after_resize": true,
+  "display_cases": [
+    {
+      "screen": "fhd",
+      "dpi_scale": 1,
+      "min": [
+        760,
+        532
+      ],
+      "max": [
+        1350,
+        945
+      ],
+      "frame_ms": [
+        19.14779999970051,
+        21.142799999779527
+      ],
+      "commit_ms": 401.3225999997303
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.25,
+      "min": [
+        950,
+        665
+      ],
+      "max": [
+        1340,
+        938
+      ],
+      "frame_ms": [
+        23.90510000032009,
+        34.37460000031933
+      ],
+      "commit_ms": 375.22130000024845
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.5,
+      "min": [
+        1140,
+        798
+      ],
+      "max": [
+        1330,
+        931
+      ],
+      "frame_ms": [
+        36.785799999961455,
+        12.869799999862153
+      ],
+      "commit_ms": 159.61870000001
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.75,
+      "min": [
+        1320,
+        924
+      ],
+      "max": [
+        1320,
+        924
+      ],
+      "fixed_at_screen_limit": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 2,
+      "min": [
+        1310,
+        917
+      ],
+      "max": [
+        1310,
+        917
+      ],
+      "fixed_at_screen_limit": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1,
+      "min": [
+        760,
+        532
+      ],
+      "max": [
+        1400,
+        980
+      ],
+      "frame_ms": [
+        23.117400000046473,
+        26.24130000003788
+      ],
+      "commit_ms": 373.9845999998579
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.25,
+      "min": [
+        950,
+        665
+      ],
+      "max": [
+        1750,
+        1225
+      ],
+      "frame_ms": [
+        27.69529999977749,
+        37.44109999979628
+      ],
+      "commit_ms": 383.9098000003105
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.5,
+      "min": [
+        1140,
+        798
+      ],
+      "max": [
+        1840,
+        1288
+      ],
+      "frame_ms": [
+        33.108399999946414,
+        43.84440000012546
+      ],
+      "commit_ms": 417.66699999971024
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.75,
+      "min": [
+        1330,
+        931
+      ],
+      "max": [
+        1830,
+        1281
+      ],
+      "frame_ms": [
+        48.47769999969387,
+        52.831500000138476
+      ],
+      "commit_ms": 355.4775999996309
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 2,
+      "min": [
+        1520,
+        1064
+      ],
+      "max": [
+        1830,
+        1281
+      ],
+      "frame_ms": [
+        65.42390000004161,
+        23.71739999989586
+      ],
+      "commit_ms": 171.64790000015273
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1,
+      "min": [
+        760,
+        532
+      ],
+      "max": [
+        1400,
+        980
+      ],
+      "frame_ms": [
+        19.4510999999693,
+        22.30150000013964
+      ],
+      "commit_ms": 381.7290000001776
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.25,
+      "min": [
+        950,
+        665
+      ],
+      "max": [
+        1750,
+        1225
+      ],
+      "frame_ms": [
+        27.29750000025888,
+        37.144200000057026
+      ],
+      "commit_ms": 365.1810999999725
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.5,
+      "min": [
+        1140,
+        798
+      ],
+      "max": [
+        2100,
+        1470
+      ],
+      "frame_ms": [
+        31.112600000142265,
+        62.94060000027457
+      ],
+      "commit_ms": 408.6594000000332
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.75,
+      "min": [
+        1330,
+        931
+      ],
+      "max": [
+        2450,
+        1715
+      ],
+      "frame_ms": [
+        47.053300000243325,
+        79.35980000002019
+      ],
+      "commit_ms": 391.51459999993676
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 2,
+      "min": [
+        1520,
+        1064
+      ],
+      "max": [
+        2800,
+        1960
+      ],
+      "frame_ms": [
+        59.67770000006567,
+        85.93550000023242
+      ],
+      "commit_ms": 381.6335000001345
+    }
+  ],
+  "capture_gdi_resources": {
+    "before": 32,
+    "after": 32,
+    "captures": 20
+  },
+  "status": "passed",
+  "clean_shutdown": true,
+  "callback_errors": []
+}

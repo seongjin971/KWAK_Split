@@ -1,0 +1,165 @@
+{
+  "frozen": false,
+  "audio_device": "SDL dummy",
+  "native_listening_tested": false,
+  "pyzmq": "27.2.0",
+  "libzmq": "4.3.5",
+  "updates": [
+    {
+      "gain_db": 12,
+      "measured_delta_db": 11.999807730869122,
+      "spectrum_settle_seconds": 0.781
+    },
+    {
+      "gain_db": -12,
+      "measured_delta_db": -11.99988460295755,
+      "spectrum_settle_seconds": 0.485
+    },
+    {
+      "gain_db": 0,
+      "measured_delta_db": -0.00028068958974358793,
+      "spectrum_settle_seconds": 0.484
+    }
+  ],
+  "audio_clock_per_wall_second": 1.0,
+  "minimum_512_sample_rms": 231.77817216845506,
+  "maximum_sample_step": 743,
+  "mode_updates": [
+    {
+      "low_shape": "Low Shelf",
+      "high_shape": "Bell",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": 0.0,
+      "spectrum_settle_seconds": 0.672
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0809,
+      "spectrum_settle_seconds": 0.547
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 24,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0002,
+      "spectrum_settle_seconds": 0.75
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 36,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0002,
+      "spectrum_settle_seconds": 0.64
+    },
+    {
+      "low_shape": "High Pass",
+      "high_shape": "Bell",
+      "high_pass_hz": 1500,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 48,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0001,
+      "spectrum_settle_seconds": 0.687
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Bell",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0007,
+      "spectrum_settle_seconds": 0.703
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "High Shelf",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.1015,
+      "spectrum_settle_seconds": 0.922
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": -0.0505,
+      "spectrum_settle_seconds": 0.5
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 24,
+      "export_error_db": -0.0007,
+      "spectrum_settle_seconds": 0.781
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 36,
+      "export_error_db": -0.072,
+      "spectrum_settle_seconds": 0.25
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Low Pass",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 1500,
+      "high_pass_slope": 12,
+      "low_pass_slope": 48,
+      "export_error_db": 0.0182,
+      "spectrum_settle_seconds": 0.391
+    },
+    {
+      "low_shape": "Bell",
+      "high_shape": "Bell",
+      "high_pass_hz": 0.0,
+      "low_pass_hz": 0.0,
+      "high_pass_slope": 12,
+      "low_pass_slope": 12,
+      "export_error_db": 0.0,
+      "spectrum_settle_seconds": 0.75
+    }
+  ],
+  "audio_clock_per_wall_second_including_modes": 0.9977457610505405,
+  "mixer_updates": [
+    {
+      "weights": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "expected_peak_db": -28.283508831159715,
+      "measured_peak_db": -28.283508828669547,
+      "spectrum_settle_seconds": 0.047
+    }
+  ],
+  "status": "failed",
+  "error": "AssertionError('Live EQ check timed out')"
+}

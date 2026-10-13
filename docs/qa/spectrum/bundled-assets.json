@@ -1,0 +1,18 @@
+[
+  {
+    "path": "bin/ffmpeg.exe",
+    "matches_verified_fix5": true
+  },
+  {
+    "path": "bin/ffplay.exe",
+    "matches_verified_fix5": true
+  },
+  {
+    "path": "bin/ffprobe.exe",
+    "matches_verified_fix5": true
+  },
+  {
+    "path": "models/torch/hub/checkpoints/955717e8-8726e21a.th",
+    "matches_verified_fix5": true
+  }
+]

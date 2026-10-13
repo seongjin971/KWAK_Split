@@ -1,0 +1,27 @@
+warning: in the working copy of 'README.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Run KWAK Split.cmd', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'StemSamplePrep.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'THIRD_PARTY_NOTICES.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/audio_processing/ffmpeg_tools.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/compact_model.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/compact_ui.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/compact_widgets.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/workspace_features.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/compact-ui-implementation.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'project.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'requirements-build.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'requirements-dev.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/qa_compact.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/qa_compact_release.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/qa_loading_fix.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_audit_audio.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_audit_edits.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_audit_lifecycle.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_compact_keyboard.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_compact_workflow.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_loading_lifecycle.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_numeric_gestures.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_playback.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_precision_audio.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_split_scope.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test_workspace.py', LF will be replaced by CRLF the next time Git touches it

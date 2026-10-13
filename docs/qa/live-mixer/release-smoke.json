@@ -1,0 +1,18 @@
+{
+  "exe_sha256": "8c744a9ac9c482a501d8bf91831fc302c83c8905ea1ef8efa9c10b46b4a3eb99",
+  "method": "Frozen EXE live EQ/mixer and Tk startup/exit with development Python excluded",
+  "no_development_python": true,
+  "checks": {
+    "live_eq_mixer": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "gui_startup_exit": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "2026-10-02 00:33:22,483 [INFO] Drag and drop is ready on 119 windows.\r\n"
+    }
+  },
+  "status": "passed"
+}

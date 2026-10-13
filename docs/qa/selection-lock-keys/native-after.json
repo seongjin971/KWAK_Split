@@ -1,0 +1,88 @@
+{
+  "events": [
+    {
+      "type": "4",
+      "x": 18,
+      "y": 106,
+      "state": 8,
+      "hit": "start",
+      "before_action": null,
+      "before_selection": [
+        0.0,
+        12.0
+      ]
+    },
+    {
+      "type": "6",
+      "x": 298,
+      "y": 106,
+      "state": 264,
+      "hit": "new",
+      "before_action": "handle",
+      "before_selection": [
+        0.0,
+        12.0
+      ]
+    },
+    {
+      "type": "5",
+      "x": 298,
+      "y": 106,
+      "state": 264,
+      "hit": "start",
+      "before_action": "handle",
+      "before_selection": [
+        1.71,
+        12.0
+      ]
+    },
+    {
+      "type": "4",
+      "x": 1942,
+      "y": 106,
+      "state": 8,
+      "hit": "end",
+      "before_action": null,
+      "before_selection": [
+        1.71,
+        12.0
+      ]
+    },
+    {
+      "type": "6",
+      "x": 1678,
+      "y": 106,
+      "state": 264,
+      "hit": "new",
+      "before_action": "handle",
+      "before_selection": [
+        1.71,
+        12.0
+      ]
+    },
+    {
+      "type": "5",
+      "x": 1678,
+      "y": 106,
+      "state": 264,
+      "hit": "end",
+      "before_action": "handle",
+      "before_selection": [
+        1.71,
+        10.379999999999999
+      ]
+    }
+  ],
+  "errors": [],
+  "selection": [
+    1.71,
+    10.379999999999999
+  ],
+  "cursor": 1.71,
+  "action": null,
+  "scale": 2.0,
+  "view": [
+    0.0,
+    12.0
+  ]
+}

@@ -26,6 +26,7 @@ def playback_app(speed=1.0, source_start=10.0, source_duration=12.0):
         preview_playing=True,
         current_preview_file=None,
         realtime_processes=[Mock(poll=Mock(return_value=None)), Mock(poll=Mock(return_value=0))],
+        playback_seek_dragging=False,
         status_var=Mock(),
         append_log=Mock(),
         _refresh_action_states=Mock(),
@@ -154,7 +155,8 @@ class PlaybackTests(unittest.TestCase):
         app.preview_playing = False
         payload = {"path": "preview.wav", "start": 10.0, "duration": 12.0,
                    "output_duration": 24.3, "tempo_ratio": 0.5, "label": "Source"}
-        with patch("StemSamplePrep.winsound.PlaySound"), patch("StemSamplePrep.time.monotonic", return_value=100.0):
+        with patch("StemSamplePrep.winsound.PlaySound"), patch("StemSamplePrep.time.monotonic", return_value=100.0), \
+                patch("StemSamplePrep.analyze_rendered_preview"):
             StemSamplePrepApp._handle_preview_ready(app, payload)
         self.assertEqual(app.playback_tempo_ratio, 0.5)
         self.assertEqual(app.playback_output_duration_seconds, 24.3)

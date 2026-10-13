@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "release": "compact-fix18",
+  "exe_sha256": "e087d8fd97a088af86fc5b8ab936b0f58d217c92c217fdcf1cf0adfa038baf89",
+  "source_modules_unchanged_after_build": 18,
+  "isolated_executable_checks_passed": 3,
+  "header_display_size_combinations": 45,
+  "status_states_per_size": 6,
+  "source_captures_visually_reviewed": true,
+  "regression": {
+    "unique_tests": 54,
+    "passed": 54,
+    "subtests_passed": 11,
+    "unresolved": {}
+  },
+  "prior_release_files_unchanged": 4,
+  "copied_audio_hashes_match": 1,
+  "restored_source_only_session": true,
+  "edits_selection_save_folder_preserved": true,
+  "launcher_target": "release/compact-fix18/KWAK Split/KWAK Split.exe",
+  "packaged_documents_match_source": true,
+  "git_diff_check_exit_code": 0,
+  "limits": "App DPI/work areas simulated in real Tk. Physical monitor switching and listening not tested."
+}

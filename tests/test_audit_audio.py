@@ -22,12 +22,17 @@ def session():
     case = test_workspace.WorkspaceTests()
     with patch.object(StemSamplePrepApp, "_set_initial_compact_window", hidden_window), \
             patch("StemSamplePrep.StemSeparator.separate") as separate:
-        case.setUp()
-        case.auto_separate = separate
         try:
+            case.setUp()
+            case.auto_separate = separate
             yield case
         finally:
-            case.tearDown()
+            try:
+                if hasattr(case, "app"):
+                    case.tearDown()
+            finally:
+                # unittest cleanups also cover a failed Tcl/Tk initialization.
+                case.doCleanups()
 
 
 class FakePlayer:
@@ -48,7 +53,11 @@ class FakePlayer:
 
 
 @pytest.fixture
-def playback():
+def playback(session):
+    # These deterministic wall-clock tests cover the legacy FFplay fallback;
+    # device-clock and retained pause are exercised by real warm-transport tests.
+    session.app._warm_transport.close()
+    session.app._warm_transport.unavailable="mocked fallback transport"
     with patch("StemSamplePrep.start_realtime_mix", side_effect=lambda *a, **kw: [FakePlayer(), FakePlayer()]) as starts, \
             patch("StemSamplePrep.winsound.PlaySound"):
         yield starts
@@ -140,9 +149,9 @@ def test_routine_transport_state_does_not_open_duplicate_status_row(session, pla
             for process in app.realtime_processes:
                 process.returncode = 0
             app._update_playback_position()
-    assert not app.status_frame.grid_info()
+    assert not app.status_label.grid_info()
     app.status_var.set("Preview failed. Check the audio settings and output device.")
-    assert app.status_frame.grid_info()
+    assert app.status_label.grid_info()
 
 
 def test_waveform_selection_applies_to_current_playback_on_release(session, playback):

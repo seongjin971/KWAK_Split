@@ -1,0 +1,62 @@
+{
+  "recorded_at": "2026-10-03T00:46:43.242163+09:00",
+  "status": "USER_REVIEW_READY",
+  "release": "compact-fix20",
+  "exe_sha256": "eaab63b676c98463597b3f030f8660b07a53acedde2585c548254c55f996aa95",
+  "frozen_modules_match_source": 23,
+  "root_launcher_target": "release/compact-fix20/KWAK Split/KWAK Split.exe",
+  "packaged_launcher_preserved": true,
+  "regression": {
+    "unique_passed": 115,
+    "unresolved_failures": [],
+    "runs": [
+      "new-tests.xml",
+      "focused-tests.xml",
+      "regression-tests.xml",
+      "point-rerun.xml"
+    ],
+    "focused_reported_subtests_passed": 11
+  },
+  "source_display_cases": 45,
+  "frozen_display_cases": 45,
+  "frozen_checks_passed": [
+    "--qa-wave-selection",
+    "--qa-transport",
+    "--qa-resize",
+    "--smoke-test"
+  ],
+  "protected_old_release_files": [
+    {
+      "path": "release\\compact-fix19\\KWAK Split\\KWAK Split.exe",
+      "sha256": "FCAB9F52FA1599619BB850345BA6771B9DE9F1D3D84F20905B153E05EDA56C02"
+    },
+    {
+      "path": "release\\compact-fix19\\KWAK Split\\settings.json",
+      "sha256": "A11ACAACFBE64FD160FF16F29B5A97482A0ACCB756952639682BD9C95657B963"
+    },
+    {
+      "path": "release\\compact-fix19\\KWAK Split\\temp\\recovery.json",
+      "sha256": "750078BA83C435B9E44BADC1619501D118DAAA83333BBC7C4AE68EE4CF0C4CCB"
+    }
+  ],
+  "old_and_new_audio_hashes_match": true,
+  "session_restored": {
+    "method": "real Tk restore in isolated settings/workspace; no playback/export",
+    "edits_preserved": true,
+    "four_stems_restored": false,
+    "source_only_restored": true,
+    "selection": [
+      56.25,
+      56.25
+    ],
+    "selection_has_length": false,
+    "save_folder": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+    "export_available": false,
+    "callback_errors": [],
+    "user_session_hashes_unchanged": true
+  },
+  "git_diff_check_exit_code": 0,
+  "physical_input_and_listening_tested": false,
+  "synced_document_files": 727,
+  "documentation_matches": true
+}

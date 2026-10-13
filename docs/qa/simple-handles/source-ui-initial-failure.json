@@ -1,0 +1,11 @@
+{
+  "frozen": false,
+  "method": "real Tk generated gestures; muted native audio",
+  "display_scope": "current monitor and initial size only",
+  "physical_input_tested": false,
+  "display_cases": [],
+  "playback": [],
+  "status": "failed",
+  "error": "AssertionError()",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\qa_wave_selection.py\", line 117, in check\n    assert app._selection_bounds() == before and app.playback_position_var.get() == cursor\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}

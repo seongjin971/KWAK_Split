@@ -184,6 +184,8 @@ def test_shortened_fallback_preview_uses_full_selection_fade_bounds(session):
     full = _decode(app.result_files[0])
     # Exercise the actual fallback worker with a short equivalent of its usual
     # 30-second cap, without sending any sound to the user's audio device.
+    app._warm_transport.close()
+    app._warm_transport.unavailable="native output unavailable for fallback check"
     with patch("StemSamplePrep.PREVIEW_SECONDS", 1.5), \
             patch("StemSamplePrep.start_realtime_mix", side_effect=ToolMissingError("FFplay unavailable")), \
             patch("StemSamplePrep.winsound.PlaySound"):

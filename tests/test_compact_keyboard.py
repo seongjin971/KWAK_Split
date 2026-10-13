@@ -90,3 +90,24 @@ def test_space_in_numeric_entry_or_settings_does_not_start_playback(session):
         press(app, "space")
         transport.assert_not_called()
         app._close_render_settings()
+
+
+def test_held_space_toggles_once_and_release_allows_the_next_press(session):
+    app=session.app;app.focus_force();app.update()
+    with patch.object(app,"toggle_playback") as transport:
+        for _ in range(20):app.event_generate("<KeyPress-space>")
+        app.update()
+        transport.assert_called_once_with()
+        app.event_generate("<KeyRelease-space>")
+        press(app,"space")
+        assert transport.call_count==2
+
+
+def test_focus_loss_releases_a_space_latch_without_toggling(session):
+    app=session.app;app.focus_force();app.update()
+    with patch.object(app,"toggle_playback") as transport:
+        app.event_generate("<KeyPress-space>")
+        app.event_generate("<FocusOut>")
+        assert not app._space_key_down
+        press(app,"space")
+        assert transport.call_count==2

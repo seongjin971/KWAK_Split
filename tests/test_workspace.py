@@ -29,6 +29,7 @@ class WorkspaceTests(unittest.TestCase):
                         "sine=frequency=440:duration=6:sample_rate=48000", "-c:a", "pcm_s24le", str(self.source)],
                        check=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
         self.patches = [patch.object(AppPaths, "from_runtime", return_value=self.paths),
+                        patch.dict(os.environ,{"SDL_AUDIODRIVER":"dummy"}),
                         patch.object(StemSamplePrepApp, "_configure_logging"),
                         patch("tkinter.messagebox.askyesnocancel", return_value=False),
                         patch("tkinter.messagebox.askyesno", return_value=True),
@@ -51,6 +52,7 @@ class WorkspaceTests(unittest.TestCase):
         self.app._cancel_main_after_callbacks()
         self.app._disable_file_drop()
         self.app.destroy()
+        self.app._warm_transport.close()
         for p in reversed(self.patches):
             p.stop()
         self.folder.cleanup()
@@ -68,25 +70,30 @@ class WorkspaceTests(unittest.TestCase):
         self.assertFalse(self.mocks[-1].called, self.mocks[-1].call_args)
 
     def test_responsive_compact_layout_and_reachable_actions(self):
-        for width, height in ((1280, 720), (900, 600), (760, 620), (640, 480)):
+        for width, height in ((1280, 720), (900, 600), (760, 620), (640, 480), (480, 360), (1000, 420), (1000, 700)):
             with self.subTest(size=(width, height)):
                 self.app.geometry(f"{width}x{height}")
                 self.app.update()
+                width,height=self.app.winfo_width(),self.app.winfo_height()
+                self.assertEqual(width*7,height*10)
+                self.assertGreaterEqual(width,self.app.minsize()[0])
+                self.assertLessEqual(width,self.app.maxsize()[0])
                 for widget in (self.app.load_button, self.app.settings_button,
                                self.app.render_button, self.app.render_mp3_button):
                     self.assertTrue(widget.winfo_ismapped())
                     self.assertGreaterEqual(widget.winfo_rootx(), self.app.winfo_rootx())
                     self.assertLessEqual(widget.winfo_rootx()+widget.winfo_width(), self.app.winfo_rootx()+width)
-                if width >= 740:
-                    self.assertEqual(self.app._layout_mode, "side-by-side")
-                    self.assertLess(self.app.eq_panel.winfo_rootx(), self.app.mixer_panel.winfo_rootx())
-                else:
-                    self.assertEqual(self.app._layout_mode, "stacked")
-                    self.assertLess(self.app.eq_panel.winfo_rooty(), self.app.mixer_panel.winfo_rooty())
-                    self.app.workspace_scroll.canvas.yview_moveto(1)
-                    self.app.update()
-                    self.assertLessEqual(self.app.mixer_panel.winfo_rooty()+self.app.mixer_panel.winfo_height(),
-                                         self.app.workspace_scroll.canvas.winfo_rooty()+self.app.workspace_scroll.canvas.winfo_height()+2)
+                self.assertEqual(self.app._layout_mode, "side-by-side")
+                self.assertLess(self.app.eq_panel.winfo_rootx(), self.app.mixer_panel.winfo_rootx())
+                self.assertFalse(self.app.workspace_scroll.bar.winfo_ismapped())
+                for widget in (self.app.eq_panel,self.app.mixer_panel,self.app.eq_editor,
+                               self.app.play_button,self.app.export_stems_button,
+                               self.app.fade_out_spinbox,*self.app.stem_widgets["other"]):
+                    self.assertTrue(widget.winfo_ismapped())
+                    self.assertGreaterEqual(widget.winfo_rootx(),self.app.winfo_rootx())
+                    self.assertLessEqual(widget.winfo_rootx()+widget.winfo_width(),self.app.winfo_rootx()+width+1)
+                    self.assertLessEqual(widget.winfo_rooty()+widget.winfo_height(),self.app.winfo_rooty()+height+1)
+        self.assertEqual(self.app.ui_scale,1)
 
     def test_new_project_resets_and_keep_option_preserves_adjustments(self):
         self.app.eq_low_var.set(7)
@@ -215,8 +222,6 @@ class WorkspaceTests(unittest.TestCase):
                 check_text(child)
 
         check_text(self.app)
-        for tooltip in self.app.tooltips:
-            self.assertNotRegex(tooltip.text, korean)
         self.app._close_render_settings()
 
     def test_loop_restarts_and_explicit_stop_cancels_repeat(self):
@@ -225,20 +230,25 @@ class WorkspaceTests(unittest.TestCase):
         self.app.selection_end_var.set(0.6)
         self.app.loop_var.set(True)
         with patch.dict(os.environ, {"SDL_AUDIODRIVER": "dummy"}), \
-                patch("StemSamplePrep.start_realtime_mix", wraps=start_realtime_mix) as starts:
+                patch("StemSamplePrep.start_realtime_mix", wraps=start_realtime_mix), \
+                patch.object(self.app,"_loop_preview",wraps=self.app._loop_preview) as loops:
             self.app.toggle_playback()
             deadline = time.monotonic() + 8
-            while time.monotonic() < deadline and starts.call_count < 3:
+            while time.monotonic() < deadline and loops.call_count < 2:
                 self.app.update()
                 time.sleep(0.02)
-            self.assertGreaterEqual(starts.call_count, 3)
+            self.assertGreaterEqual(loops.call_count, 2)
             self.app.stop_preview()
-            count = starts.call_count
+            count = loops.call_count
             for _ in range(20):
                 self.app.update()
                 time.sleep(0.02)
-            self.assertEqual(starts.call_count, count)
+            self.assertEqual(loops.call_count, count)
             self.assertFalse(self.app.preview_playing)
+            prepared=self.app._warm_transport._cached
+            self.assertIsNotNone(prepared)
+            self.assertTrue(prepared[1].player.paused)
+            self.assertEqual(prepared[1].position_seconds(),0)
 
     def test_zero_volume_stem_can_export_silent_wav(self):
         target = self.paths.output / "silent.wav"

@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix23\\KWAK Split",
+  "exe_sha256": "8c7eabab5673c9d15856831d7395439155ad319cc9c258d5982da11b46123b15",
+  "frozen_modules_match": 24,
+  "previous_files_unchanged": [
+    {
+      "path": "release\\compact-fix22\\KWAK Split\\KWAK Split.exe",
+      "sha256": "2a51dd8db35f76e61c9be25e2dab4e468429198d5d1679c7ca8d6d0e6107bfd0"
+    },
+    {
+      "path": "release\\compact-fix22\\KWAK Split\\settings.json",
+      "sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963"
+    },
+    {
+      "path": "release\\compact-fix22\\KWAK Split\\temp\\recovery.json",
+      "sha256": "45f9ce98c85c1ef0206fd5569357511a713a244ceb8e5203bf5e35e8fd7e9f05"
+    }
+  ],
+  "copied_documents_match": 842,
+  "audio_and_session_hashes_match": true,
+  "native_startup_visual_check": "source before/after and final packaged window observed; white rectangle removed",
+  "display_scope": "current monitor only",
+  "launcher": "Run KWAK Split.cmd",
+  "git_diff_check": "passed"
+}

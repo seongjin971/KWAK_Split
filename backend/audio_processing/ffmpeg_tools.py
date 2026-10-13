@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from backend.audio_processing.equalizer import pass_section_qs
+from backend.audio_processing.playback_stream import AnalyzedPlayback, DecoderStage
+from backend.audio_processing.live_eq import LiveEqController, bank_target, available as live_eq_available
 
 import json
 import math
@@ -10,7 +12,7 @@ import shutil
 import subprocess
 import wave
 from array import array
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, fields, replace
 from pathlib import Path
 from threading import Event
 from typing import Callable, Iterable
@@ -505,11 +507,47 @@ def start_realtime_mix(
     fade_out: float,
     effects: AudioEffects | None = None,
     fade_bounds: tuple[float, float] | None = None,
+    *, output_player=None,
 ) -> list[subprocess.Popen]:
-    active = _prepare_active_stems(stems, duration_seconds, None)
     ffmpeg = require_ffmpeg(paths)
-    ffplay = require_ffplay(paths)
-    effects = effects or AudioEffects()
+    ffplay = require_ffplay(paths) if output_player is None else None
+    settings = dict(stems=tuple(stems), start_seconds=start_seconds, duration_seconds=duration_seconds,
+                    fade_in=fade_in, fade_out=fade_out, effects=effects or AudioEffects(),
+                    fade_bounds=fade_bounds)
+
+    def decoder_factory(**updated):
+        return _start_realtime_decoder(paths, ffmpeg, **updated)
+
+    try:
+        stage = decoder_factory(**settings)
+    except Exception:
+        if output_player is not None:output_player.terminate()
+        raise
+    if output_player is not None:
+        return AnalyzedPlayback(stage, output_player, decoder_factory=decoder_factory, settings=settings)
+    ffplay_command = [
+        str(ffplay), "-hide_banner", "-loglevel", "error", "-nodisp", "-autoexit", "-stats",
+        "-f", "s16le", "-ar", "44100", "-ch_layout", "stereo",
+        "-probesize", "32", "-analyzeduration", "0", "-avioflags", "direct", "-i", "pipe:0",
+    ]
+    try:
+        player = subprocess.Popen(
+            ffplay_command, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE, bufsize=0, env=paths.runtime_env(), **_no_window_kwargs(),
+        )
+    except Exception:
+        stage.close()
+        raise
+    return AnalyzedPlayback(stage, player, decoder_factory=decoder_factory, settings=settings)
+
+
+def _start_realtime_decoder(paths, ffmpeg, stems, start_seconds, duration_seconds,
+                            fade_in, fade_out, effects, fade_bounds):
+    """A seek warms another decoder while the current output device keeps playing."""
+    active = _prepare_active_stems(stems, duration_seconds, None, include_silent=True)
+    live_filters, parameters = _live_eq_plan(effects)
+    controller = (LiveEqController(parameters, dual_bank=True, mixer_weights=_mix_weights(active))
+                  if live_eq_available() else None)
     input_args, filter_complex = _build_mix_filter(
         active,
         start_seconds,
@@ -518,6 +556,9 @@ def start_realtime_mix(
         fade_out,
         effects,
         fade_bounds=fade_bounds,
+        live_eq_filters=([controller.filter, *live_filters]
+                         if controller else None),
+        live_mixer=controller is not None,
     )
     ffmpeg_command = [
         str(ffmpeg),
@@ -525,6 +566,7 @@ def start_realtime_mix(
         "-loglevel",
         "error",
         "-nostdin",
+        "-filter_complex_threads", "1",
         *input_args,
         "-filter_complex",
         filter_complex,
@@ -537,42 +579,44 @@ def start_realtime_mix(
         "-sample_fmt",
         "s16",
         "-f",
-        "wav",
+        "s16le",
+        "-flush_packets", "1",
+        "-threads:a", "1",
         "pipe:1",
-    ]
-    ffplay_command = [
-        str(ffplay),
-        "-hide_banner",
-        "-loglevel",
-        "error",
-        "-nodisp",
-        "-autoexit",
-        "-i",
-        "pipe:0",
     ]
     ffmpeg_process = subprocess.Popen(
         ffmpeg_command,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
+        bufsize=0,
         env=paths.runtime_env(),
         **_no_window_kwargs(),
     )
     assert ffmpeg_process.stdout is not None
-    try:
-        ffplay_process = subprocess.Popen(
-            ffplay_command,
-            stdin=ffmpeg_process.stdout,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            env=paths.runtime_env(),
-            **_no_window_kwargs(),
-        )
-    except Exception:
-        _stop_process(ffmpeg_process)
-        raise
-    finally:
-        ffmpeg_process.stdout.close()
-    return [ffplay_process, ffmpeg_process]
+    structure = _eq_restart_key(effects)
+    def eq_parameters(updated):
+        return _live_eq_plan(updated)[1] if _eq_restart_key(updated) == structure else None
+    identities = tuple((stem.name, stem.path, stem.offset_seconds) for stem in active)
+    def mixer_parameters(updated):
+        updated = list(updated)
+        items = {(stem.name, stem.path, stem.offset_seconds): stem for stem in updated}
+        if len(items) != len(updated) or items.keys() != set(identities):
+            return None  # Input files/ranges require the existing rebuild path.
+        return _mix_weights([items[key] for key in identities])
+    return DecoderStage(ffmpeg_process, controller, eq_parameters, mixer_parameters)
+
+
+def _mix_weights(stems):
+    return tuple(round(stem.gain, 6) for stem in stems)
+
+
+def analyze_rendered_preview(paths: AppPaths, audio_path: Path) -> AnalyzedPlayback:
+    """Analyze the rendered file that winsound plays, without rendering again."""
+    command = [str(require_ffmpeg(paths)), "-v", "error", "-nostdin", "-i", str(audio_path),
+               "-ar", "44100", "-ac", "2", "-f", "s16le", "pipe:1"]
+    decoder = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                               env=paths.runtime_env(), **_no_window_kwargs())
+    return AnalyzedPlayback(decoder)
 
 
 def _prepare_active_stems(
@@ -581,7 +625,7 @@ def _prepare_active_stems(
     cancel_event: Event | None,
     include_silent: bool = False,
 ) -> list[MixStem]:
-    active = [stem for stem in stems if stem.gain > 0.0001 or (include_silent and stem.gain == 0)]
+    active = [stem for stem in stems if stem.gain > 0.0001 or (include_silent and stem.gain >= 0)]
     if not active:
         raise AudioProcessingError("No stems to render. Check mute, solo, and volume settings.")
     if duration_seconds <= 0:
@@ -660,6 +704,8 @@ def _build_mix_filter(
     effects: AudioEffects,
     post_gain: float = 1.0,
     fade_bounds: tuple[float, float] | None = None,
+    live_eq_filters: list[str] | None = None,
+    live_mixer: bool = False,
 ) -> tuple[list[str], str]:
     input_args: list[str] = []
     for stem in active:
@@ -707,7 +753,8 @@ def _build_mix_filter(
     filters: list[str] = []
     labels: list[str] = []
     for index, stem in enumerate(active):
-        chain = f"[{index}:a]aresample={effects.sample_rate},volume={stem.gain:.6f}"
+        gain = 1.0 if live_mixer else stem.gain
+        chain = f"[{index}:a]aresample={effects.sample_rate},volume={gain:.6f}"
         if fade_filters:
             chain += "," + ",".join(fade_filters)
         label = f"a{index}"
@@ -715,7 +762,9 @@ def _build_mix_filter(
         filters.append(chain)
         labels.append(f"[{label}]")
 
-    tail_filters = _effect_filters(effects)
+    # Use the same bounded blocks in preview and export, including Rubber Band.
+    tail_filters = ["asetnsamples=n=256:p=0"]
+    tail_filters.extend(_effect_filters(effects, keep_unity=True) if live_eq_filters is None else live_eq_filters)
     rubberband = build_rubberband_filter(effects.tempo_ratio, effects.pitch_semitones)
     if rubberband:
         tail_filters.append(rubberband)
@@ -726,7 +775,11 @@ def _build_mix_filter(
     if not tail_filters:
         tail_filters.append("anull")
 
-    if len(labels) == 1:
+    if live_mixer:
+        weights = " ".join(f"{v:.6f}" for v in _mix_weights(active))
+        filters.append("".join(labels) + f"amix@kw_stems=inputs={len(labels)}:weights='{weights}'"
+                       f":normalize=0:duration=first:dropout_transition=0,{','.join(tail_filters)}[outa]")
+    elif len(labels) == 1:
         filters.append(f"{labels[0]}{','.join(tail_filters)}[outa]")
     else:
         filters.append(
@@ -736,14 +789,13 @@ def _build_mix_filter(
     return input_args, ";".join(filters)
 
 
-def _effect_filters(effects: AudioEffects) -> list[str]:
+def _effect_filters(effects: AudioEffects, keep_unity: bool = False) -> list[str]:
     filters: list[str] = []
-    if abs(effects.low_db) >= 0.05:
-        filters.append(_eq_filter(effects.low_shape, effects.low_freq, effects.low_q, effects.low_db))
-    if abs(effects.mid_db) >= 0.05:
-        filters.append(_eq_filter(effects.mid_shape, effects.mid_freq, effects.mid_q, effects.mid_db))
-    if abs(effects.high_db) >= 0.05:
-        filters.append(_eq_filter(effects.high_shape, effects.high_freq, effects.high_q, effects.high_db))
+    for band in ("low", "mid", "high"):
+        gain = getattr(effects, band + "_db")
+        if keep_unity or abs(gain) >= .05:
+            filters.append(_eq_filter(getattr(effects, band + "_shape"), getattr(effects, band + "_freq"),
+                                      getattr(effects, band + "_q"), gain if abs(gain) >= .05 else 0))
     for key, name in (("high_pass", "highpass"), ("low_pass", "lowpass")):
         frequency = getattr(effects, key + "_hz")
         if frequency > 0:
@@ -752,16 +804,68 @@ def _effect_filters(effects: AudioEffects) -> list[str]:
     return filters
 
 
+_LIVE_EQ_VALUES = frozenset(f"{band}_{field}" for band in ("low", "mid", "high")
+                          for field in ("db", "freq", "q", "shape")) | {
+    "high_pass_hz", "low_pass_hz", "high_pass_q", "low_pass_q", "high_pass_slope", "low_pass_slope"}
+
+
+def _eq_restart_key(effects):
+    """Only non-EQ processing needs the existing restart path."""
+    return tuple(getattr(effects, field.name) for field in fields(effects)
+                 if field.name not in _LIVE_EQ_VALUES)
+
+
+def _live_eq_plan(effects):
+    """Two fixed filter banks let an inaudible bank change topology safely."""
+    filters, parameters = [], {}
+    for band in ("low", "mid", "high"):
+        gain = getattr(effects, band + "_db")
+        selected = _eq_filter(getattr(effects, band + "_shape"), 1000, 1, 0).split("=", 1)[0]
+        for name, shape in (("equalizer", "Bell"), ("bass", "Low Shelf"), ("treble", "High Shelf")):
+            active = name == selected
+            # Inactive alternatives use fixed values, so dragging a frequency
+            # does not enqueue redundant commands to inaudible filters.
+            text = _eq_filter(shape, getattr(effects, band + "_freq") if active else 1000,
+                              getattr(effects, band + "_q") if active else 1,
+                              gain if active and abs(gain) >= .05 else 0)
+            options = text.split("=", 1)[1] + f":m={int(active)}"
+            target = f"{name}@kw_{band}"
+            filters.append((target, options))
+            for option in options.split(":"):
+                key, value = option.split("=")
+                if key in ("f", "w", "g", "m"):
+                    parameters[target, key] = float(value)
+    for key, name in (("high_pass", "highpass"), ("low_pass", "lowpass")):
+        frequency = getattr(effects, key + "_hz")
+        sections = (pass_section_qs(getattr(effects, key + "_slope"), _clamp_q(getattr(effects, key + "_q")))
+                    if frequency > 0 else ())
+        for index in range(4):
+            active = index < len(sections)
+            target = f"{name}@kw_{key}_{index}"
+            f = round(_clamp_frequency(frequency), 3) if active else 1000.
+            w = round(sections[index], 3) if active else .707
+            filters.append((target, f"f={f:.3f}:t=q:w={w:.3f}:precision=f64:m={int(active)}"))
+            parameters[target, "f"], parameters[target, "w"], parameters[target, "m"] = f, w, float(active)
+    branches = [",".join(f"{bank_target(target, bank)}={options}" for target, options in filters)
+                for bank in range(2)]
+    graph = ("asplit=2[kw_eq_a_in][kw_eq_b_in];"
+             f"[kw_eq_a_in]{branches[0]}[kw_eq_a];"
+             f"[kw_eq_b_in]{branches[1]}[kw_eq_b];"
+             "[kw_eq_a][kw_eq_b]amix@kw_eq_crossfade=inputs=2:weights='1 0':normalize=0"
+             ":duration=first:dropout_transition=0")
+    return [graph], parameters
+
+
 def _eq_filter(shape: str, frequency: float, q: float, gain_db: float) -> str:
     frequency = _clamp_frequency(frequency)
     q = _clamp_q(q)
     gain_db = _clamp_db(gain_db)
     shape_key = shape.strip().lower().replace(" ", "_")
     if shape_key == "low_shelf":
-        return f"bass=f={frequency:.3f}:t=q:w={q:.3f}:g={gain_db:.3f}"
+        return f"bass=f={frequency:.3f}:t=q:w={q:.3f}:g={gain_db:.3f}:precision=f64"
     if shape_key == "high_shelf":
-        return f"treble=f={frequency:.3f}:t=q:w={q:.3f}:g={gain_db:.3f}"
-    return f"equalizer=f={frequency:.3f}:t=q:w={q:.3f}:g={gain_db:.3f}"
+        return f"treble=f={frequency:.3f}:t=q:w={q:.3f}:g={gain_db:.3f}:precision=f64"
+    return f"equalizer=f={frequency:.3f}:t=q:w={q:.3f}:g={gain_db:.3f}:precision=f64"
 
 
 def _clamp_db(value: float) -> float:

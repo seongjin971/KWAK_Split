@@ -103,14 +103,18 @@ def main():
                 individual[kind]=tracks
             results["individual_stem_exports"]=individual
             print("Four separate WAVs and four separate MP3s verified.",flush=True)
+            # A two-second selection at 125% can finish while a loaded system
+            # settles the UI. Give transport observation four output seconds.
+            app.tempo_percent_var.set(50)
             app.toggle_playback();case.wait_idle();pump(app,.25)
-            assert app.preview_playing
+            assert app.preview_playing,(app.status_var.get(),app.playback_position_var.get())
             app.toggle_playback();paused=app.playback_position_var.get()
             assert not app.preview_playing and 2<paused<4
             app.toggle_playback();case.wait_idle();pump(app,.12)
             assert app.preview_playing and app.playback_position_var.get()>=paused
             app.stop_preview(show_status=False)
             results["dummy_play_pause_resume"]=True
+            results["transport_test_speed_percent"]=50
             app.status_var.set("");app._refresh_action_states();pump(app,.25)
             results["automatic_dpi_scale"]=app.ui_scale
             results["automatic_client"]=[app.winfo_width(),app.winfo_height()]

@@ -1,0 +1,74 @@
+{
+  "status": "applied",
+  "source_release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix7\\KWAK Split",
+  "destination_release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix8\\KWAK Split",
+  "old_workspace": "C:\\Users\\brian\\Dev\\active\\Kwaksplit",
+  "new_workspace": "C:\\Users\\brian\\Dev\\active\\Kwaksplit",
+  "backups": [
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix7\\KWAK Split\\settings.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\fixed-composition\\session-migration\\source\\settings.json",
+      "size": 365,
+      "sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408"
+    },
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix7\\KWAK Split\\temp\\recovery.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\fixed-composition\\session-migration\\source\\recovery.json",
+      "size": 1719,
+      "sha256": "27cd0e8e0123fe2ca9798427ab7387572edc45e4384ac58cabbc8b09af9466f1"
+    },
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix8\\KWAK Split\\settings.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\fixed-composition\\session-migration\\destination\\settings.json",
+      "size": 376,
+      "sha256": "fe4d899d1847939f94e08d6c4d82567d839b4c250bb9bb475fc6374b30a4539c"
+    }
+  ],
+  "audio_copies": [
+    {
+      "name": "source",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix7\\KWAK Split\\temp\\sessions\\20261001_180603_937619ee_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\source.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix8\\KWAK Split\\temp\\restored-session\\source.wav",
+      "size": 79663272,
+      "sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef",
+      "verified_sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef"
+    }
+  ],
+  "json_writes": [
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix8\\KWAK Split\\settings.json",
+      "sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408",
+      "previous_sha256": "fe4d899d1847939f94e08d6c4d82567d839b4c250bb9bb475fc6374b30a4539c",
+      "verified_sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix8\\KWAK Split\\temp\\recovery.json",
+      "sha256": "8caf684d517511cee6df3c7eda5e9b34198b3e73e9e78e4e5caa2ecaa8b9b311",
+      "previous_sha256": null,
+      "verified_sha256": "8caf684d517511cee6df3c7eda5e9b34198b3e73e9e78e4e5caa2ecaa8b9b311"
+    }
+  ],
+  "manifest": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\fixed-composition\\session-migration\\manifest.json",
+  "preserved_references": [
+    {
+      "field": "original_input",
+      "path": "C:\\Users\\brian\\Desktop\\That's What I Like- Bruno Mars (Audio Oficial) - Andrea Rojo.mp3",
+      "exists": true,
+      "action": "preserve"
+    }
+  ],
+  "changes": {
+    "settings.output_dir": {
+      "before": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+      "after": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output"
+    },
+    "recovery.source": {
+      "before": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix7\\KWAK Split\\temp\\sessions\\20261001_180603_937619ee_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\source.wav",
+      "after": "restored-session/source.wav"
+    },
+    "recovery.stems": {
+      "before": {},
+      "after": {}
+    }
+  }
+}

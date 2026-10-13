@@ -34,10 +34,13 @@ def settle(app):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--all-sizes",action="store_true")
-    parser.add_argument("--real-demucs",action="store_true");args=parser.parse_args()
-    out=ROOT/"docs/qa/compact";out.mkdir(parents=True,exist_ok=True)
+    parser.add_argument("--real-demucs",action="store_true")
+    parser.add_argument("--evidence-dir",type=Path,default=ROOT/"docs/qa/compact")
+    args=parser.parse_args()
+    out=args.evidence_dir.resolve();out.mkdir(parents=True,exist_ok=True)
     captures=out/"captures";captures.mkdir(exist_ok=True)
     cases=[("compact-1000",1000,700,1),("compact-760",760,620,1),("compact-640",640,480,1)]
+    cases += [("compact-480",480,360,1),("compact-short",1000,420,1)]
     if args.all_sizes:
         cases += [("1080p-100",1840,960,1),("1080p-125",1760,930,1.25),("1080p-150",1760,900,1.5),
                   ("1080p-175",1760,900,1.75),("1080p-200",1760,880,2),
@@ -63,17 +66,21 @@ def main():
             app.eq_low_shape_var.set("High Pass");app.eq_high_shape_var.set("Low Pass")
             app.high_pass_q_var.set(.71);app.low_pass_q_var.set(.71)
             app.status_var.set("");app._refresh_action_states()
-            # Allow a 4K-equivalent app viewport even on a smaller physical panel.
-            app.maxsize(max(width,app.winfo_screenwidth()),max(height,app.winfo_screenheight()))
-            app.minsize(min(app.px(640),width),min(app.px(480),height))
             app.geometry(f"{width}x{height}+16+16");settle(app)
             measured=(app.winfo_width(),app.winfo_height())
-            assert measured==(width,height),(name,measured)
+            requested=(width,height)
+            width,height=measured
+            assert width*7==height*10,(name,measured)
+            assert app.minsize()[0]<=width<=app.maxsize()[0]
             for widget in (app.load_button,app.settings_button,app.render_button,app.render_mp3_button):
                 assert widget.winfo_rootx()+widget.winfo_width()<=app.winfo_rootx()+width
             for panel in (app.eq_panel,app.mixer_panel):
                 assert panel.winfo_rootx()+panel.winfo_width()<=app.winfo_rootx()+width
-            case={"name":name,"client":measured,"scale":app.ui_scale,"mode":app._layout_mode,
+                assert panel.winfo_rooty()+panel.winfo_height()<=app.winfo_rooty()+height+1
+            assert app._layout_mode=="side-by-side"
+            assert not app.workspace_scroll.bar.winfo_ismapped()
+            case={"name":name,"requested":requested,"client":measured,"scale":app.ui_scale,"mode":app._layout_mode,
+                  "min_client":app.minsize(),"max_client":app.maxsize(),"aspect":[10,7],
                   "scroll":bool(app.workspace_scroll.bar.winfo_ismapped()),"monitor_work_area":display_metrics(app)[0]}
             # DWM clips off-monitor captures. Validate the large geometry above,
             # then inspect the same DPI in a fully visible normal-size window.
@@ -82,9 +89,6 @@ def main():
                 case["capture_note"]="Full viewport checked by widget bounds; capture uses normal window at the same DPI."
             case["capture_client"]=(app.winfo_width(),app.winfo_height())
             ImageGrab.grab(window=int(app.frame(),0)).save(captures/(name+".png"))
-            if width==640:
-                app.workspace_scroll.canvas.yview_moveto(1);settle(app)
-                ImageGrab.grab(window=int(app.frame(),0)).save(captures/(name+"-bottom.png"))
             if name=="compact-1000":
                 app.open_render_settings();settle(app)
                 ImageGrab.grab(window=int(app.render_settings_window.frame(),0)).save(captures/"settings.png")

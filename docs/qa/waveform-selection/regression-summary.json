@@ -1,0 +1,11 @@
+{
+  "unique_passed": 115,
+  "unresolved_failures": [],
+  "runs": [
+    "new-tests.xml",
+    "focused-tests.xml",
+    "regression-tests.xml",
+    "point-rerun.xml"
+  ],
+  "focused_reported_subtests_passed": 11
+}

@@ -1,0 +1,15 @@
+{
+  "python": "3.11.9",
+  "torch": "2.5.1+cpu",
+  "torchaudio": "2.5.1+cpu",
+  "demucs": "4.0.1",
+  "executable": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\demucs_runtime\\Scripts\\python.exe",
+  "prefix": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\demucs_runtime",
+  "base_prefix": "C:\\Users\\brian\\AppData\\Local\\Programs\\Python\\Python311",
+  "modules": {
+    "demucs": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\demucs_runtime\\Lib\\site-packages\\demucs\\__init__.py",
+    "torch": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\demucs_runtime\\Lib\\site-packages\\torch\\__init__.py",
+    "torchaudio": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\demucs_runtime\\Lib\\site-packages\\torchaudio\\__init__.py"
+  },
+  "no_external_drive_or_staging_paths": true
+}

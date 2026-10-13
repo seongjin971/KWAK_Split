@@ -1,0 +1,802 @@
+{
+  "unique_tests": 184,
+  "passed": 184,
+  "subtests_passed": 3,
+  "unresolved": {},
+  "runs": [
+    {
+      "file": "focused.xml",
+      "cases": 36,
+      "reported_tests_including_subtests": 39,
+      "failures": 1,
+      "errors": 2
+    },
+    {
+      "file": "corrected-0.xml",
+      "cases": 1,
+      "reported_tests_including_subtests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": "corrected-1.xml",
+      "cases": 1,
+      "reported_tests_including_subtests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": "corrected-2.xml",
+      "cases": 1,
+      "reported_tests_including_subtests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": "regression.xml",
+      "cases": 87,
+      "reported_tests_including_subtests": 87,
+      "failures": 0,
+      "errors": 1
+    },
+    {
+      "file": "regression-rerun.xml",
+      "cases": 1,
+      "reported_tests_including_subtests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": "workflow.xml",
+      "cases": 10,
+      "reported_tests_including_subtests": 10,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": "audio-corrected.xml",
+      "cases": 63,
+      "reported_tests_including_subtests": 63,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "cases": {
+    "tests.test_transport_response::test_play_pause_updates_transport_without_relayout_and_retains_resume_position": {
+      "last_run": "corrected-0.xml",
+      "status": "passed"
+    },
+    "tests.test_transport_response::test_context_errors_and_progress_remain_visible_without_editor_relayout": {
+      "last_run": "corrected-1.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_mouse_clicked_buttons_release_focus_and_space_controls_transport": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_keyboard_focused_button_uses_enter_but_space_still_controls_transport": {
+      "last_run": "corrected-2.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_waveform_click_leaves_numeric_input_and_space_controls_transport[1]": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_waveform_click_leaves_numeric_input_and_space_controls_transport[3]": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_space_in_numeric_entry_or_settings_does_not_start_playback": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_held_space_toggles_once_and_release_allows_the_next_press": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_keyboard::test_focus_loss_releases_a_space_latch_without_toggling": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_calibrated_stereo_spectrum_does_not_cancel_antiphase[1-0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_calibrated_stereo_spectrum_does_not_cancel_antiphase[-1-0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_calibrated_stereo_spectrum_does_not_cancel_antiphase[0--3.0103]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_analysis_is_bounded_and_never_returns_a_future_frame": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_spectrum_measures_eq_cut_boost_and_stem_gain_in_final_pcm[-12]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_spectrum_measures_eq_cut_boost_and_stem_gain_in_final_pcm[12]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_spectrum_measures_pass_filters_pitch_and_limiter": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_live_tap_uses_player_clock_and_processed_audio[0-1]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_live_tap_uses_player_clock_and_processed_audio[-12-0.5]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_live_tap_uses_player_clock_and_processed_audio[12-2]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_rendered_fallback_analyzes_actual_wav_and_stops": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_analyzer_failure_cannot_break_audio_forwarding": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_cursor_maps_wall_time_to_original_audio_at_each_speed": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_double_speed_finishes_when_player_finishes": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_encoder_exit_does_not_end_buffered_playback": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_failed_encoder_is_not_reported_as_successful_playback": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_failed_player_does_not_report_success": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_half_speed_does_not_stop_at_original_duration": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_live_speed_restart_uses_updated_source_position": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_realtime_output_tail_is_not_cut_at_estimated_end": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_realtime_start_captures_effect_speed": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_render_worker_measures_wav_before_publishing_preview": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_rendered_double_speed_finishes_after_six_seconds": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_rendered_preview_receives_captured_speed_and_measured_duration": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_rendered_preview_uses_measured_output_duration": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_seek_restart_preserves_explicit_source_position": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_playback.PlaybackTests::test_stop_captures_position_using_speed_of_active_audio": {
+      "last_run": "focused.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_eq_edits_keep_stream_then_pause_seek_and_source_change_clear_spectrum": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_mixer_mute_solo_and_gain_change_the_spectrum": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_loop_replaces_analyzer_and_fallback_uses_rendered_file": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_close_during_playback_releases_audio_and_fft_threads": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_continuous_eq_drag_applies_before_release_and_pause_cancels_pending": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_eq_control_failure_reapplies_latest_values_once": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_missing_optional_command_client_uses_existing_restart_path": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_mode_menu_slope_knob_and_ctrl_reset_keep_playback[low-0-High Pass]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum_ui::test_mode_menu_slope_knob_and_ctrl_reset_keep_playback[high-1-Low Pass]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer_ui::test_all_muted_start_unmute_solo_precedence_and_pause": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer_ui::test_fader_held_drag_and_ctrl_reset_apply_without_restart": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer_ui::test_mixer_control_failure_and_missing_client_use_recovery[False]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer_ui::test_mixer_control_failure_and_missing_client_use_recovery[True]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek_ui::test_click_and_held_left_drag_seek_before_release_without_restart": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek_ui::test_seek_keeps_latest_eq_solo_gain_and_selection_fades": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek_ui::test_paused_seek_and_right_drag_selection_keep_existing_behavior": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_time_wheel_tracks_zoom_delta_shift_and_two_decimal_display": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_all_numeric_fields_drag_with_one_undo_and_clamp_bounds": {
+      "last_run": "regression-rerun.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_stem_range_clamps_typed_wheel_and_drag_edits_with_single_undo": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_normal_click_typing_and_double_click_remain_text_editing": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_disabled_numeric_and_readout_controls_do_not_change_before_load": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_settings_choices_scrub_supported_values_and_keep_arrow_dropdown": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_fade_markers_and_envelope_follow_duration_zoom_and_zero": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_active_knob_and_fader_readouts_drag_undo_and_reset": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_ctrl_reset_is_one_undo_step_and_does_not_start_a_drag": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_numeric_gestures::test_ctrl_reset_pass_slope_defaults_and_disabled_controls": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_loading_lifecycle::test_fractional_duration_finishes_loading_and_enables_controls": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_loading_lifecycle::test_worker_completion_survives_ui_result_handler_error": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_loading_lifecycle::test_close_during_work_is_immediate_cancels_child_and_keeps_recovery": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_loading_lifecycle::test_late_process_registration_after_close_is_terminated": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_audio_load_and_status_changes_keep_the_same_composition[size0]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_audio_load_and_status_changes_keep_the_same_composition[size1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_audio_load_and_status_changes_keep_the_same_composition[size2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_audio_load_and_status_changes_keep_the_same_composition[size3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_fit_and_roundtrip_preserve_geometry_and_edits[1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_fit_and_roundtrip_preserve_geometry_and_edits[1.25]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_fit_and_roundtrip_preserve_geometry_and_edits[1.5]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_fit_and_roundtrip_preserve_geometry_and_edits[1.75]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_fit_and_roundtrip_preserve_geometry_and_edits[2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_proportional_resize::test_context_status_and_dpi_change_still_fit": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1-work0]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1-work1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1-work2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1-work3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.25-work0]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.25-work1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.25-work2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.25-work3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.5-work0]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.5-work1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.5-work2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.5-work3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.75-work0]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.75-work1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.75-work2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[1.75-work3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[2-work0]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[2-work1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[2-work2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_limits_fit_work_area_at_each_dpi[2-work3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_programmatic_width_and_height_changes_drive_the_other_axis": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-4]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-5]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-6]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-7]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client0-8]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-4]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-5]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-6]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-7]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client1-8]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-1]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-2]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-3]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-4]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-5]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-6]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-7]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_all_edges_anchor_the_opposite_corner_and_stay_bounded[client2-8]": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_installed_native_messages_maximize_and_dialogs": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_window_bounds::test_monitor_change_reduces_limits_and_preserves_aspect": {
+      "last_run": "regression.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_direct_exports_preserve_existing_files_and_do_not_prompt": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_browse_cancel_keep_path_and_done_persists_preferences": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_numeric_text_is_readable_validated_and_fades_are_undoable": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_pass_slope_q_mute_solo_and_fader_history": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_space_and_history_do_not_hijack_numeric_input": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_initial_window_and_minimum_fit_1080p_work_area[1]": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_initial_window_and_minimum_fit_1080p_work_area[1.25]": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_initial_window_and_minimum_fit_1080p_work_area[1.5]": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_initial_window_and_minimum_fit_1080p_work_area[1.75]": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_compact_workflow::test_initial_window_and_minimum_fit_1080p_work_area[2]": {
+      "last_run": "workflow.xml",
+      "status": "passed"
+    },
+    "tests.test_spectrum::test_close_wakes_an_idle_analyzer_without_waiting_for_a_poll_timeout": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_live_graph_matches_export_filter_pcm[effects0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_live_graph_matches_export_filter_pcm[effects1]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_live_graph_matches_export_filter_pcm[effects2]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_live_graph_matches_export_filter_pcm[effects3]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_live_graph_matches_export_filter_pcm[effects4]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_gain_updates_without_restarts_gaps_or_large_transients": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects0-updated0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects1-updated1]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects2-updated2]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects3-updated3]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects4-updated4]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects5-updated5]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_q_shelves_passes_and_speed_share_export_result[effects6-updated6]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_fast_drag_keeps_latest_value_and_rejects_non_eq_changes": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before0-after0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before1-after1]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before2-after2]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before3-after3]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before4-after4]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before5-after5]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before6-after6]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before7-after7]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before8-after8]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_and_slope_changes_match_export_without_restarting[before9-after9]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_transition_crossfades_without_dry_level_spike[0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_mode_transition_crossfades_without_dry_level_spike[0.06]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_frequency_gain_q_edits_follow_each_new_active_bank": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_rapid_mode_slope_switches_apply_last_state_and_release_worker": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_command_failure_preserves_audio_and_is_reported_once": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_eq::test_stop_interrupts_an_unanswered_command": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_mute_solo_gain_and_unmute_match_export_without_restart[initial0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_mute_solo_gain_and_unmute_match_export_without_restart[initial1]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_mute_solo_gain_and_unmute_match_export_without_restart[initial2]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_atomic_solo_exchange_does_not_drop_or_double_identical_tracks": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_latest_mixer_values_survive_concurrent_eq_bank_switches[effects0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_latest_mixer_values_survive_concurrent_eq_bank_switches[effects1]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_changed_inputs_are_rejected_and_stop_interrupts_pending_mixer": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_mixer::test_initially_silent_stem_stays_sample_aligned_after_unmute": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_forward_backward_seeks_keep_player_and_map_audible_time[1-0]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_forward_backward_seeks_keep_player_and_map_audible_time[0.5-3]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_forward_backward_seeks_keep_player_and_map_audible_time[2--3]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_latest_seek_and_edits_win_while_preparation_is_delayed": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_crossfade_limits_a_discontinuous_waveform_and_keeps_forwarding": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_seek_failure_keeps_playing_and_a_later_seek_recovers": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_stalled_preparation_times_out_without_stopping_current_audio": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_stop_cancels_prepared_and_pending_seeks[False]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_stop_cancels_prepared_and_pending_seeks[True]": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_near_end_seek_reuses_player_and_new_end_finishes_normally": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_seek_preserves_partial_stem_offset_and_selection_anchored_fades": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    },
+    "tests.test_live_seek::test_muted_stems_remain_sample_aligned_after_seek_and_unmute": {
+      "last_run": "audio-corrected.xml",
+      "status": "passed"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 """UI-independent contracts for the approved compact desktop editor."""
 import math
+from backend.window_bounds import window_limits
 
 MAX_STEM_PERCENT = 100 * 10 ** (12 / 20)
 FADER_UNITY = .67
@@ -38,6 +39,4 @@ def volume_label(volume):
 
 def initial_window(work_width, work_height, scale=1):
     """All inputs/output are device pixels; allow for window decorations."""
-    width = min(round(1000 * scale), max(320, work_width - round(48*scale)))
-    height = min(round(700 * scale), max(320, work_height - round(76*scale)))
-    return width, height
+    return window_limits(work_width,work_height,scale,(round(16*scale),round(48*scale))).initial_size

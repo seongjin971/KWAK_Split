@@ -1,0 +1,58 @@
+{
+  "release": "compact-fix16",
+  "files": [
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\KWAK Split.exe",
+      "size": 3265637,
+      "sha256": "e6ecfae06271caa50000d750cdb0566201a236a96ef0e82314fd04ca684ed179"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\settings.json",
+      "size": 376,
+      "sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\recovery.json",
+      "size": 2581,
+      "sha256": "5e919201dae88e69a73087f4ce77b597322d93516444cd9fe8dcecf8db33ff4d"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\sessions\\20261002_121151_c98c308c_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\source.wav",
+      "size": 91759412,
+      "sha256": "fe096003a3f57e50c6dfdec083e44fd9aab3307041e041a450a73ed6d0185fbc"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\stems\\20261002_121151_c98c308c_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\6c5149143220\\htdemucs\\source\\vocals.wav",
+      "size": 42151984,
+      "sha256": "1680323c7623db5f297a8ff2ca9b1b19aab766178f25362ef0ce8d922c0f4609"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\stems\\20261002_121151_c98c308c_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\6c5149143220\\htdemucs\\source\\drums.wav",
+      "size": 42151984,
+      "sha256": "43c82265a039867ebbb9c6c4bafbb72e7dc8d5dbf825da636803fd63bae344ca"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\stems\\20261002_121151_c98c308c_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\6c5149143220\\htdemucs\\source\\bass.wav",
+      "size": 42151984,
+      "sha256": "841cadf83d15ebec914d9fee20315baca8135401066edbd2cafb0b7f47c3440b"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\stems\\20261002_121151_c98c308c_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\6c5149143220\\htdemucs\\source\\other.wav",
+      "size": 42151984,
+      "sha256": "e55272a1ade6efcbf31dcc893f9888cafc0860c313e7a762c60a8018d33852cf"
+    }
+  ],
+  "initial_snapshot_differences": [
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\settings.json",
+      "initial_sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408",
+      "pre_migration_sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix16\\KWAK Split\\temp\\recovery.json",
+      "initial_sha256": "061d5b3aabf762530c766bda75eee600216724d37fa2147549bda849c4456a1c",
+      "pre_migration_sha256": "5e919201dae88e69a73087f4ce77b597322d93516444cd9fe8dcecf8db33ff4d"
+    }
+  ],
+  "note": "The current recovery was updated during implementation. Copy the latest saved session; all source-release files remain read-only during migration."
+}

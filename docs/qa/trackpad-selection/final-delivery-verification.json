@@ -1,0 +1,65 @@
+{
+  "recorded_at": "2026-10-03T01:51:15.621742+09:00",
+  "status": "USER_REVIEW_READY",
+  "release": "compact-fix21",
+  "exe_sha256": "0ec7fb8029271a558a3de17311b925e700143ccd66584d119bd7a56a44514377",
+  "frozen_modules_match_source": 23,
+  "root_launcher_target": "release/compact-fix21/KWAK Split/KWAK Split.exe",
+  "packaged_launcher_preserved": true,
+  "regression": {
+    "unique_passed": 70,
+    "unresolved_failures": [],
+    "skipped": [],
+    "runs": [
+      {
+        "file": "gestures.xml",
+        "cases": 38
+      },
+      {
+        "file": "range-regression.xml",
+        "cases": 44
+      }
+    ]
+  },
+  "source_display_cases": 45,
+  "frozen_display_cases": 45,
+  "frozen_checks_passed": [
+    "--qa-wave-selection",
+    "--qa-transport",
+    "--smoke-test"
+  ],
+  "protected_old_release_files": [
+    {
+      "path": "release\\compact-fix20\\KWAK Split\\KWAK Split.exe",
+      "sha256": "EAAB63B676C98463597B3F030F8660B07A53ACEDDE2585C548254C55F996AA95"
+    },
+    {
+      "path": "release\\compact-fix20\\KWAK Split\\settings.json",
+      "sha256": "A11ACAACFBE64FD160FF16F29B5A97482A0ACCB756952639682BD9C95657B963"
+    },
+    {
+      "path": "release\\compact-fix20\\KWAK Split\\temp\\recovery.json",
+      "sha256": "9F760446E7AD4D9631D310402051CD96495B9E507AD86F18E21628A8C418A6B8"
+    }
+  ],
+  "old_and_new_audio_hashes_match": true,
+  "session_restored": {
+    "method": "real Tk restore in isolated settings/workspace; no playback/export",
+    "edits_preserved": true,
+    "four_stems_restored": false,
+    "source_only_restored": true,
+    "selection": [
+      0.0,
+      238.956563
+    ],
+    "selection_has_length": true,
+    "save_folder": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+    "export_available": false,
+    "callback_errors": [],
+    "user_session_hashes_unchanged": true
+  },
+  "git_diff_check_exit_code": 0,
+  "physical_input_and_listening_tested": false,
+  "synced_document_files": 771,
+  "documentation_matches": true
+}

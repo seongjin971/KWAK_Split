@@ -1,0 +1,174 @@
+{
+  "method": "isolated real Tk; generated audio and fixture stem references; generated Ctrl+mouse events",
+  "controls_checked": [
+    {
+      "control_index": 0,
+      "reset_value": 0
+    },
+    {
+      "control_index": 1,
+      "reset_value": 0
+    },
+    {
+      "control_index": 2,
+      "reset_value": 0
+    },
+    {
+      "control_index": 3,
+      "reset_value": 0
+    },
+    {
+      "control_index": 4,
+      "reset_value": 0
+    },
+    {
+      "control_index": 5,
+      "reset_value": 0
+    },
+    {
+      "control_index": 6,
+      "reset_value": 100
+    },
+    {
+      "control_index": 7,
+      "reset_value": 100
+    },
+    {
+      "control_index": 8,
+      "reset_value": 100
+    },
+    {
+      "control_index": 9,
+      "reset_value": 100
+    },
+    {
+      "control_index": 10,
+      "reset_value": 100
+    },
+    {
+      "control_index": 11,
+      "reset_value": 100
+    },
+    {
+      "control_index": 12,
+      "reset_value": 100
+    },
+    {
+      "control_index": 13,
+      "reset_value": 100
+    }
+  ],
+  "before": {
+    "selection_start": 0.0,
+    "selection_end": 6.0,
+    "fade_in": 0.02,
+    "fade_out": 0.02,
+    "eq_low": 8.0,
+    "eq_mid": -12.0,
+    "eq_high": 6.0,
+    "eq_low_freq": 120.0,
+    "eq_mid_freq": 1000.0,
+    "eq_high_freq": 8000.0,
+    "eq_low_q": 0.8,
+    "eq_mid_q": 1.0,
+    "eq_high_q": 0.8,
+    "eq_low_shape": "Low Shelf",
+    "eq_mid_shape": "Bell",
+    "eq_high_shape": "High Shelf",
+    "high_pass": 0.0,
+    "low_pass": 0.0,
+    "high_pass_q": 0.7,
+    "low_pass_q": 0.7,
+    "high_pass_slope": 24,
+    "low_pass_slope": 24,
+    "pitch_semitones": 0.0,
+    "tempo_percent": 100.0,
+    "peak_normalize": false,
+    "limiter_enabled": true,
+    "limiter_ceiling": 0.98,
+    "stem_bypass": false,
+    "loop": true,
+    "sample_rate": 48000,
+    "bit_depth": 24,
+    "mp3_bitrate": 320,
+    "stems": {
+      "vocals": {
+        "volume": 50.0,
+        "mute": false,
+        "solo": false
+      },
+      "drums": {
+        "volume": 150.0,
+        "mute": false,
+        "solo": false
+      },
+      "bass": {
+        "volume": 75.0,
+        "mute": false,
+        "solo": false
+      },
+      "other": {
+        "volume": 210.0,
+        "mute": false,
+        "solo": false
+      }
+    }
+  },
+  "after": {
+    "selection_start": 0.0,
+    "selection_end": 6.0,
+    "fade_in": 0.02,
+    "fade_out": 0.02,
+    "eq_low": 0.0,
+    "eq_mid": 0.0,
+    "eq_high": 0.0,
+    "eq_low_freq": 120.0,
+    "eq_mid_freq": 1000.0,
+    "eq_high_freq": 8000.0,
+    "eq_low_q": 0.8,
+    "eq_mid_q": 1.0,
+    "eq_high_q": 0.8,
+    "eq_low_shape": "Low Shelf",
+    "eq_mid_shape": "Bell",
+    "eq_high_shape": "High Shelf",
+    "high_pass": 0.0,
+    "low_pass": 0.0,
+    "high_pass_q": 0.7,
+    "low_pass_q": 0.7,
+    "high_pass_slope": 24,
+    "low_pass_slope": 24,
+    "pitch_semitones": 0.0,
+    "tempo_percent": 100.0,
+    "peak_normalize": false,
+    "limiter_enabled": true,
+    "limiter_ceiling": 0.98,
+    "stem_bypass": false,
+    "loop": true,
+    "sample_rate": 48000,
+    "bit_depth": 24,
+    "mp3_bitrate": 320,
+    "stems": {
+      "vocals": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "drums": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "bass": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "other": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      }
+    }
+  },
+  "callback_errors": []
+}

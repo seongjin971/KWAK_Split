@@ -1,0 +1,72 @@
+364 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.7
+364 INFO: Python: 3.11.9
+401 INFO: Platform: Windows-10-10.0.26200-SP0
+401 INFO: Python environment: C:\Users\brian\Dev\active\Kwaksplit\.build\venv
+411 INFO: wrote C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-spec\KWAK Split.spec
+418 INFO: Removing temporary files and cleaning cache in C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-cache\pyinstaller
+442 INFO: Module search paths (PYTHONPATH):
+['C:\\Users\\brian\\Dev\\active\\Kwaksplit',
+ 'C:\\Users\\brian\\AppData\\Local\\Programs\\Python\\Python311\\python311.zip',
+ 'C:\\Users\\brian\\AppData\\Local\\Programs\\Python\\Python311\\DLLs',
+ 'C:\\Users\\brian\\AppData\\Local\\Programs\\Python\\Python311\\Lib',
+ 'C:\\Users\\brian\\AppData\\Local\\Programs\\Python\\Python311',
+ 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv',
+ 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages',
+ 'C:\\Users\\brian\\Dev\\active\\Kwaksplit']
+923 INFO: checking Analysis
+924 INFO: Building Analysis because Analysis-00.toc is non existent
+924 INFO: Looking for Python shared library...
+925 INFO: Using Python shared library: C:\Users\brian\AppData\Local\Programs\Python\Python311\python311.dll
+925 INFO: Running Analysis Analysis-00.toc
+925 INFO: Target bytecode optimization level: 0
+926 INFO: Initializing module dependency graph...
+931 INFO: Initializing module graph hook caches...
+1075 INFO: Analyzing modules for base_library.zip ...
+2949 INFO: Processing standard module hook 'hook-heapq.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+3148 INFO: Processing standard module hook 'hook-encodings.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+7559 INFO: Processing standard module hook 'hook-math.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+7753 INFO: Processing standard module hook 'hook-pickle.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+14271 INFO: Caching module dependency graph...
+14337 INFO: Analyzing C:\Users\brian\Dev\active\Kwaksplit\StemSamplePrep.py
+14814 INFO: Processing standard module hook 'hook-platform.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+14858 INFO: Processing standard module hook 'hook-_ctypes.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+14897 INFO: Processing pre-find-module-path hook 'hook-tkinter.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+14903 INFO: TclTkInfo: initializing cached Tcl/Tk info...
+16010 INFO: Processing standard module hook 'hook-_tkinter.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+16684 INFO: Processing module hooks (post-graph stage)...
+16688 INFO: Processing standard module hook 'hook-_tkinter.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks'
+16701 INFO: Performing binary vs. data reclassification (923 entries)
+24435 INFO: Looking for ctypes DLLs
+24605 INFO: Analyzing run-time hooks ...
+24607 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+24623 INFO: Including run-time hook 'pyi_rth__tkinter.py' from 'C:\\Users\\brian\\Dev\\active\\Kwaksplit\\.build\\venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+24669 INFO: Creating base_library.zip...
+24714 INFO: Looking for dynamic libraries
+25067 INFO: Extra DLL search directories (AddDllDirectory): []
+25067 INFO: Extra DLL search directories (PATH): []
+25923 INFO: Warnings written to C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-work\KWAK Split\warn-KWAK Split.txt
+25965 INFO: Graph cross-reference written to C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-work\KWAK Split\xref-KWAK Split.html
+26069 INFO: checking PYZ
+26070 INFO: Building PYZ because PYZ-00.toc is non existent
+26071 INFO: Building PYZ (ZlibArchive) C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-work\KWAK Split\PYZ-00.pyz
+26351 INFO: Building PYZ (ZlibArchive) C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-work\KWAK Split\PYZ-00.pyz completed successfully.
+26363 INFO: checking PKG
+26363 INFO: Building PKG because PKG-00.toc is non existent
+26364 INFO: Building PKG (CArchive) KWAK Split.pkg
+26551 INFO: Building PKG (CArchive) KWAK Split.pkg completed successfully.
+26553 INFO: Bootloader C:\Users\brian\Dev\active\Kwaksplit\.build\venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+26553 INFO: checking EXE
+26554 INFO: Building EXE because EXE-00.toc is non existent
+26554 INFO: Building EXE from EXE-00.toc
+26555 INFO: Copying bootloader EXE to C:\Users\brian\Dev\active\Kwaksplit\.build\pyinstaller-work\KWAK Split\KWAK Split.exe
+27248 INFO: Copying icon to EXE
+27321 INFO: Copying 0 resources to EXE
+27322 INFO: Embedding manifest in EXE
+27399 INFO: Appending PKG archive to EXE
+27481 INFO: Fixing EXE headers
+27869 INFO: Building EXE from EXE-00.toc completed successfully.
+27881 INFO: checking COLLECT
+27882 INFO: Building COLLECT because COLLECT-00.toc is non existent
+27883 INFO: Building COLLECT COLLECT-00.toc
+30881 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+30902 INFO: Build complete! The results are available in: C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix10

@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "native_num_lock_state": 8,
+  "paused_cursor": 20,
+  "playing_drag_position": 28.21018140589569,
+  "new_end": 45.06,
+  "same_output_owner": true,
+  "same_player": true,
+  "ended_at_new_end": true,
+  "callback_errors": []
+}

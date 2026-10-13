@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="8.162" timestamp="2026-10-02T21:26:07.819085+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_proportional_resize" name="test_context_status_and_dpi_change_still_fit" time="1.730" /><testcase classname="tests.test_live_mixer_ui" name="test_mixer_control_failure_and_missing_client_use_recovery[True]" time="6.173"><failure message="AssertionError: No live spectrum state before timeout">session = &lt;test_workspace.WorkspaceTests testMethod=runTest&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000262943AA2D0&gt;
+missing_client = True
+
+    @pytest.mark.parametrize("missing_client",[False,True])
+    def test_mixer_control_failure_and_missing_client_use_recovery(session,monkeypatch,missing_client):
+        app=session.app;prepare_stems(app,monkeypatch)
+        if missing_client:
+            monkeypatch.setattr("backend.audio_processing.ffmpeg_tools.live_eq_available",lambda:False)
+        app.toggle_playback();current_frame(app);owner=app.realtime_processes
+        if not missing_client:
+            def fail(*args):raise TimeoutError("injected mixer command failure")
+            monkeypatch.setattr(owner.eq_controller,"_command",fail)
+        app.stem_vars["vocals"]["solo"].set(True)
+        app.stem_vars["vocals"]["volume"].set(50)
+&gt;       current_frame(app,owner)
+
+tests\test_live_mixer_ui.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_spectrum_ui.py:26: in current_frame
+    return pump_until(app,ready)
+           ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+app = &lt;StemSamplePrep.StemSamplePrepApp object .&gt;
+predicate = &lt;function current_frame.&lt;locals&gt;.ready at 0x000002629080B100&gt;
+timeout = 5
+
+    def pump_until(app, predicate, timeout=5):
+        deadline=time.monotonic()+timeout
+        while time.monotonic()&lt;deadline:
+            app.update()
+            value=predicate()
+            if value:return value
+            time.sleep(.01)
+&gt;       raise AssertionError("No live spectrum state before timeout")
+E       AssertionError: No live spectrum state before timeout
+
+tests\test_spectrum_ui.py:18: AssertionError</failure></testcase></testsuite></testsuites>

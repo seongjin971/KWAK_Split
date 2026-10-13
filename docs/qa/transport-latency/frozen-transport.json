@@ -1,0 +1,132 @@
+{
+  "frozen": true,
+  "method": "real Tk Space events and SDL dummy",
+  "physical_key_to_speaker_measured": false,
+  "runs": [
+    {
+      "mix_inputs": 1,
+      "cycles": [
+        {
+          "play_handler_ms": 315.44999999459833,
+          "play_paint_ms": 316.65670000074897,
+          "pcm_observed_ms": 356.01569999562344,
+          "clock_observed_ms": 497.99459999485407,
+          "stop_handler_ms": 6.229300000995863,
+          "stop_paint_ms": 7.6891999997315
+        },
+        {
+          "play_handler_ms": 20.29779999429593,
+          "play_paint_ms": 23.2490999987931,
+          "pcm_observed_ms": 140.90759999817237,
+          "clock_observed_ms": 187.10360000113724,
+          "stop_handler_ms": 7.052600005408749,
+          "stop_paint_ms": 9.280300000682473
+        },
+        {
+          "play_handler_ms": 23.64289999968605,
+          "play_paint_ms": 26.303300001018215,
+          "pcm_observed_ms": 124.31130000186386,
+          "clock_observed_ms": 194.16030000138562,
+          "stop_handler_ms": 8.325800001330208,
+          "stop_paint_ms": 10.024399998656008
+        },
+        {
+          "play_handler_ms": 21.43340000475291,
+          "play_paint_ms": 24.4684999997844,
+          "pcm_observed_ms": 113.08560000179568,
+          "clock_observed_ms": 186.7703000025358,
+          "stop_handler_ms": 5.573900001763832,
+          "stop_paint_ms": 7.286200001544785
+        },
+        {
+          "play_handler_ms": 20.745100002386607,
+          "play_paint_ms": 23.998099997697864,
+          "pcm_observed_ms": 83.03190000151517,
+          "clock_observed_ms": 159.45130000181962,
+          "stop_handler_ms": 7.173700003477279,
+          "stop_paint_ms": 8.949000002758112
+        },
+        {
+          "play_handler_ms": 20.760100000188686,
+          "play_paint_ms": 23.048600000038277,
+          "pcm_observed_ms": 94.14169999945443,
+          "clock_observed_ms": 183.25719999847934,
+          "stop_handler_ms": 6.873999998788349,
+          "stop_paint_ms": 8.847400000377093
+        }
+      ],
+      "median_ms": {
+        "play_handler_ms": 21.0967500024708,
+        "play_paint_ms": 24.23329999874113,
+        "pcm_observed_ms": 118.69845000182977,
+        "clock_observed_ms": 186.93695000183652,
+        "stop_handler_ms": 6.963300002098549,
+        "stop_paint_ms": 8.898200001567602
+      }
+    },
+    {
+      "mix_inputs": 4,
+      "cycles": [
+        {
+          "play_handler_ms": 56.73620000015944,
+          "play_paint_ms": 60.41529999492923,
+          "pcm_observed_ms": 193.674900001497,
+          "clock_observed_ms": 273.4387999953469,
+          "stop_handler_ms": 7.000199999311008,
+          "stop_paint_ms": 8.478399999148678
+        },
+        {
+          "play_handler_ms": 35.29349999735132,
+          "play_paint_ms": 38.037999998778105,
+          "pcm_observed_ms": 121.33049999829382,
+          "clock_observed_ms": 186.9345999948564,
+          "stop_handler_ms": 5.735899998398963,
+          "stop_paint_ms": 7.369699997070711
+        },
+        {
+          "play_handler_ms": 20.782399995368905,
+          "play_paint_ms": 23.38939999754075,
+          "pcm_observed_ms": 117.42219999723602,
+          "clock_observed_ms": 188.8323999955901,
+          "stop_handler_ms": 6.993200004217215,
+          "stop_paint_ms": 8.827999998175073
+        },
+        {
+          "play_handler_ms": 22.253199997066986,
+          "play_paint_ms": 24.469299998600036,
+          "pcm_observed_ms": 108.45449999760604,
+          "clock_observed_ms": 177.3061999992933,
+          "stop_handler_ms": 7.687500001338776,
+          "stop_paint_ms": 9.61960000131512
+        },
+        {
+          "play_handler_ms": 21.40769999823533,
+          "play_paint_ms": 23.78859999589622,
+          "pcm_observed_ms": 143.93289999861736,
+          "clock_observed_ms": 242.77579999761656,
+          "stop_handler_ms": 8.336099999723956,
+          "stop_paint_ms": 10.034300001279917
+        },
+        {
+          "play_handler_ms": 23.18579999700887,
+          "play_paint_ms": 26.516799996898044,
+          "pcm_observed_ms": 128.74429999646964,
+          "clock_observed_ms": 173.39439999341266,
+          "stop_handler_ms": 7.571599999209866,
+          "stop_paint_ms": 9.899799995764624
+        }
+      ],
+      "median_ms": {
+        "play_handler_ms": 22.71949999703793,
+        "play_paint_ms": 25.49304999774904,
+        "pcm_observed_ms": 125.03739999738173,
+        "clock_observed_ms": 187.88349999522325,
+        "stop_handler_ms": 7.285899999260437,
+        "stop_paint_ms": 9.223799999745097
+      }
+    }
+  ],
+  "held_space_toggles_once": true,
+  "clean_shutdown": true,
+  "status": "passed"
+}

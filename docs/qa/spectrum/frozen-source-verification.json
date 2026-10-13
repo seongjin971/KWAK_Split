@@ -1,0 +1,40 @@
+{
+  "exe_sha256": "d6777e7309791bd1b20cd93368e2d9059929f79aa4e4428e21f1117703f4bf2f",
+  "modules": [
+    {
+      "module": "StemSamplePrep",
+      "source_sha256": "b8d4fc38ed65cfc1afec5584e4a1836153c73bcad9af5f80437eceeec30dde70",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_ui",
+      "source_sha256": "297ef4ee2f32ca966991b11ef2117a5e68191b2b4e9a942d8925a327d6ce6ca0",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_widgets",
+      "source_sha256": "da877df7e363a828f82ef978ab25f34b026b7441b224da7da553ecbdb2ea2815",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.workspace_features",
+      "source_sha256": "f8682e7bb2afc907443a280f91eb02a23ab20a4ac531ec6268bd98f7deb6d45d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.ffmpeg_tools",
+      "source_sha256": "6193c70b3990c28dc59cda2ed3a2cd6ede871effe720c227cc2fef536c609b5c",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.spectrum",
+      "source_sha256": "cf373d887288e4c0c4d77de12bb2898f57c913a0c273e3ba5d9b5273e46e6120",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.playback_stream",
+      "source_sha256": "feb77d3f19c78f18421a4c8c3568b2171a80751659122bff116e0004dd8c7204",
+      "frozen_code_matches": true
+    }
+  ]
+}

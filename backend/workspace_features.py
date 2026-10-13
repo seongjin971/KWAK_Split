@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from backend.project_store import EDIT_DEFAULTS, FORMAT, VERSION, EditHistory, atomic_json, read_project, save_project, validate_edits
-from backend.ui_helpers import ScrollableFrame, ToolTip
+from backend.ui_helpers import ScrollableFrame
 from backend.audio_processing.ffmpeg_tools import AudioProcessingError, find_executable
 from backend.audio_processing.separation import StemSeparator
 
@@ -47,7 +48,6 @@ class WorkspaceFeatures:
         self._saved_edits = None
         self._on_project_saved = None
         self.result_files = []
-        self.tooltips = []
 
     def _finish_workspace(self):
         self.workspace_scroll.canvas.bind("<Configure>", self._layout_eq_details, add="+")
@@ -64,20 +64,6 @@ class WorkspaceFeatures:
         for chord, action in (("<Control-z>", self.undo_edit), ("<Control-y>", self.redo_edit),
                               ("<Control-s>", self.save_current_project), ("<Control-o>", self.open_project)):
             self.bind(chord, lambda _event, action=action: (action(), "break")[1])
-        for widget, description in (
-            (self.stem_bypass_button, "Switches monitoring to the original audio. Export still uses the selected stem mix and effects."),
-            (self.eq_editor, "Filter response, not an audio spectrum analyzer. Drag points to adjust; double-click to reset."),
-            (self.range_scale, "Use the end handles to select a range, or right-drag on the waveform."),
-            (self.tempo_spinbox, "Speed (%): 50% is half speed; 200% is double speed. Ctrl+click resets to 100%."),
-            (self.pitch_spinbox, "Pitch (st) is measured in semitones and adjusted independently of speed."),
-            (self.export_stems_button, "Exports every stem to its own WAV. Applies volume, effects, and selection; ignores Mute/Solo."),
-        ):
-            self.tooltips.append(ToolTip(widget, description))
-        for widgets in self.stem_widgets.values():
-            self.tooltips.append(ToolTip(widgets[-2], "M (Mute): excludes this stem from the mix. Solo selections take priority when enabled."))
-            self.tooltips.append(ToolTip(widgets[-1], "S (Solo): only selected stems are used for mix playback and export."))
-        for widget in self.eq_shape_widgets:
-            self.tooltips.append(ToolTip(widget, "Q controls filter width and resonance. Higher values are narrower or more resonant."))
         self._update_workspace_summary()
         self.after(0, self._check_environment_status)
 
@@ -211,6 +197,9 @@ class WorkspaceFeatures:
         self._selection_changed()
 
     def _commit_edit(self):
+        # Commit the displayed range, including any pending idle clamp, so a
+        # rapid gesture/Undo cannot record an unavailable stem selection.
+        self._selection_changed()
         if self._history_after:
             self.after_cancel(self._history_after)
             self._history_after = None
@@ -231,6 +220,8 @@ class WorkspaceFeatures:
         self.stop_preview(show_status=False)
         self._commit_edit()
         self._apply_edits(self.history.undo())
+        # Normalize older, wider ranges without pushing and discarding Redo.
+        self.history.states[self.history.index] = self._edit_snapshot()
         self.project_dirty = bool(self.source_wav) and self._edit_snapshot() != self._saved_edits
         self._update_project_label()
         self._schedule_recovery()
@@ -241,6 +232,7 @@ class WorkspaceFeatures:
         self.stop_preview(show_status=False)
         self._commit_edit()
         self._apply_edits(self.history.redo())
+        self.history.states[self.history.index] = self._edit_snapshot()
         self.project_dirty = bool(self.source_wav) and self._edit_snapshot() != self._saved_edits
         self._update_project_label()
         self._schedule_recovery()
@@ -436,6 +428,33 @@ class WorkspaceFeatures:
                 if individual else "\n\nExports the current mix with EQ, pitch, speed, and fades. Original comparison monitoring does not affect export.")
         return messagebox.askokcancel("Confirm Export", summary + rule)
 
+    def _stem_selection_limits(self):
+        """Return usable coverage only when all four stems are available."""
+        if not self._ready_stem_paths():
+            return None
+        try:
+            start, end = (float(value) for value in self.stem_range)
+        except (TypeError, ValueError):
+            return None
+        if not all(math.isfinite(value) for value in (start, end)):
+            return None
+        start, end = max(0.0, start), min(self.duration_seconds, end)
+        return (start, end) if end > start else None
+
+    def _clamp_stem_selection(self, start, end):
+        limits = self._stem_selection_limits()
+        if limits is None:
+            return start, end
+        lower, upper = limits
+        start, end = sorted((max(lower, min(upper, start)), max(lower, min(upper, end))))
+        # Preserve a playable centisecond even when the whole gesture is
+        # outside coverage. Extremely short stems use their exact full range.
+        minimum = min(0.01, upper - lower)
+        if end - start < minimum - 1e-9:
+            start = max(lower, min(start, upper - minimum))
+            end = min(upper, start + minimum)
+        return start, end
+
     def _validate_stem_range(self, start, end):
         if self.stem_paths and (start < self.stem_range[0] - 0.001 or end > self.stem_range[1] + 0.001):
             raise StemRangeError(
@@ -549,6 +568,12 @@ class WorkspaceFeatures:
                  "Keep the package folders: bin / backend / models."]
         messagebox.showinfo("Environment Check", "\n".join(lines))
 
+    def open_readme(self):
+        try:
+            os.startfile(str(self.paths.root / "README.txt"))
+        except OSError as exc:
+            self.status_var.set(f"Could not open README: {exc}")
+
     def _workspace_close(self):
         self._write_recovery(allow_busy=self.closing)
         self._save_output_preferences()
@@ -558,5 +583,3 @@ class WorkspaceFeatures:
             if value:
                 self.after_cancel(value)
                 setattr(self, name, None)
-        for tooltip in self.tooltips:
-            tooltip.hide()

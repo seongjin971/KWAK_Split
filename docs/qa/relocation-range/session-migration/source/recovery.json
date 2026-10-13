@@ -1,0 +1,72 @@
+{
+  "format": "kwak-split-project",
+  "version": 2,
+  "edits": {
+    "selection_start": 5.76,
+    "selection_end": 67.6,
+    "fade_in": 0.02,
+    "fade_out": 0.02,
+    "eq_low": -24.0,
+    "eq_mid": 0.0,
+    "eq_high": 0.0,
+    "eq_low_freq": 444.0,
+    "eq_mid_freq": 1000.0,
+    "eq_high_freq": 8000.0,
+    "eq_low_q": 0.8,
+    "eq_mid_q": 1.0,
+    "eq_high_q": 0.8,
+    "eq_low_shape": "Low Shelf",
+    "eq_mid_shape": "Bell",
+    "eq_high_shape": "High Shelf",
+    "high_pass": 0.0,
+    "low_pass": 0.0,
+    "high_pass_q": 0.7,
+    "low_pass_q": 0.7,
+    "high_pass_slope": 24,
+    "low_pass_slope": 24,
+    "pitch_semitones": 0.0,
+    "tempo_percent": 100.0,
+    "peak_normalize": false,
+    "limiter_enabled": true,
+    "limiter_ceiling": 0.98,
+    "stem_bypass": false,
+    "loop": true,
+    "sample_rate": 48000,
+    "bit_depth": 24,
+    "mp3_bitrate": 320,
+    "stems": {
+      "vocals": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "drums": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "bass": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      },
+      "other": {
+        "volume": 100.0,
+        "mute": false,
+        "solo": false
+      }
+    }
+  },
+  "original_input": "C:\\Users\\brian\\Desktop\\That's What I Like- Bruno Mars (Audio Oficial) - Andrea Rojo.mp3",
+  "stem_range": [
+    5.76,
+    67.6
+  ],
+  "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix4\\KWAK Split\\temp\\sessions\\20260917_180253_7d38068f_source\\source.wav",
+  "stems": {
+    "vocals": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix3\\KWAK Split\\temp\\stems\\20260917_173353_ea5005c6_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\ce6135d11e6e\\htdemucs\\split_ce6135d11e6e\\vocals.wav",
+    "drums": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix3\\KWAK Split\\temp\\stems\\20260917_173353_ea5005c6_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\ce6135d11e6e\\htdemucs\\split_ce6135d11e6e\\drums.wav",
+    "bass": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix3\\KWAK Split\\temp\\stems\\20260917_173353_ea5005c6_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\ce6135d11e6e\\htdemucs\\split_ce6135d11e6e\\bass.wav",
+    "other": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix3\\KWAK Split\\temp\\stems\\20260917_173353_ea5005c6_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\ce6135d11e6e\\htdemucs\\split_ce6135d11e6e\\other.wav"
+  }
+}

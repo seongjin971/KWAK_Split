@@ -1,0 +1,45 @@
+{
+  "release": "compact-fix15",
+  "files": [
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\KWAK Split.exe",
+      "size": 2320277,
+      "sha256": "a98ed76db132a7e35ead86c54bfb0cfb846bf740a167013271ca4a4683293853"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\settings.json",
+      "size": 376,
+      "sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\temp\\recovery.json",
+      "size": 2677,
+      "sha256": "eaff1acecd416c39fa144c219340149cbd3aac724e42dcd60a16c8289097d836"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\temp\\sessions\\20261002_013505_0453f718_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\source.wav",
+      "size": 79663272,
+      "sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\temp\\stems\\20261002_013505_0453f718_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\28c53a02c923\\htdemucs\\source\\vocals.wav",
+      "size": 36595280,
+      "sha256": "edc0a878f454a3ac159b35280007fece753c057ba53df241b70f6e9eaa741979"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\temp\\stems\\20261002_013505_0453f718_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\28c53a02c923\\htdemucs\\source\\drums.wav",
+      "size": 36595280,
+      "sha256": "7fde1088495b8b26cb7c234fc9a5c1aeca87d773f35a8e9535790cb479699cb5"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\temp\\stems\\20261002_013505_0453f718_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\28c53a02c923\\htdemucs\\source\\bass.wav",
+      "size": 36595280,
+      "sha256": "268099c0fc96ba9e3acefbc778977dc0142cdd518204885ab21a753d2eea7968"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix15\\KWAK Split\\temp\\stems\\20261002_013505_0453f718_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\28c53a02c923\\htdemucs\\source\\other.wav",
+      "size": 36595280,
+      "sha256": "53dd971f7174d69f5e8807029fcc9bc1f28f91d14d24ff1490db64112d1f3b16"
+    }
+  ]
+}

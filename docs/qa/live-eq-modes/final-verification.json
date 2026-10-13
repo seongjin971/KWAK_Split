@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "release": "compact-fix13",
+  "launcher_selects_release": true,
+  "exe_sha256": "e0f3569890e2b881124e9ca3a7d86fb87bd7012feb95cb8ef2e6dd70f81cb8a7",
+  "frozen_modules_matching_source": 11,
+  "frozen_mode_updates": 12,
+  "previous_release_exe_preserved": true,
+  "preserved_user_audio_files": 5,
+  "previous_settings_and_recovery_preserved": true,
+  "restore_verified": true,
+  "packaged_documentation_matches": true,
+  "tests_passed_across_scoped_runs": 120,
+  "subtests_passed": 3
+}

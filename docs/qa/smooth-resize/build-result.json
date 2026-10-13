@@ -1,0 +1,7 @@
+{
+  "exit_code": 0,
+  "seconds": 61.3445999000005,
+  "release": "compact-fix19",
+  "prepared_runtime": "compact-fix18",
+  "Pillow": "12.3.0"
+}

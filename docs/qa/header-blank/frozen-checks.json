@@ -1,0 +1,39 @@
+[
+  {
+    "flag": "--qa-header-status-current",
+    "exit_code": 0,
+    "exe_sha256": "8c7eabab5673c9d15856831d7395439155ad319cc9c258d5982da11b46123b15",
+    "result": {
+      "frozen": true,
+      "method": "isolated real Tk, generated audio",
+      "display_scope": "current monitor and initial size only",
+      "physical_monitor_switch_tested": false,
+      "cases": [
+        {
+          "screen": "current",
+          "dpi_scale": 2.0,
+          "size": "initial",
+          "client": [
+            2000,
+            1400
+          ],
+          "status_width": 1052,
+          "bottom_gap": 22,
+          "stable_states": 6,
+          "cancel_and_detail_actions": true
+        }
+      ],
+      "empty_startup_status_painted": true,
+      "status": "passed",
+      "no_progressbar": true,
+      "real_generated_audio_load_and_export": true,
+      "edits_preserved": true,
+      "callback_errors": []
+    }
+  },
+  {
+    "flag": "--smoke-test",
+    "exit_code": 0,
+    "exe_sha256": "8c7eabab5673c9d15856831d7395439155ad319cc9c258d5982da11b46123b15"
+  }
+]

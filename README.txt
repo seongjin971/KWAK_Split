@@ -1,55 +1,156 @@
 KWAK Split — Compact Windows Audio and Stem Editor
 =================================================
 
-Edition: 2026-09-17
+Edition: 2026-10-03
 Goals and status: project.md
 Accepted UI and behavior: docs/compact-ui-implementation.md
-Verification: docs/qa/compact/verification.md
+Current verification: docs/qa/numeric-reset/verification.md
+Range playback correction: docs/qa/range-playback/verification.md
+Lock-key gesture correction: docs/qa/selection-lock-keys/verification.md
+Header display correction: docs/qa/header-blank/verification.md
+Waveform handles and help: docs/qa/simple-handles/verification.md
+Trackpad selection verification: docs/qa/trackpad-selection/verification.md
+Range editing verification: docs/qa/waveform-selection/verification.md
+Resize verification: docs/qa/smooth-resize/verification.md
+Header feedback verification: docs/qa/header-status/verification.md
+Prepared playback verification: docs/qa/warm-transport/verification.md
+Previous transport UI verification: docs/qa/transport-latency/verification.md
+Waveform seek verification: docs/qa/live-seek/verification.md
+Control reset verification: docs/qa/ctrl-reset/verification.md
+Continuous EQ: docs/live-eq.md
+Waveform start verification: docs/qa/waveform-left-edge/verification.md
+Window aspect verification: docs/qa/aspect-bounds/verification.md
+Loading composition verification: docs/qa/fixed-composition/verification.md
+Proportional resize verification: docs/qa/proportional-resize/verification.md
+Playback spectrum: docs/realtime-spectrum.md
+Previous release verification: docs/qa/relocation-range/verification.md
+Historical compact UI verification: docs/qa/compact/verification.md
 Latest interaction audit: docs/qa/interaction-audit/verification.md
 Latest editing corrections: docs/qa/precision-controls/verification.md
 Four-track export: docs/qa/stem-export/verification.md
+Active project: C:\Users\brian\Dev\active\Kwaksplit
+Status: USER_REVIEW_READY — compact-fix26
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact-fix4/KWAK Split/KWAK Split.exe,
+1. Run "Run KWAK Split.cmd". It selects release/compact-fix26/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
-3. Right-drag the waveform or edit Start/End to select a range. The initial
-   selection is the whole track. Left-click seeks; Play/Space plays or pauses.
+3. Drag the large blue left handle to set the start and the right handle to set
+   the end. Handles only adjust the range; a plain click or tiny movement on one
+   leaves the playback position alone. The waveform uses a normal arrow cursor;
+   over the ends it becomes a left/right resize arrow.
+   Num Lock, Caps Lock and Scroll Lock do not change these gestures.
+   Range dragging keeps the paused cursor. During playback, releasing a drag
+   applies the new bounds and fades from the current position while keeping
+   the live output device open. If the current position falls outside the new
+   range, playback starts at the new range start.
+   Click a position in the waveform body, then Shift+click another to select between them.
+   Repeated Shift+clicks keep the original seek point, even during playback or
+   after zooming. Before the first seek click, the current playhead is the anchor.
+   Drag either blue edge to adjust just that end, or the small top grip to move
+   the range without changing its length. Either mouse button works on handles;
+   a plain tap on a handle keeps the cursor and range. Shift+click keeps playback running and the
+   new selection applies on the next play/loop/export.
+   Right-drag the waveform body or edit Start/End also selects a range. The
+   initial selection is the whole track.
+   A right click alone keeps the selection. Drag beyond the canvas to pan when
+   zoomed in. Press [ / ] to mark start / end at the playhead while listening;
+   playback continues, and the marked range applies on the next play/loop/export.
+   Each selection gesture or mark is one Undo action. Left-click or left-drag the
+   waveform body to seek; Play/Space
+   plays or pauses once per press; holding Space does not repeatedly toggle it.
+   Pause keeps the prepared audio and exact position for quick resume. Loading
+   audio or editing while paused prepares playback in the background. Pressing
+   Play before that preparation finishes can still take longer.
+   While playing, position changes keep the output device open
+   and crossfade to prepared audio, including throughout a held drag.
+   EQ/mixer settings, stem alignment and selection fades are retained.
+   The upper/lower stereo waveforms start at the visible left edge, without
+   L/R labels or reserved label space. Zooming and panning retain this alignment.
 4. Split Stems separates the selected range into vocals, drums, bass and other.
    Settings > Split Stems > Full track separates the whole file once, so later
    selections can move freely. This takes longer than separating a short range.
    Loading audio never starts separation. Before splitting, play/export use the
    loaded audio directly.
 5. Adjust EQ, Speed, Pitch, fades and the stem mixer. Advanced contains Q and
-   Limiter. Settings contains output preferences, Loop, and closed Help.
+   Limiter. Settings contains output preferences, Loop, README and Environment Check.
+   EQ frequency, gain, Q, filter type and 12/24/36/48 dB/oct slopes update
+   during playback without restarting it. Active tempo/pitch processing can
+   add response delay. See docs/live-eq.md for details.
+   Stem volume, Mute, Solo and Ctrl+click resets also update during playback.
+   Muted tracks retain their position; all-muted playback keeps time silently.
 6. Set Save folder in Settings. Browse opens the Windows folder chooser;
    cancelling Browse keeps the existing path. Done saves the preferences.
 7. WAV or MP3 immediately exports the current selection and mix to Save folder.
    Existing names get numbered suffixes. Click the saved-path status to open
-   its folder. Errors and progress appear in the same contextual area.
+   its folder. Task feedback appears beside the KWAK Split logo as one line of
+   text, with a percentage when available and a small Cancel button while busy.
+   Long text is shortened; click a message to read it in full. Errors stay visible
+   until another action updates the status. There is no progress bar or footer.
 8. To save the four tracks separately, choose WAV or MP3 in Settings > Stem format,
    then click Export beside Split Stems in the Stem Mixer. All four separated
    tracks must be available. This does not start another separation.
+9. To resume the transferred session, press Ctrl+Shift+R in compact-fix22. Save with
+   Ctrl+S to keep a permanent project and its companion audio assets.
+
+Help and Controls
+-----------------
+Hovering a control does not open a help popup. This README contains the control
+instructions; Settings > README opens the local copy in your default text viewer.
+Settings > Environment Check shows the available audio tools and local model/runtime.
+Task progress, saved files, cancellation and errors stay in the top status area;
+click a shortened message to see its full details, or a saved result to open its folder.
+
+The settings/sliders icon beside Open Audio opens output and session preferences.
+M excludes a stem from the mix; S includes only soloed stems when any Solo is on.
+Mute takes precedence over Solo. Q (Advanced) controls filter width/resonance:
+higher values narrow the bell or increase pass-filter resonance. Speed is a
+percentage (50% half speed, 200% double speed); Pitch is measured in semitones
+and changes independently of Speed. See Editing and Monitoring and Output and
+Settings below for reset gestures, EQ, fades and four-track export behavior.
 
 Window Size and Displays
 ------------------------
-The initial window fits its monitor's work area and DPI. Fonts, controls and
-graphs scale together. Widening the window expands the editors; a narrow window
-stacks EQ above Stem Mixer. Short windows scroll vertically while the top
-Open Audio / Settings / WAV / MP3 row remains available. No horizontal scroll
-is required. Settings and Advanced also fit the work area and can scroll.
+The main editor keeps a 10:7 client-area aspect ratio during edge/corner resizing
+and maximization. At 100% DPI, its nominal minimum is 760x532, startup size is
+1000x700 and maximum is 1400x980. Windows scaling multiplies these sizes; the
+actual monitor work area, title bar and margins limit them. On a small screen
+at high DPI, even the minimum is reduced to fit. Maximization uses this bounded
+size centered in the monitor work area.
 
-The layout was checked at 1080p–4K equivalent app sizes and 100–200% app scaling,
-including a 640x480 window. These checks do not change Windows display settings.
-Physical monitor switching and a separate laptop remain device acceptance checks.
+Fonts, controls, spacing and graphs scale together from the 1000x700 reference.
+EQ and Stem Mixer stay side by side, with no editor scrollbar. The header keeps
+its height and button positions when task feedback changes. The former lower
+status space now belongs to EQ and Stem Mixer. Loading, progress and errors never
+change the editor's scale or proportions. Settings and Advanced resize
+independently and can still scroll.
+
+While a window edge or corner is being dragged, a temporary image of the editor
+scales with the window. Releasing the drag restores sharp, interactive controls
+at the final size. Playback continues; the cursor, spectrum and task text catch
+up when the live editor returns. Duplicate layout and graph repaints are batched.
+
+FHD (1920x1080), QHD (2560x1440) and 4K (3840x2160) were checked at 100%, 125%,
+150%, 175% and 200% app DPI in real isolated Tk windows, with simulated monitor
+work areas. Initial/minimum/maximum sizes, maximization and control bounds passed
+in all 15 combinations. Windows display settings were not changed. Physical
+monitor switching and another PC remain device acceptance checks.
 
 Editing and Monitoring
 ----------------------
 - Low Shelf / High Pass, Mid Bell, High Shelf / Low Pass. In Pass mode the knob
   selects 12/24/36/48 dB/oct; Q independently adjusts resonance in Advanced.
 - Shelf/Bell gain spans -24 to +24 dB, matching the graph and audio processing.
-- The graph shows the actual filter response, not a spectrum analyzer.
+- The blue curve shows EQ gain on the left dB axis. During playback, the teal
+  spectrum shows the actual processed output on the right -90 to 0 dBFS axis.
+  EQ cuts/boosts, stem gains/Mute/Solo, filters, speed/pitch, fades and limiter
+  affect that spectrum. Its scale stays fixed so level changes remain visible.
+  Pausing clears the spectrum; resuming or seeking starts fresh analysis.
+  EQ and stem-mixer edits retain the current analysis stream.
+  The spectrum follows the player's audio clock. It averages channel power, so
+  opposite-polarity stereo does not disappear. Fallback playback analyzes the
+  rendered WAV. Peak Normalize remains an export option.
 - New audio starts with flat EQ unless Keep adjustments is enabled. Pass modes
   start at 120 Hz / 8000 Hz and 24 dB/oct. Fades start at 0.02 s, stepping 0.01 s.
 - Fades reduce the displayed waveform and have amber envelope lines. Tiny fades
@@ -59,19 +160,29 @@ Editing and Monitoring
   use its wheel to adjust it; Shift gives finer steps where available. Time
   steps follow the visible zoom span, with 0.01 s as the smallest step. A click
   still allows typing, and a whole drag is one Undo action.
+- Ctrl+click an EQ knob or its value to restore its default: Shelf/Bell gain to
+  0 dB, High Pass/Low Pass slope to 24 dB/oct. Each reset is one Undo action.
+- Ctrl+click a frequency number to reset Low/Mid/High to 120/1000/8000 Hz.
+  Speed resets to 100%, Pitch to 0 st, and Fade in/out to 0.02 s. Each number
+  resets separately with one Undo action, including when Num Lock is enabled.
+  Normal clicks/double-clicks still edit/select text; arrows, wheel and vertical
+  dragging still adjust the value. Busy or disabled inputs ignore resets.
 - Stem faders span silence to +12 dB. Unity is one-third down the scale;
-  double-click or Home resets a focused fader to 0 dB.
+  Ctrl+click a fader or its value to reset it to 0 dB. Home also resets the
+  focused knob/fader. Double-click is no longer a knob/fader/value reset.
 - Mute is yellow; Solo is red. Mute wins if both are enabled. With any Solo
-  active, only unmuted soloed stems play or export in the mixed result. An entirely excluded mix is
-  rejected with an error. Limiter prevents peaks above its ceiling without
+  active, only unmuted soloed stems play or export in the mixed result. An entirely
+  excluded mix plays silently; exporting it is rejected with an error.
+  Limiter prevents peaks above its ceiling without
   automatically increasing quiet audio. Peak Normalize applies on export only.
 - Selection/cursor coordinates use the original track. Speed changes output
   duration independently of pitch. Play resumes from the paused cursor.
-- After selection-only separation, extending beyond the stems' coverage
-  shows an inline notice. Click Split Stems for the required range, or choose
-  Full track in Settings and split once. Nothing splits automatically, and
-  missing stem audio is never substituted. Returning inside coverage clears
-  the notice and allows playback/export again.
+- When all four stems are ready, Start/End and waveform selection stay inside
+  their available range, including numeric drags, Undo/Redo and restored sessions.
+  The minimum selection is 0.01 seconds, or the entire available range when shorter.
+  To edit a wider range, choose Full track in Settings and click Split Stems.
+  Nothing splits automatically, and missing stem audio is never substituted.
+  Loading new source audio restores full-track selection limits.
 - Loading, separation and export run in workers. Cancel is shown during a job.
   Audio processing and model preparation messages remain visible when relevant.
 
@@ -85,7 +196,14 @@ Ctrl+Y / Ctrl+Shift+Z   Redo
 Ctrl+S                 Save session/project
 Ctrl+Shift+O           Open session/project
 Ctrl+Shift+R           Restore last temporary session
+Ctrl+click knob/fader  Reset EQ gain/slope or stem volume (also on its value)
+Ctrl+click number      Reset frequency, Speed, Pitch or Fade to its default
 Right-drag             Select a waveform range
+Drag left/right edge   Adjust selection start/end (either mouse button)
+Drag top grip          Move selection while keeping its length
+Click / drag wave body Move playback position (left button)
+Shift+click wave body  Select from the last clicked/dragged seek point
+[ / ]                  Mark start/end at the playhead while listening
 Mouse wheel on wave    Zoom at pointer
 Shift+wheel on wave    Pan waveform
 Drag / wheel on number Change value; Shift for finer steps
@@ -132,7 +250,7 @@ if you want to resume. Settings also retains Keep adjustments and output options
 
 Running on Another PC
 --------------------
-Copy the entire release/compact-fix4/KWAK Split folder, not just the EXE, to a writable
+Copy the entire release/compact-fix22/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;
 the package no longer relies on the developer's Python installation path.
@@ -140,18 +258,78 @@ Keep saved projects/assets together. Set Save folder for the destination PC.
 An independent laptop run, audio-device listening and physical DPI transitions
 have not been observed by automated local QA.
 
-The earlier release/english folder and its settings/output remain preserved.
-Source and each release have their own settings, temp, output and logs. Existing
-session data stays in its original folder; use saved projects to transfer work.
+The active project was restored to C:\Users\brian\Dev\active\Kwaksplit after D:
+filesystem operations stalled. D: originals and historical releases remain
+preserved. Historical release folders and caches were not fully copied to C:;
+this is not a complete duplicate of the old workspace. The current compact-fix22
+package has its own tools, model weights and isolated runtime.
+Source and each release have their own settings, temp, output and logs. Use
+saved projects and their companion assets to transfer work between installations.
+
+Local Release Review
+--------------------
+The October 2 stem-mixer extension keeps the player running during volume,
+Mute, Solo and Ctrl+click resets. Silent tracks retain their exact position,
+and all-muted playback continues silently. Across scoped runs and reruns,
+152 tests and six subtests passed. The fix14 EXE passed actual EQ/mixer commands
+and startup/exit without development Python; all 11 frozen modules match source.
+The saved fix13 session was copied with matching hashes and restored in isolation.
+See docs/qa/live-mixer/verification.md for evidence and listening/timing limits.
+
+The October 2 continuous-EQ extension keeps playback running through filter-kind
+and 12/24/36/48 dB/oct slope changes, including pass enable/disable and Ctrl+click
+reset. Across scoped runs, 120 tests and three subtests passed. The fix13 EXE
+passed gain/mode/slope PCM checks and Tk startup/exit without development Python;
+all 11 packaged modules match the source. The fix12 session was copied with
+matching audio hashes and restored in isolation, preserving edits and Save folder.
+See docs/qa/live-eq-modes/verification.md, including timing/listening limits.
+
+The fixed-composition revision keeps scale and editor geometry unchanged during
+audio loading and status updates. Four real audio-load cases and six existing
+resize/DPI cases passed, plus 41 relevant workflow checks. Thirteen viewport
+cases fit without scrolling. The fix8 EXE passed startup/exit with development
+Python excluded; seven frozen source modules match. The latest fix7 saved
+session was copied with verified hashes and restored in an isolated app.
+See docs/qa/fixed-composition/verification.md for this revision's evidence.
+
+The October 1 revision fits thirteen actual Tk viewport/DPI cases without an
+editor scrollbar, including 480x360. The fix7 EXE passed startup/exit and bundled
+separation, WAV/MP3 export and play/pause/resume checks. Its seven frozen source
+modules match the verified source. The latest fix6 recovery was source-only:
+that original audio, edits, 0–207.456-second selection and existing Save folder
+were copied with verified hashes. Ctrl+Shift+R restores that state in fix7.
+See docs/qa/proportional-resize/verification.md for current evidence.
+The full app suite passed 214 tests and 22 subtests, with 1 Windows symlink
+permission skip. The subsequent session-restore suite passed 22 tests, including
+two new source-only/partial-stem checks, with the same permission skip.
+
+The September 30 checks passed 208 tests and 19 subtests, with 1 skipped test
+(Windows symbolic-link permission). Generated-audio tests measured EQ cuts and
+boosts, mixer levels, filters, pitch, limiter, playback-clock synchronization,
+pause/resume/seek/loop, fallback analysis and cleanup. Actual Tk captures cover
+1000x700, 760x620 and 640x480; automatic 200% scaling was also checked.
+The packaged EXE started and exited successfully; bundled-engine checks completed
+real four-stem separation, mixed WAV/MP3 and four individual exports of each format.
+Seven packaged source modules match the tested source. The bundled tools and
+model match fix5. The spectrum adds no third-party runtime dependency.
+
+Source Tk events and real-window captures were checked; direct mouse/key use of the new EXE,
+music listening/separation quality, physical display/DPI changes and another-PC
+execution remain user checks. The transferred session passed an isolated real-Tk
+restore: edits and all four stems were preserved, selection remains 0–207.456 s,
+and Export is available. Its Save folder remains the original
+C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix1\KWAK Split\output.
+All seven new session files retained their verified hashes during that check.
 
 Development and Build
 ---------------------
 Verified development Python: 3.11.9 with Tkinter. Commands below affect only the
 PowerShell process execution policy, not the system policy.
 
+  python -m pip install -r requirements-runtime.txt
   powershell -NoProfile -ExecutionPolicy Bypass -File .\run_dev.ps1
   powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_tests.ps1
-  .\.build\qa\Scripts\python.exe -B scripts/qa_compact.py --all-sizes --real-demucs
+  .\.build\qa\Scripts\python.exe -B scripts/qa_compact.py --all-sizes --real-demucs --evidence-dir docs/qa/local-check
   powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 
 Prepare missing tools/runtime with scripts/download_ffmpeg.ps1 and

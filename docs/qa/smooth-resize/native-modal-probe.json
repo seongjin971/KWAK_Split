@@ -1,0 +1,31 @@
+{
+  "method": "native SC_SIZE modal loop, posted movement/Enter on isolated QA window",
+  "physical_drag_tested": false,
+  "observations": [
+    {
+      "active": false,
+      "size": null
+    },
+    {
+      "active": false,
+      "size": null
+    },
+    {
+      "active": false,
+      "size": null
+    },
+    {
+      "active": false,
+      "size": null
+    }
+  ],
+  "entered": true,
+  "captured_before_size": false,
+  "exited": true,
+  "preview_restored": 1,
+  "client": [
+    1000,
+    700
+  ],
+  "callback_errors": []
+}

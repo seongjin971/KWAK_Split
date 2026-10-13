@@ -1,0 +1,116 @@
+{
+  "status": "applied",
+  "source_release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split",
+  "destination_release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split",
+  "old_workspace": "C:\\Users\\brian\\Dev\\active\\Kwaksplit",
+  "new_workspace": "C:\\Users\\brian\\Dev\\active\\Kwaksplit",
+  "backups": [
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\settings.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\live-eq-modes\\session-migration\\source\\settings.json",
+      "size": 365,
+      "sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408"
+    },
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\temp\\recovery.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\live-eq-modes\\session-migration\\source\\recovery.json",
+      "size": 1679,
+      "sha256": "c1047a66d407d8d0ee455a818501181d1d688114e60afc03b68b604392dd057f"
+    },
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\settings.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\live-eq-modes\\session-migration\\destination\\settings.json",
+      "size": 377,
+      "sha256": "143a618e1aa3491b2bdaeef604b2157705a9c7988bdaad6237087d48d38507ec"
+    }
+  ],
+  "audio_copies": [
+    {
+      "name": "source",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\temp\\restored-session\\source.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\temp\\restored-session\\source.wav",
+      "size": 79663272,
+      "sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef",
+      "verified_sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef"
+    },
+    {
+      "name": "vocals",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\temp\\restored-session\\vocals.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\temp\\restored-session\\vocals.wav",
+      "size": 36595280,
+      "sha256": "81a61ee1ad58ff749fd4f698c8e3e2f8a0e9aa0b52e9a52d1560cf369e76421b",
+      "verified_sha256": "81a61ee1ad58ff749fd4f698c8e3e2f8a0e9aa0b52e9a52d1560cf369e76421b"
+    },
+    {
+      "name": "drums",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\temp\\restored-session\\drums.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\temp\\restored-session\\drums.wav",
+      "size": 36595280,
+      "sha256": "25b57bc6b5e6b53e1484da52d27cbe31acf79217ed437fbdc0fcc199de0a27f8",
+      "verified_sha256": "25b57bc6b5e6b53e1484da52d27cbe31acf79217ed437fbdc0fcc199de0a27f8"
+    },
+    {
+      "name": "bass",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\temp\\restored-session\\bass.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\temp\\restored-session\\bass.wav",
+      "size": 36595280,
+      "sha256": "39c512d7e5503eb8cd76063ffc1f742b753a97deff0137d3cf2f1ef2778da9b8",
+      "verified_sha256": "39c512d7e5503eb8cd76063ffc1f742b753a97deff0137d3cf2f1ef2778da9b8"
+    },
+    {
+      "name": "other",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix12\\KWAK Split\\temp\\restored-session\\other.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\temp\\restored-session\\other.wav",
+      "size": 36595280,
+      "sha256": "129a2f01d75c6941fbdc4b04855740c4fab4ea849ff6427be97b9e721a5acfad",
+      "verified_sha256": "129a2f01d75c6941fbdc4b04855740c4fab4ea849ff6427be97b9e721a5acfad"
+    }
+  ],
+  "json_writes": [
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\settings.json",
+      "sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408",
+      "previous_sha256": "143a618e1aa3491b2bdaeef604b2157705a9c7988bdaad6237087d48d38507ec",
+      "verified_sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix13\\KWAK Split\\temp\\recovery.json",
+      "sha256": "c1047a66d407d8d0ee455a818501181d1d688114e60afc03b68b604392dd057f",
+      "previous_sha256": null,
+      "verified_sha256": "c1047a66d407d8d0ee455a818501181d1d688114e60afc03b68b604392dd057f"
+    }
+  ],
+  "manifest": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\live-eq-modes\\session-migration\\manifest.json",
+  "preserved_references": [
+    {
+      "field": "original_input",
+      "path": "C:\\Users\\brian\\Desktop\\That's What I Like- Bruno Mars (Audio Oficial) - Andrea Rojo.mp3",
+      "exists": true,
+      "action": "preserve"
+    }
+  ],
+  "changes": {
+    "settings.output_dir": {
+      "before": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+      "after": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output"
+    },
+    "recovery.source": {
+      "before": "restored-session/source.wav",
+      "after": "restored-session/source.wav"
+    },
+    "recovery.stems": {
+      "before": {
+        "vocals": "restored-session/vocals.wav",
+        "drums": "restored-session/drums.wav",
+        "bass": "restored-session/bass.wav",
+        "other": "restored-session/other.wav"
+      },
+      "after": {
+        "vocals": "restored-session/vocals.wav",
+        "drums": "restored-session/drums.wav",
+        "bass": "restored-session/bass.wav",
+        "other": "restored-session/other.wav"
+      }
+    }
+  }
+}

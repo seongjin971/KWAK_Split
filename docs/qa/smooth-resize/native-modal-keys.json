@@ -1,0 +1,105 @@
+{
+  "method": "native SC_SIZE modal loop, posted arrow keys and Enter on isolated QA window",
+  "physical_drag_tested": false,
+  "observations": [
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    },
+    {
+      "active": false,
+      "size": null,
+      "native_size": [
+        1000,
+        700
+      ],
+      "sizing": true
+    }
+  ],
+  "entered": true,
+  "captured_before_size": true,
+  "exited": true,
+  "preview_restored": 1,
+  "client": [
+    1000,
+    700
+  ],
+  "callback_errors": []
+}

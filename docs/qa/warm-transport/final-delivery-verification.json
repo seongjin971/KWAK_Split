@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "release": "compact-fix17",
+  "exe_sha256": "230bec4303ac0a043e1327600418447416830a0d3e2e7ea07cfdd5ea8c92b93b",
+  "source_modules_unchanged_after_build": 16,
+  "isolated_executable_checks_passed": 5,
+  "prior_release_files_unchanged_since_migration_snapshot": 8,
+  "initial_original_audio_and_exe_preserved": 2,
+  "copied_audio_hashes_match": 5,
+  "restored_selection": [
+    0.0,
+    238.956563
+  ],
+  "save_folder_preserved": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+  "restored_edits_and_stems_verified": true,
+  "session_unchanged_by_isolated_restore": true,
+  "regression": {
+    "unique_tests": 352,
+    "passed": 350,
+    "skipped": 2,
+    "subtests_passed": 22,
+    "unresolved": {}
+  },
+  "launcher_target": "release/compact-fix17/KWAK Split/KWAK Split.exe",
+  "packaged_documents_match_source": true,
+  "git_diff_check_exit_code": 0,
+  "measurement_limit": "Generated Tk events and muted native device clock; physical key-to-speaker and listening not measured."
+}

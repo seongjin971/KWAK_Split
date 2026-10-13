@@ -1,0 +1,28 @@
+{
+  "frozen": false,
+  "method": "real Tk generated gestures; muted native audio",
+  "display_scope": "current monitor and initial size only",
+  "physical_input_tested": false,
+  "display_cases": [
+    {
+      "screen": "current",
+      "dpi": 2.0,
+      "size": "initial",
+      "client": [
+        2000,
+        1400
+      ]
+    }
+  ],
+  "playback": [],
+  "main_widgets_hovered": 116,
+  "settings_widgets_hovered": 41,
+  "large_handles_range_only": true,
+  "cursor_matches_gesture": true,
+  "no_hover_popups": true,
+  "readme_action_and_task_details": true,
+  "restored_point_selects_both_directions": true,
+  "status": "failed",
+  "error": "TypeError(\"int() argument must be a string, a bytes-like object or a real number, not '_tkinter.Tcl_Obj'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\qa_wave_selection.py\", line 199, in check\n    app._refresh_action_states(); app.focus_force(); app.update()\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\compact_ui.py\", line 627, in _refresh_action_states\n    self._status_changed();self._update_workspace_summary();self._schedule_compact_render();self._sync_stem_range_notice()\n    ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\compact_ui.py\", line 594, in _status_changed\n    self.status_frame.display(prefix,suffix=suffix,busy=self.busy,\n  File \"C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\header_status.py\", line 37, in display\n    self.fit()\n  File \"C:\\Users\\brian\\Dev\\active\\Kwaksplit\\backend\\header_status.py\", line 41, in fit\n    width = max(0, self.label.winfo_width() - 2 * int(self.label.cget(\"padx\")))\n                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: int() argument must be a string, a bytes-like object or a real number, not '_tkinter.Tcl_Obj'\n"
+}

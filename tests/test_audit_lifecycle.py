@@ -111,7 +111,7 @@ def test_cancelled_audio_conversion_preserves_loaded_session(session):
     assert app.source_wav.exists()
     assert app.status_var.get() == "Task cancelled."
     assert app.play_button.enabled and app.load_button.enabled
-    assert not app.progressbar.winfo_ismapped()
+    assert not app.cancel_button.winfo_ismapped()
 
 
 def test_worker_failure_allows_next_audio_load(session):
@@ -128,4 +128,4 @@ def test_worker_failure_allows_next_audio_load(session):
     app.load_audio_path(session.source)
     session.wait_idle()
     assert app.play_button.enabled and app.load_button.enabled
-    assert not app.progressbar.winfo_ismapped()
+    assert not app.cancel_button.winfo_ismapped()

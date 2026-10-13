@@ -13,10 +13,14 @@ from backend.compact_widgets import (BG, PANEL, INSET, TEXT, MUTED, LINE, BLUE,
     CompactButton, CompactKnob, CompactFader, CompactEq, EditorViewport, display_metrics, icon)
 from backend.project_store import EDIT_DEFAULTS, EditHistory
 from backend.workspace_features import StemRangeError
-from backend.ui_helpers import ToolTip
+from backend.header_status import HeaderStatus
+from backend.resize_preview import ResizePreview
+from backend.window_bounds import NativeWindowBounds,window_decoration,window_limits
+from backend.wave_selection import CONTROL_ALT_MASK, WaveSelection
 
 
 class CompactInterface:
+
     def open_audio(self): self.load_file()
 
     def px(self,value): return max(1,round(value*self.ui_scale))
@@ -24,6 +28,7 @@ class CompactInterface:
     def _configure_theme(self):
         _,scale=display_metrics(self)
         self.ui_scale=self._ui_scale_override or scale
+        self._display_scale=self.ui_scale
         self.fonts={name:font.Font(self,family="Segoe UI",size=-self.px(size),weight=weight)
                     for name,size,weight in (("body",12,"normal"),("small",10,"normal"),
                                              ("bold",11,"bold"),("title",14,"bold"))}
@@ -33,12 +38,11 @@ class CompactInterface:
                         bordercolor=LINE,lightcolor=LINE,darkcolor=LINE,padding=self.px(4),font=self.fonts["body"])
         for name in ("TSpinbox","TCombobox"):
             style.configure(name,fieldbackground=INSET,background=INSET,foreground=TEXT,arrowcolor=MUTED,
-                            bordercolor=LINE,lightcolor=LINE,darkcolor=LINE,padding=self.px(3),font=self.fonts["body"])
+                            bordercolor=LINE,lightcolor=LINE,darkcolor=LINE,padding=self.px(3),font=self.fonts["body"],arrowsize=self.px(14))
             style.map(name,fieldbackground=[("readonly",INSET),("disabled",INSET)],
                       foreground=[("disabled","#5e6c7e"),("readonly",TEXT)],selectbackground=[("!disabled","#25446b")],
                       selectforeground=[("!disabled",TEXT)])
         style.configure("Vertical.TScrollbar",background=LINE,troughcolor=BG,arrowcolor=MUTED,borderwidth=0)
-        style.configure("Horizontal.TProgressbar",background=BLUE,troughcolor=INSET,borderwidth=0)
         self.option_add("*TCombobox*Listbox.background",INSET)
         self.option_add("*TCombobox*Listbox.foreground",TEXT)
         self.option_add("*TCombobox*Listbox.font",self.fonts["body"])
@@ -67,7 +71,7 @@ class CompactInterface:
         tags=widget.bindtags()
         if tag not in tags:widget.bindtags((tag,*tags))
 
-    def _spin(self,parent,variable,minimum,maximum,step=1,width=6,fmt=None):
+    def _spin(self,parent,variable,minimum,maximum,step=1,width=6,fmt=None,*,default=None):
         display=tk.StringVar(value=(fmt % variable.get()) if fmt else f"{variable.get():g}")
         updating=[False]
         options=dict(from_=minimum,to=maximum,increment=step,textvariable=display,width=width,
@@ -80,6 +84,7 @@ class CompactInterface:
             try:value=float(display.get())
             except ValueError:return
             if not math.isfinite(value):return
+            if variable in (self.selection_start_var,self.selection_end_var):value=round(value,2)
             updating[0]=True
             try:variable.set(value)
             finally:updating[0]=False
@@ -105,7 +110,7 @@ class CompactInterface:
             return step
         widget.numeric_gestures=NumericGestures(self,widget,variable.get,variable.set,
             lambda:(float(widget.cget("from")),float(widget.cget("to"))),increment,quantum,
-            commit=lambda:self._commit_numeric(widget))
+            commit=lambda:self._commit_numeric(widget),default=default)
         return widget
 
     def _edit_snapshot(self):
@@ -120,6 +125,12 @@ class CompactInterface:
     def _commit_numeric(self,widget):
         if self.closing:return
         try:
+            if widget in (self.start_spinbox,self.end_spinbox):
+                # Typed finite times obey the same coverage clamp as gestures.
+                # Keep incomplete/non-numeric text visible for correction.
+                value=float(widget.get())
+                if not math.isfinite(value):raise ValueError("Enter a valid number.")
+                self._selection_changed()
             self._edit_snapshot()
         except (ValueError,tk.TclError) as exc:
             self.status_var.set(str(exc) if not isinstance(exc,tk.TclError) else "Enter a valid number.")
@@ -133,25 +144,32 @@ class CompactInterface:
     def _build_ui(self):
         self.compact_buttons=[]; self.compact_knobs={}; self.band_values={};self._numeric_fields=[]
         self._layout_after=None;self._compact_after=None;self._dialog=None;self._log_window=None
+        self._last_compact_layout=None;self._scale_style=None;self._metadata_key=None
         self._layout_mode=None
-        self.columnconfigure(0,weight=1);self.rowconfigure(1,weight=1)
-        self.header=tk.Frame(self,bg=BG,highlightbackground=LINE,highlightthickness=1)
+        self._window_constraints=None;self._fixed_limits=None;self._last_fixed_client=None
+        self.editor_surface=tk.Frame(self,bg=BG)
+        self.editor_surface.place(x=0,y=0,width=self.px(1000),height=self.px(700))
+        self.editor_surface.columnconfigure(0,weight=1);self.editor_surface.rowconfigure(1,weight=1)
+        self._resize_preview=ResizePreview(self,self.editor_surface)
+        self.header=tk.Frame(self.editor_surface,bg=BG,highlightbackground=LINE,highlightthickness=1)
         self.header.grid(row=0,column=0,sticky="ew")
-        self.header.columnconfigure(0,weight=1)
+        self.header.columnconfigure(1,weight=1)
         brand_box=tk.Frame(self.header,bg=BG)
         brand_box.grid(row=0,column=0,sticky="w",padx=self.px(12))
         self.brand_icon=tk.Canvas(brand_box,bg=BG,highlightthickness=0,width=self.px(18),height=self.px(22))
         self.brand_icon.pack(side="left",padx=(0,self.px(6)))
         icon(self.brand_icon,"wave",self.px(9),self.px(11),self.ui_scale*.8,MUTED)
         self.brand=self._label(brand_box,"KWAK Split",kind="title");self.brand.pack(side="left")
+        self.status_frame=HeaderStatus(self.header,self,self._activate_status)
+        self.status_frame.grid(row=0,column=1,sticky="ew",padx=(self.px(8),self.px(14)))
+        self.status_label=self.status_frame.label;self.cancel_button=self.status_frame.cancel
         self.load_button=self._button(self.header,"Open Audio",self.open_audio,width=112,icon_name="folder")
         self.settings_button=self._button(self.header,command=self.open_render_settings,width=34,icon_name="settings")
         self.render_button=self._button(self.header,"WAV",self.render_wav,width=76,icon_name="export",primary=True)
         self.render_mp3_button=self._button(self.header,"MP3",self.render_mp3,width=76,icon_name="export",primary=True)
-        for column,widget in enumerate((self.load_button,self.settings_button,self.render_button,self.render_mp3_button),1):
+        for column,widget in enumerate((self.load_button,self.settings_button,self.render_button,self.render_mp3_button),2):
             widget.grid(row=0,column=column,padx=(0,self.px(7)),pady=self.px(7))
-        self.tooltips.append(ToolTip(self.settings_button,"Settings"))
-        self.workspace_scroll=EditorViewport(self)
+        self.workspace_scroll=EditorViewport(self.editor_surface)
         self.workspace_scroll.grid(row=1,column=0,sticky="nsew")
         body=self.workspace_scroll.content;body.columnconfigure(0,weight=1)
         self.timeline=tk.Frame(body,bg=BG)
@@ -182,8 +200,13 @@ class CompactInterface:
         self.wave_canvas=tk.Canvas(self.timeline,bg=INSET,highlightbackground=LINE,highlightthickness=1,bd=0,takefocus=1)
         self._track_edit_widget(self.wave_canvas)
         self.wave_canvas.grid(row=1,column=0,sticky="nsew",pady=(0,self.px(8)))
+        self._wave_selection=WaveSelection(self)
+        self.wave_canvas.bind("<Motion>",self._wave_selection.hover)
+        self.wave_canvas.bind("<Leave>",self._wave_selection.leave)
         self.wave_canvas.bind("<Configure>",self._schedule_waveform_resize_draw)
-        self.wave_canvas.bind("<Button-1>",self._wave_seek_to_event)
+        self.wave_canvas.bind("<Button-1>",self._wave_selection.left_begin)
+        self.wave_canvas.bind("<B1-Motion>",self._wave_selection.left_update)
+        self.wave_canvas.bind("<ButtonRelease-1>",self._wave_selection.left_finish)
         self.wave_canvas.bind("<Button-3>",self._wave_mouse_down)
         self.wave_canvas.bind("<B3-Motion>",self._wave_mouse_drag)
         self.wave_canvas.bind("<ButtonRelease-3>",self._wave_mouse_up)
@@ -195,28 +218,50 @@ class CompactInterface:
         self.eq_panel=tk.Frame(self.editors,bg=PANEL,highlightbackground=LINE,highlightthickness=1)
         self.mixer_panel=tk.Frame(self.editors,bg=PANEL,highlightbackground=LINE,highlightthickness=1)
         self._build_compact_eq();self._build_compact_mixer()
-        self.status_frame=tk.Frame(self,bg=BG)
-        self.status_frame.columnconfigure(0,weight=1)
-        self.status_label=self._label(self.status_frame,variable=self.status_var,kind="small",color=MUTED,wraplength=self.px(750))
-        self.status_label.grid(row=0,column=0,sticky="w",padx=self.px(10),pady=self.px(5))
-        self.status_label.bind("<Button-1>",lambda e:self.open_result_folder() if self.result_files else None)
-        self.cancel_button=self._button(self.status_frame,"Cancel",self.cancel_current_operation,width=70)
-        self.cancel_button.grid(row=0,column=1,padx=self.px(8))
-        self.progressbar=ttk.Progressbar(self.status_frame,variable=self.progress_var,maximum=100)
-        self.progressbar.grid(row=1,column=0,columnspan=2,sticky="ew")
         self.status_var.trace_add("write",self._status_changed)
         self.file_label_var.trace_add("write",lambda *a:self._schedule_compact_layout())
         self.workspace_scroll.canvas.bind("<Configure>",self._schedule_compact_layout)
         self.bind("<Configure>",self._root_configured,add="+")
         self.bind_all("<MouseWheel>",self._scroll_editor,add="+")
         self._set_initial_compact_window()
+        self._capture_compact_metrics()
         self._schedule_compact_layout()
 
     def _set_initial_compact_window(self):
         area,_=display_metrics(self);l,t,r,b=area
-        width,height=initial_window(r-l,b-t,self.ui_scale)
-        self.minsize(min(self.px(640),width),min(self.px(480),height))
+        scale=self._ui_scale_override or self._display_scale
+        self._update_window_limits(area,scale)
+        width,height=self._fixed_limits.initial_size
+        self._last_fixed_client=(width,height)
         self.geometry(f"{width}x{height}+{l+max(0,(r-l-width)//2)}+{t+max(0,(b-t-height)//3)}")
+
+    def _update_window_limits(self,area,scale):
+        decoration=window_decoration(self)
+        l,t,r,b=area
+        self._fixed_limits=window_limits(r-l,b-t,scale,decoration)
+        self._fixed_area=area;self._fixed_decoration=decoration
+        if self.minsize()!=self._fixed_limits.minsize:self.minsize(*self._fixed_limits.minsize)
+        if self.maxsize()!=self._fixed_limits.maxsize:self.maxsize(*self._fixed_limits.maxsize)
+        if self._window_constraints:self._window_constraints.update(self._fixed_limits,area,decoration)
+
+    def _enable_window_constraints(self):
+        try:
+            self._window_constraints=NativeWindowBounds(self,self._fixed_limits,self._fixed_area,self._fixed_decoration,
+                                                       snapshot_hwnd=int(self.editor_surface.winfo_id()))
+        except (OSError,AttributeError) as exc:
+            self.append_log(f"Native window sizing unavailable: {exc}")
+        self.aspect(10,7,10,7)
+
+    def _constrain_main_window(self):
+        width,height=self.winfo_width(),self.winfo_height()
+        if width<=1 or height<=1:return False
+        target=self._fixed_limits.constrain(width,height,self._last_fixed_client)
+        self._last_fixed_client=target
+        if target!=(width,height):
+            if not self._window_constraints or not self._window_constraints.resize(*target):
+                self.geometry(f"{target[0]}x{target[1]}")
+            return False
+        return True
 
     def _build_compact_eq(self):
         panel=self.eq_panel;panel.columnconfigure(0,weight=1);panel.rowconfigure(1,weight=1)
@@ -250,23 +295,26 @@ class CompactInterface:
             readout.grid(row=2,column=0,pady=(0,self.px(3)))
             self._track_edit_widget(readout)
             readout.bind("<Button-1>",knob.press);readout.bind("<B1-Motion>",knob.drag)
-            readout.bind("<MouseWheel>",knob.wheel);readout.bind("<Double-Button-1>",knob.reset)
+            readout.bind("<ButtonRelease-1>",knob.release)
+            readout.bind("<MouseWheel>",knob.wheel);readout.bind("<Control-Button-1>",knob.reset)
             frequency=tk.Frame(box,bg=PANEL);frequency.grid(row=3,column=0)
             lo,hi=self._band_frequency_limits(band)
-            entry=self._spin(frequency,getattr(self,"eq_"+band+"_freq_var"),lo,hi,10 if band=="low" else 50 if band=="mid" else 100,6,"%.0f")
+            entry=self._spin(frequency,getattr(self,"eq_"+band+"_freq_var"),lo,hi,10 if band=="low" else 50 if band=="mid" else 100,6,"%.0f",
+                             default=EDIT_DEFAULTS["eq_"+band+"_freq"])
             entry.pack(side="left");self.effect_widgets.append(entry)
             self._label(frequency,"Hz",kind="small",color=MUTED).pack(side="left",padx=self.px(3))
         self.timing=tk.Frame(panel,bg=PANEL,highlightbackground=LINE,highlightthickness=0)
         self.timing.grid(row=3,column=0,sticky="ew",padx=self.px(8),pady=(self.px(4),self.px(8)))
         self.timing_cells=[]
-        for label,name,variable,lo,hi,step,unit,fmt in (
-            ("Speed","tempo_spinbox",self.tempo_percent_var,50,200,1,"%","%.0f"),
-            ("Pitch","pitch_spinbox",self.pitch_semitones_var,-12,12,1,"st","%.0f"),
-            ("Fade in","fade_in_spinbox",self.fade_in_var,0,10,.01,"s","%.2f"),
-            ("Fade out","fade_out_spinbox",self.fade_out_var,0,10,.01,"s","%.2f")):
+        for label,name,key,lo,hi,step,unit,fmt in (
+            ("Speed","tempo_spinbox","tempo_percent",50,200,1,"%","%.0f"),
+            ("Pitch","pitch_spinbox","pitch_semitones",-12,12,1,"st","%.0f"),
+            ("Fade in","fade_in_spinbox","fade_in",0,10,.01,"s","%.2f"),
+            ("Fade out","fade_out_spinbox","fade_out",0,10,.01,"s","%.2f")):
             cell=tk.Frame(self.timing,bg=PANEL);self.timing_cells.append(cell)
             self._label(cell,label,kind="small",color=MUTED).pack(side="left",padx=(0,self.px(3)))
-            entry=self._spin(cell,variable,lo,hi,step,4,fmt);entry.configure(font=self.fonts["small"])
+            entry=self._spin(cell,getattr(self,key+"_var"),lo,hi,step,4,fmt,default=EDIT_DEFAULTS[key])
+            entry.configure(font=self.fonts["small"])
             entry.pack(side="left");setattr(self,name,entry);self.effect_widgets.append(entry)
             self._label(cell,unit,kind="small",color=MUTED).pack(side="left",padx=(self.px(3),0))
 
@@ -278,7 +326,6 @@ class CompactInterface:
         self.separate_button.pack(side="right")
         self.export_stems_button=self._button(heading,"Export",self.export_individual_stems,width=80,icon_name="export")
         self.export_stems_button.pack(side="right",padx=(self.px(6),self.px(6)))
-        self.tooltips.append(ToolTip(self.export_stems_button,"Export all four stems. Choose WAV or MP3 in Settings > Stem format."))
         self.stem_cards=tk.Frame(panel,bg=PANEL)
         self.stem_cards.grid(row=1,column=0,sticky="nsew",padx=self.px(8),pady=(0,self.px(8)))
         self.stem_cards.rowconfigure(0,weight=1);self.stem_name_labels={}
@@ -297,8 +344,11 @@ class CompactInterface:
             readout.numeric_gestures=NumericGestures(self,readout,
                 lambda v=volume:volume_to_position(v.get()),lambda value,v=volume:v.set(position_to_volume(value)),
                 lambda:(0,1),lambda:.005,.001,enabled=lambda name=stem:name in self.stem_paths)
-            readout.bind("<Double-Button-1>",lambda e,v=volume,name=stem:v.set(100) if name in self.stem_paths else None)
             fader=CompactFader(card,self,volume);fader.grid(row=3,column=0,sticky="nsew",pady=self.px(2))
+            def reset_readout(event,control=fader,gestures=readout.numeric_gestures):
+                gestures.origin=None
+                return control.reset(event) if gestures.available() else "break"
+            readout.bind("<Control-Button-1>",reset_readout)
             buttons=tk.Frame(card,bg=INSET);buttons.grid(row=4,column=0,pady=(0,self.px(8)))
             m=self._button(buttons,"M",lambda v=mute:v.set(not v.get()),width=28,toggle=mute,active_color="#edc653")
             so=self._button(buttons,"S",lambda v=solo:v.set(not v.get()),width=28,toggle=solo,active_color="#ba343c")
@@ -306,7 +356,6 @@ class CompactInterface:
             self.stem_widgets[stem]=[fader,m,so]
             volume.trace_add("write",lambda *a,b=stem:self._on_stem_volume_changed(b))
             for v in (mute,solo):v.trace_add("write",self._mixer_changed)
-            self.tooltips.extend((ToolTip(m,"Mute "+stem+". Mute takes precedence over Solo."),ToolTip(so,"Solo "+stem)))
 
     def _band_is_pass(self,band):
         return band!="mid" and getattr(self,"eq_"+band+"_shape_var").get() in ("High Pass","Low Pass")
@@ -319,9 +368,9 @@ class CompactInterface:
     def _mode_changed(self,band):
         # Clear a legacy independent cut only when the user explicitly changes its mode.
         getattr(self,"high_pass_var" if band=="low" else "low_pass_var").set(0)
-        self._schedule_compact_render();self._schedule_live_preview_restart()
+        self._schedule_compact_render();self._schedule_live_eq_update()
     def _mixer_changed(self,*_args):
-        self._schedule_live_preview_restart();self._schedule_compact_render()
+        self._schedule_live_mixer_update();self._schedule_compact_render()
 
     def _finish_workspace(self):
         self._history_suspended=False;self.history=EditHistory(self._edit_snapshot())
@@ -333,7 +382,9 @@ class CompactInterface:
             variable.trace_add("write",self._schedule_compact_render)
         for variable in (self.selection_start_var,self.selection_end_var):variable.trace_add("write",self._queue_selection_display)
         for name in EDIT_DEFAULTS:
-            if name.startswith(("eq_","high_pass","low_pass","pitch_","tempo_","limiter")):
+            if name.startswith(("eq_","high_pass","low_pass")):
+                getattr(self,name+"_var").trace_add("write",lambda *a:self._schedule_live_eq_update())
+            elif name.startswith(("pitch_","tempo_","limiter")):
                 getattr(self,name+"_var").trace_add("write",lambda *a:self._schedule_live_preview_restart())
         for variable in (self.fade_in_var,self.fade_out_var):
             variable.trace_add("write",lambda *a:self._schedule_fade_live_preview_restart())
@@ -344,7 +395,10 @@ class CompactInterface:
                               ("<Control-o>",self.open_audio),("<Control-s>",self.save_current_project),
                               ("<Control-Shift-O>",self.open_project),("<Control-Shift-R>",self.restore_last_session)):
             self.bind(chord,lambda e,a=action:self._shortcut(a),add="+")
-        self.tooltips.append(ToolTip(self.wave_canvas,"Click to seek; right-drag to select. Wheel: zoom at pointer. Shift+wheel: pan. + / −: zoom; 0: fit."))
+        for key,endpoint in (("bracketleft","start"),("bracketright","end")):
+            self.bind("<KeyPress-"+key+">",lambda e,p=endpoint:self._shortcut(lambda:self._wave_selection.mark(p)) if not e.state&CONTROL_ALT_MASK else None,add="+")
+            self.bind("<KeyRelease-"+key+">",lambda e,p=endpoint:self._wave_selection.release_key(p),add="+")
+        self.bind("<FocusOut>",lambda e:self._wave_selection.keys_down.clear(),add="+")
         self._schedule_compact_render()
         self.after_idle(self._compact_environment_status)
 
@@ -357,43 +411,77 @@ class CompactInterface:
     def _bind_space_shortcut(self,_widget): pass
     def _space_toggle_playback(self,_event=None):
         if self._text_focus() or self._dialog is not None:return
+        if getattr(self,"_space_key_down",False):return "break"
+        self._space_key_down=True
         self.toggle_playback();return "break"
+    def _space_key_released(self,_event=None):
+        self._space_key_down=False
     def _compact_environment_status(self):
         self._check_environment_status()
         if self.status_var.get().startswith("Ready"):self.status_var.set("")
 
+    def _capture_compact_metrics(self):
+        # Always scale from the original logical measurements: repeated
+        # shrinking/growing must not accumulate rounded padding errors.
+        self._compact_metrics=[];self._compact_metric_state={}
+        def collect(parent):
+            for child in parent.winfo_children():
+                if isinstance(child,tk.Toplevel):continue
+                manager=child.winfo_manager()
+                spacing={}
+                if manager in ("grid","pack"):
+                    data=child.grid_info() if manager=="grid" else child.pack_info()
+                    for key in ("padx","pady","ipadx","ipady"):
+                        value=data.get(key,0)
+                        values=value if isinstance(value,tuple) else self.tk.splitlist(str(value))
+                        spacing[key]=tuple(float(v)/self.ui_scale for v in values)
+                dimensions={}
+                for key in ("padx","pady","highlightthickness","borderwidth"):
+                    if key in child.keys():dimensions[key]=float(str(child.cget(key)))/self.ui_scale
+                if isinstance(child,tk.Frame) and int(child.cget("height")):
+                    dimensions["height"]=float(child.cget("height"))/self.ui_scale
+                self._compact_metrics.append((child,manager,spacing,dimensions))
+                self._compact_metric_state[child]=(None,None)
+                collect(child)
+        collect(self)
+
+    def _rescale_compact(self,scale):
+        self.ui_scale=scale
+        for widget,manager,spacing,dimensions in self._compact_metrics:
+            old_spacing,old_dimensions=self._compact_metric_state[widget]
+            values={key:tuple(round(v*scale) for v in value) for key,value in spacing.items()}
+            if spacing and values!=old_spacing and widget.winfo_manager()==manager:
+                (widget.grid_configure if manager=="grid" else widget.pack_configure)(**values)
+                old_spacing=values
+            sizes={key:round(value*scale) for key,value in dimensions.items()}
+            if dimensions and sizes!=old_dimensions:
+                widget.configure(**sizes);old_dimensions=sizes
+            self._compact_metric_state[widget]=(old_spacing,old_dimensions)
+        for name,size in (("body",12),("small",10),("bold",11),("title",14)):
+            target=-self.px(size)
+            if self.fonts[name].cget("size")!=target:self.fonts[name].configure(size=target)
+        style_size=(self.px(4),self.px(3),self.px(14))
+        if style_size!=self._scale_style:
+            style=ttk.Style(self)
+            style.configure("TEntry",padding=style_size[0])
+            for name in ("TSpinbox","TCombobox"):
+                style.configure(name,padding=style_size[1],arrowsize=style_size[2])
+            self._scale_style=style_size
+        for widget in self.compact_buttons:
+            if widget.winfo_exists():widget.rescale()
+        for widget in self.compact_knobs.values():widget.rescale()
+        for child in self.bands.winfo_children():child.rowconfigure(0,minsize=self.px(28))
+        self.brand_icon.configure(width=self.px(18),height=self.px(22));self.brand_icon.delete("all")
+        icon(self.brand_icon,"wave",self.px(9),self.px(11),scale*.8,MUTED)
+
     def _root_configured(self,event):
-        if event.widget!=self:return
-        if self._ui_scale_override is None:
-            area,scale=display_metrics(self)
-            if abs(scale-self.ui_scale)>.03:
-                ratio=scale/self.ui_scale
-                def rescale_spacing(parent):
-                    for child in parent.winfo_children():
-                        manager=child.winfo_manager()
-                        if manager in ("grid","pack"):
-                            data=child.grid_info() if manager=="grid" else child.pack_info()
-                            spacing={}
-                            for key in ("padx","pady","ipadx","ipady"):
-                                value=data.get(key,0)
-                                numbers=value if isinstance(value,tuple) else (value,)
-                                spacing[key]=tuple(round(float(v)*ratio) for v in numbers)
-                            (child.grid_configure if manager=="grid" else child.pack_configure)(**spacing)
-                        rescale_spacing(child)
-                rescale_spacing(self)
-                self.ui_scale=scale
-                for name,size in (("body",12),("small",10),("bold",11),("title",14)):self.fonts[name].configure(size=-self.px(size))
-                for widget in self.compact_buttons:
-                    if widget.winfo_exists():widget.rescale()
-                for widget in self.compact_knobs.values():widget.rescale()
-                for child in self.bands.winfo_children():child.rowconfigure(0,minsize=self.px(28))
-                self.brand_icon.configure(width=self.px(18),height=self.px(22));self.brand_icon.delete("all")
-                icon(self.brand_icon,"wave",self.px(9),self.px(11),self.ui_scale*.8,MUTED)
-                l,t,r,b=area
-                available=initial_window(r-l,b-t,self.ui_scale)
-                self.minsize(min(self.px(640),available[0]),min(self.px(480),available[1]))
-                if self.winfo_width()>r-l-20 or self.winfo_height()>b-t-50:
-                    self.geometry(f"{min(self.winfo_width(),r-l-20)}x{min(self.winfo_height(),b-t-50)}+{l+10}+{t+10}")
+        if event.widget!=self or self.closing or self._fixed_limits is None:return
+        area,scale=display_metrics(self)
+        self._display_scale=self._ui_scale_override or scale
+        self._update_window_limits(area,self._display_scale)
+        if self._window_constraints and self._window_constraints.interactive_resize:
+            if self._resize_preview.begin():
+                self._constrain_main_window();self._resize_preview.request();return
         self._schedule_compact_layout()
     def _schedule_compact_layout(self,*_args):
         if self.closing or self._layout_after:return
@@ -401,47 +489,62 @@ class CompactInterface:
     def _layout_compact(self):
         self._layout_after=None
         if self.closing:return
-        canvas=self.workspace_scroll.canvas;s=self.ui_scale
-        width=max(1,canvas.winfo_width())/s;height=max(1,canvas.winfo_height())/s
-        narrow=width<740;self._layout_mode="stacked" if narrow else "side-by-side"
-        timeline=174 if width>=600 else 205
+        if self._resize_preview.active:
+            self._resize_preview.request();return
+        if not self._constrain_main_window():
+            return
+        canvas=self.workspace_scroll.canvas
+        # Keep the accepted side-by-side composition. Fit both axes with one
+        # scale, including the fixed header allowance. Content, loading
+        # progress and error text never take part in the scale calculation.
+        client=(self.winfo_width(),self.winfo_height())
+        if client==self._last_compact_layout:
+            self._update_file_metadata();return
+        self.editor_surface.place(x=0,y=0,width=client[0],height=client[1])
+        scale=client[0]/1000
+        if abs(scale-self.ui_scale)>.002:
+            self._rescale_compact(scale)
+        self._last_compact_layout=client
+        s=self.ui_scale
+        # Use the new client size for the complete layout transaction. Child
+        # Configure events still contain intermediate geometry at this point.
+        header_height=self.px(30)+2*self.px(7)+2*round(s)
+        viewport_height=max(1,client[1]-header_height)
+        width=client[0]/s;height=viewport_height/s
+        self._layout_mode="side-by-side"
+        timeline=174
         self.timeline.configure(height=self.px(timeline));self.timeline.grid_propagate(False)
-        if width<600:
-            self.selection_controls.grid(row=1,column=0,sticky="e",pady=self.px(4));self.metadata.columnconfigure(1,weight=0)
-        else:self.selection_controls.grid(row=0,column=1,sticky="e",pady=0)
-        eq_height=max(332,height-timeline-19) if not narrow else 332
-        total=timeline+eq_height+19 if not narrow else timeline+eq_height+348+25
+        self.selection_controls.grid(row=0,column=1,sticky="e",pady=0)
+        eq_height=max(332,height-timeline-19)
+        total=timeline+eq_height+19
         self.editors.configure(height=self.px(total-timeline-15));self.editors.grid_propagate(False)
         for row in (0,1):self.editors.rowconfigure(row,weight=0,minsize=0)
         for column in (0,1):self.editors.columnconfigure(column,weight=0,minsize=0,uniform="")
         self.eq_panel.grid_propagate(False);self.mixer_panel.grid_propagate(False)
         self.eq_panel.configure(width=1,height=self.px(eq_height))
-        self.mixer_panel.configure(width=1,height=self.px(348 if narrow else eq_height))
-        if narrow:
-            self.editors.columnconfigure(0,weight=1)
-            self.editors.rowconfigure(0,minsize=self.px(eq_height));self.editors.rowconfigure(1,minsize=self.px(348))
-            self.eq_panel.grid(row=0,column=0,sticky="nsew",padx=0,pady=(0,self.px(8)))
-            self.mixer_panel.grid(row=1,column=0,sticky="nsew",padx=0,pady=0)
-        else:
-            self.editors.columnconfigure(0,weight=56,uniform="editor");self.editors.columnconfigure(1,weight=44,uniform="editor")
-            self.editors.rowconfigure(0,weight=1)
-            self.eq_panel.grid(row=0,column=0,sticky="nsew",padx=(0,self.px(8)),pady=0)
-            self.mixer_panel.grid(row=0,column=1,sticky="nsew",padx=0,pady=0)
-        eq_width=(width-22 if narrow else (width-30)*.56)
+        self.mixer_panel.configure(width=1,height=self.px(eq_height))
+        self.editors.columnconfigure(0,weight=56,uniform="editor");self.editors.columnconfigure(1,weight=44,uniform="editor")
+        self.editors.rowconfigure(0,weight=1)
+        self.eq_panel.grid(row=0,column=0,sticky="nsew",padx=(0,self.px(8)),pady=0)
+        self.mixer_panel.grid(row=0,column=1,sticky="nsew",padx=0,pady=0)
+        eq_width=(width-30)*.56
         wrap=eq_width<385
         for i,cell in enumerate(self.timing_cells):
             cell.grid(row=i//2 if wrap else 0,column=i%2 if wrap else i,sticky="w",padx=(0,self.px(4)),pady=self.px(2))
         for i in range(4):self.timing.columnconfigure(i,weight=1 if i<(2 if wrap else 4) else 0)
-        self.workspace_scroll.layout(self.px(total))
-        self.status_label.configure(wraplength=max(self.px(200),self.winfo_width()-self.px(115)))
-        self._update_file_metadata();self.draw_waveform();self.eq_editor.draw()
+        self.workspace_scroll.layout(viewport_height,width=client[0],fit=True)
+        self.status_frame.fit()
+        self._update_file_metadata();self._schedule_waveform_resize_draw();self.eq_editor.request_draw()
 
     def _update_file_metadata(self):
+        full=self.file_label_var.get();available=max(self.px(70),self.file_meta.winfo_width()-self.px(102))
+        key=(full,available,self.ui_scale,self.duration_seconds,getattr(self,"source_channels",2))
+        if key==self._metadata_key:return
+        self._metadata_key=key
         if self.duration_seconds:
             channels=getattr(self,"source_channels",2)
             self.audio_meta_var.set(self._format_duration(self.duration_seconds)+" · "+("Mono" if channels==1 else "Stereo"))
         else:self.audio_meta_var.set("")
-        full=self.file_label_var.get();available=max(self.px(70),self.file_meta.winfo_width()-self.px(102))
         short=full
         while len(short)>5 and self.fonts["bold"].measure(short)>available:short=short[:-2]
         self.display_file_var.set(short+"…" if short!=full else full)
@@ -456,13 +559,13 @@ class CompactInterface:
             for band,value in self.band_values.items():
                 number=self._band_value(band)
                 value.set(f"{number:g} dB/oct" if self._band_is_pass(band) else f"{number:+g} dB" if number else "0 dB")
-                self.compact_knobs[band].draw()
+                self.compact_knobs[band].request_draw()
             any_solo=any(v["solo"].get() for v in self.stem_vars.values())
             for stem,values in self.stem_vars.items():
                 audible=not values["mute"].get() and (not any_solo or values["solo"].get())
                 self.stem_name_labels[stem].configure(fg=TEXT if audible else "#617086")
                 self._update_volume_label(stem)
-            self.eq_editor.draw()
+            self.eq_editor.request_draw()
         except (ValueError,tk.TclError):pass
 
     def _set_eq_validation_error(self,error):
@@ -476,17 +579,44 @@ class CompactInterface:
     def _status_changed(self,*_args):
         message=self.status_var.get()
         routine=message.startswith(("Loaded:","Preview playing:","Realtime preview:","Playing:","Playback stopped.","Playback complete.","Playback finished.","Stem Split complete.","Stem Split already ready.","Ready"))
-        if (message and not routine) or self.busy:self.status_frame.grid(row=2,column=0,sticky="ew")
-        else:self.status_frame.grid_remove()
-        if self.busy:self.progressbar.grid();self.cancel_button.grid()
-        else:self.progressbar.grid_remove();self.cancel_button.grid_remove()
-        self._schedule_compact_layout()
+        error=message.lower().startswith(("error", "could not", "cannot", "preview failed", "eq:",
+                                          "preview settings need attention", "live audio could not"))
+        prefix=message;suffix=""
+        if self.busy and not error and message.startswith(self.busy_status_base or "\0"):
+            prefix=self.busy_status_base.rstrip(" .…")
+            prefix={"Open Audio in progress":"Loading audio", "Stem Split in progress":"Separating",
+                    "Separating stems":"Separating", "Render in progress":"Exporting"}.get(prefix,prefix)
+            prefix+="…"
+            if self.busy_progress_percent is not None:
+                suffix=f" {max(0,min(100,self.busy_progress_percent)):.0f}%"
+        elif message.startswith("Saved:") and self.result_files:
+            prefix="Saved: "+self.result_files[0].name
+            if len(self.result_files)>1:prefix+=f" (+{len(self.result_files)-1} files)"
+        elif routine and not self.busy:prefix=""
+        self.status_frame.display(prefix,suffix=suffix,busy=self.busy,
+                                  color="#ef9b95" if error else MUTED)
+        # Only this fixed-size header cell changes. Transport messages never
+        # schedule editor reflow or redraw the waveform/EQ.
 
-    def _refresh_action_states(self):
+    def _activate_status(self,_event=None):
+        message=self.status_var.get()
+        if message.startswith("Saved:") and self.result_files:
+            self.open_result_folder()
+        elif message:
+            messagebox.showinfo("Task details",message,parent=self)
+        return "break"
+
+    def _refresh_action_states(self,transport_only=False):
         if not hasattr(self,"load_button"):return
         idle=not self.busy;source=self.source_wav is not None
+        self._set_state(self.play_button,(idle and source) or self.preview_playing)
+        self.play_button.icon_name="pause" if self.preview_playing else "play"
+        self.play_button.configure(text="Pause" if self.preview_playing else "Play")
+        # Play/pause changes only transport. Effect values, enabled controls and
+        # waveform geometry are already current and need no redraw here.
+        if transport_only:return
         for widget,enabled in ((self.load_button,idle),(self.settings_button,idle),(self.advanced_button,idle),
-                               (self.separate_button,idle and source),(self.play_button,(idle and source) or self.preview_playing),
+                               (self.separate_button,idle and source),
                                (self.render_button,idle and source),(self.render_mp3_button,idle and source),
                                (self.export_stems_button,idle and bool(self._ready_stem_paths())),
                                (self.start_spinbox,idle and source),(self.end_spinbox,idle and source)):
@@ -495,8 +625,6 @@ class CompactInterface:
         self.eq_editor.set_enabled(idle and source)
         for stem,widgets in self.stem_widgets.items():
             for widget in widgets:self._set_state(widget,idle and stem in self.stem_paths)
-        self.play_button.icon_name="pause" if self.preview_playing else "play"
-        self.play_button.configure(text="Pause" if self.preview_playing else "Play")
         self._set_state(self.cancel_button,self.busy)
         self._status_changed();self._update_workspace_summary();self._schedule_compact_render();self._sync_stem_range_notice()
 
@@ -514,8 +642,10 @@ class CompactInterface:
     def _configure_selection_limits(self,limit):
         # Entries display centiseconds; the rounded last frame must remain a
         # valid display value. Actual audio bounds still use the exact duration.
-        display_limit=math.ceil(limit/TIME_QUANTUM)*TIME_QUANTUM
-        for widget in (self.start_spinbox,self.end_spinbox):widget.configure(to=display_limit)
+        lower,upper=self._stem_selection_limits() or (0.0,limit)
+        display_start=math.floor(lower/TIME_QUANTUM)*TIME_QUANTUM
+        display_limit=math.ceil(upper/TIME_QUANTUM)*TIME_QUANTUM
+        for widget in (self.start_spinbox,self.end_spinbox):widget.configure(from_=display_start,to=display_limit)
     def _update_selection_label(self):
         try:
             start,end=self._selection_bounds_no_error();self.selection_label.configure(text=f"{max(0,end-start):.2f}s")
@@ -558,8 +688,7 @@ class CompactInterface:
         if x2>x1:canvas.create_rectangle(x1,0,x2,plot,fill="#203c5d",outline="")
         for channel,center in enumerate((plot*.26,plot*.74)):
             canvas.create_line(0,center,w,center,fill=LINE)
-            canvas.create_text(8*s,center,text="L" if channel==0 else "R",fill=MUTED,font=self.fonts["small"])
-            for x in range(round(22*s),w,max(2,self.px(2))):
+            for x in range(0,w,max(2,self.px(2))):
                 index=min(len(self.peaks)-1,int((start+span*x/w)/self.duration_seconds*len(self.peaks)))
                 peak=self.peaks[index]
                 value=peak[channel] if isinstance(peak,(tuple,list)) else peak
@@ -568,8 +697,8 @@ class CompactInterface:
                 except (ValueError,tk.TclError):gain=1
                 amp=max(0,min(1,value)*gain*plot*.2)
                 canvas.create_line(x,center-amp,x,center+amp,fill="#7ab2fb" if x1<=x<=x2 else "#5486c5",width=max(1,s*.75),tags="wave-sample")
-        for x in (x1,x2):canvas.create_line(x,0,x,plot,fill=BLUE,width=max(1,s))
         self._draw_compact_fades(start,end,selected_start,selected_end,plot)
+        self._wave_selection.draw(plot,BLUE)
         count=max(2,min(8,int(w/(100*s))))
         previous_label=None
         for i in range(count+1):
@@ -621,7 +750,6 @@ class CompactInterface:
         self.result_files=[Path(path) for path in paths]
         if self.result_files:
             self.status_var.set("Saved: "+str(self.result_files[0])+(f" (+{len(paths)-1} files)" if len(paths)>1 else ""))
-            self.status_label.configure(cursor="hand2")
     def _selected_result(self):return self.result_files[0] if self.result_files else None
     def _confirm_render(self,individual=False):return True
 
@@ -693,25 +821,11 @@ class CompactInterface:
         self._label(scope,"Split Stems",kind="small",color=MUTED).pack(side="left",padx=(0,self.px(8)))
         ttk.Combobox(scope,values=("Selection","Full track"),textvariable=self.split_scope_var,
                      state="readonly",width=14,font=self.fonts["body"]).pack(side="left")
-        self._label(group,"Full track takes longer once; later selections need no new split.",
+        self._label(group,"Selection stays inside separated audio. To expand it, choose Full track and click Split Stems.",
                     kind="small",color=MUTED,wraplength=self.px(460)).grid(row=4,column=0,sticky="w")
         helpbox=tk.Frame(content,bg=PANEL);helpbox.grid(row=3,column=0,sticky="ew",padx=self.px(16),pady=self.px(4))
-        self.help_content=tk.Frame(helpbox,bg=PANEL)
-        helptext=("Space: play / pause. Ctrl+O: open audio.\nRight-drag: select. Wheel: zoom; Shift+wheel: pan.\n"
-                  "Numbers: drag up/down or turn the wheel. Shift: finer steps.\n"
-                  "Start/End steps follow zoom; time display stays at 0.01 s.\n"
-                  "Amber lines/markers show fades on the waveform.\n"
-                  "Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z: undo / redo.\nDouble-click a fader: 0 dB. Q controls resonance.\n"
-                  "Selection times use the original audio timeline.\nNormalize is applied on export only.\n"
-                  "Stem Mixer > Export saves all four tracks to Save folder.\n"
-                  "Stem exports apply selection, faders and effects, ignoring Mute/Solo.\n"
-                  "Ctrl+S: save session; Ctrl+Shift+O: open session.\nCtrl+Shift+R: restore the last session.")
-        self._label(self.help_content,helptext,kind="small",color=MUTED,justify="left",wraplength=self.px(450)).pack(anchor="w",pady=self.px(6))
-        self._button(self.help_content,"Environment Check",self.environment_details,width=145).pack(anchor="w")
-        def toggle_help():
-            if self.help_content.winfo_ismapped():self.help_content.pack_forget()
-            else:self.help_content.pack(fill="x")
-        self._button(helpbox,"Help",toggle_help,width=58).pack(anchor="w")
+        self._button(helpbox,"README",self.open_readme,width=85).pack(side="left")
+        self._button(helpbox,"Environment Check",self.environment_details,width=145).pack(side="left",padx=self.px(8))
         self.settings_error_var=tk.StringVar()
         self._label(content,variable=self.settings_error_var,kind="small",color="#ffc1ac",wraplength=self.px(480)).grid(row=4,column=0,sticky="ew",padx=self.px(16))
         actions=tk.Frame(content,bg=PANEL);actions.grid(row=5,column=0,sticky="ew",padx=self.px(16),pady=self.px(12))

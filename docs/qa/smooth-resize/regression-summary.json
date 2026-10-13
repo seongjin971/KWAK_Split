@@ -1,0 +1,23 @@
+{
+  "runs": [
+    {
+      "name": "regression",
+      "cases": 101,
+      "subtests": 7
+    },
+    {
+      "name": "isolated-reruns",
+      "cases": 2,
+      "subtests": 0
+    },
+    {
+      "name": "mixer-rerun",
+      "cases": 4,
+      "subtests": 0
+    }
+  ],
+  "unique_tests": 101,
+  "unresolved_failures": [],
+  "passed": 101,
+  "subtests": 7
+}

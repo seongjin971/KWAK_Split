@@ -1,0 +1,239 @@
+{
+  "method": "real Tk Space events, generated audio, SDL dummy",
+  "physical_key_to_speaker_measured": false,
+  "cycles": [
+    {
+      "play_handler_ms": 64.63369999983115,
+      "play_paint_ms": 83.46009999513626,
+      "first_pcm_ms": 130.07549999747425,
+      "first_positive_clock_ms": 219.80099999927916,
+      "play_spans_ms": {
+        "_build_audio_effects": [
+          0.1751000017975457,
+          0.16619999951217324
+        ],
+        "_stop_realtime_playback": [
+          0.007299997378140688
+        ],
+        "_refresh_action_states": [
+          0.7153999977163039,
+          0.5748999974457547
+        ],
+        "_start_preview": [
+          64.18249999842374
+        ]
+      },
+      "stop_handler_ms": 6.969900001422502,
+      "stop_paint_ms": 20.659900001192,
+      "stop_spans_ms": {
+        "_stop_realtime_playback": [
+          5.58420000015758
+        ],
+        "_refresh_action_states": [
+          0.6969000023673289
+        ],
+        "_build_audio_effects": [
+          0.14709999959450215
+        ]
+      },
+      "player_exited": true
+    },
+    {
+      "play_handler_ms": 22.86129999993136,
+      "play_paint_ms": 44.91509999934351,
+      "first_pcm_ms": 81.75439999467926,
+      "first_positive_clock_ms": 154.39060000062454,
+      "play_spans_ms": {
+        "_build_audio_effects": [
+          0.10889999975915998,
+          0.17800000205170363
+        ],
+        "_stop_realtime_playback": [
+          0.007100003131199628
+        ],
+        "_refresh_action_states": [
+          0.731400003132876,
+          0.5850000015925616
+        ],
+        "_start_preview": [
+          22.63649999804329
+        ]
+      },
+      "stop_handler_ms": 6.491899999673478,
+      "stop_paint_ms": 19.785600001341663,
+      "stop_spans_ms": {
+        "_stop_realtime_playback": [
+          4.526500000793021
+        ],
+        "_refresh_action_states": [
+          1.2175999945611693
+        ],
+        "_build_audio_effects": [
+          0.1599000024725683
+        ]
+      },
+      "player_exited": true
+    },
+    {
+      "play_handler_ms": 42.62639999797102,
+      "play_paint_ms": 59.27520000113873,
+      "first_pcm_ms": 105.86280000279658,
+      "first_positive_clock_ms": 154.95589999773074,
+      "play_spans_ms": {
+        "_build_audio_effects": [
+          0.11629999789875001,
+          0.21359999664127827
+        ],
+        "_stop_realtime_playback": [
+          0.007799993909429759
+        ],
+        "_refresh_action_states": [
+          0.4474000015761703,
+          0.698000003467314
+        ],
+        "_start_preview": [
+          42.40120000031311
+        ]
+      },
+      "stop_handler_ms": 8.228999999118969,
+      "stop_paint_ms": 39.83229999721516,
+      "stop_spans_ms": {
+        "_stop_realtime_playback": [
+          4.700299999967683
+        ],
+        "_refresh_action_states": [
+          1.9123999954899773
+        ],
+        "_build_audio_effects": [
+          0.23189999774331227
+        ]
+      },
+      "player_exited": true
+    },
+    {
+      "play_handler_ms": 49.66769999737153,
+      "play_paint_ms": 79.10599999740953,
+      "first_pcm_ms": 109.62229999859119,
+      "first_positive_clock_ms": 166.9426999942516,
+      "play_spans_ms": {
+        "_build_audio_effects": [
+          0.22629999875789508,
+          0.28469999961089343
+        ],
+        "_stop_realtime_playback": [
+          0.014199998986441642
+        ],
+        "_refresh_action_states": [
+          0.8859000008669682,
+          0.9352999986731447
+        ],
+        "_start_preview": [
+          49.283599997579586
+        ]
+      },
+      "stop_handler_ms": 6.550299993250519,
+      "stop_paint_ms": 36.08119999989867,
+      "stop_spans_ms": {
+        "_stop_realtime_playback": [
+          4.734699999971781
+        ],
+        "_refresh_action_states": [
+          0.8833000028971583
+        ],
+        "_build_audio_effects": [
+          0.39819999801693484
+        ]
+      },
+      "player_exited": true
+    },
+    {
+      "play_handler_ms": 72.8090999982669,
+      "play_paint_ms": 102.66989999945508,
+      "first_pcm_ms": 104.7545999972499,
+      "first_positive_clock_ms": 188.9087000017753,
+      "play_spans_ms": {
+        "_build_audio_effects": [
+          0.21879999985685572,
+          0.21720000222558156
+        ],
+        "_stop_realtime_playback": [
+          0.017799997294787318
+        ],
+        "_refresh_action_states": [
+          0.8965000015450642,
+          1.2102000036975369
+        ],
+        "_start_preview": [
+          72.43069999822183
+        ]
+      },
+      "stop_handler_ms": 6.480699994426686,
+      "stop_paint_ms": 34.512999998696614,
+      "stop_spans_ms": {
+        "_stop_realtime_playback": [
+          4.653400006645825
+        ],
+        "_refresh_action_states": [
+          0.9247999987564981
+        ],
+        "_build_audio_effects": [
+          0.23320000036619604
+        ]
+      },
+      "player_exited": true
+    },
+    {
+      "play_handler_ms": 52.42200000066077,
+      "play_paint_ms": 86.10349999798927,
+      "first_pcm_ms": 90.4071999975713,
+      "first_positive_clock_ms": 186.4696999982698,
+      "play_spans_ms": {
+        "_build_audio_effects": [
+          0.2310999989276752,
+          0.2533000006224029
+        ],
+        "_stop_realtime_playback": [
+          0.014900004316587001
+        ],
+        "_refresh_action_states": [
+          0.930599999264814,
+          1.0517999980947934
+        ],
+        "_start_preview": [
+          52.04320000484586
+        ]
+      },
+      "stop_handler_ms": 8.608999996795319,
+      "stop_paint_ms": 38.822199996502604,
+      "stop_spans_ms": {
+        "_stop_realtime_playback": [
+          4.933199998049531
+        ],
+        "_refresh_action_states": [
+          1.7475999993621372
+        ],
+        "_build_audio_effects": [
+          0.22290000197244808
+        ]
+      },
+      "player_exited": true
+    }
+  ],
+  "median_ms": {
+    "play_handler_ms": 51.04484999901615,
+    "play_paint_ms": 81.2830499962729,
+    "first_pcm_ms": 105.30870000002324,
+    "first_positive_clock_ms": 176.7061999962607,
+    "stop_handler_ms": 6.760099997336511,
+    "stop_paint_ms": 35.29709999929764
+  },
+  "maximum_ms": {
+    "play_handler_ms": 72.8090999982669,
+    "play_paint_ms": 102.66989999945508,
+    "first_pcm_ms": 130.07549999747425,
+    "first_positive_clock_ms": 219.80099999927916,
+    "stop_handler_ms": 8.608999996795319,
+    "stop_paint_ms": 39.83229999721516
+  },
+  "status": "passed"
+}

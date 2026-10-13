@@ -1,0 +1,1 @@
+2026-10-03 14:37:04,100 [INFO] Drag and drop is ready on 120 windows.

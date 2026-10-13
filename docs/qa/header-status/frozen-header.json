@@ -1,0 +1,597 @@
+{
+  "frozen": true,
+  "method": "isolated real Tk, generated audio, simulated work areas and app DPI",
+  "physical_monitor_switch_tested": false,
+  "cases": [
+    {
+      "screen": "fhd",
+      "dpi_scale": 1,
+      "size": "initial",
+      "client": [
+        1000,
+        700
+      ],
+      "status_width": 524,
+      "bottom_gap": 10,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1,
+      "size": "minimum",
+      "client": [
+        760,
+        532
+      ],
+      "status_width": 396,
+      "bottom_gap": 8,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1,
+      "size": "maximum",
+      "client": [
+        1350,
+        945
+      ],
+      "status_width": 712,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.25,
+      "size": "initial",
+      "client": [
+        1250,
+        875
+      ],
+      "status_width": 652,
+      "bottom_gap": 12,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.25,
+      "size": "minimum",
+      "client": [
+        950,
+        665
+      ],
+      "status_width": 500,
+      "bottom_gap": 10,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.25,
+      "size": "maximum",
+      "client": [
+        1340,
+        938
+      ],
+      "status_width": 705,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.5,
+      "size": "initial",
+      "client": [
+        1330,
+        931
+      ],
+      "status_width": 699,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.5,
+      "size": "minimum",
+      "client": [
+        1140,
+        798
+      ],
+      "status_width": 596,
+      "bottom_gap": 11,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.5,
+      "size": "maximum",
+      "client": [
+        1330,
+        931
+      ],
+      "status_width": 699,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.75,
+      "size": "initial",
+      "client": [
+        1320,
+        924
+      ],
+      "status_width": 696,
+      "bottom_gap": 12,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.75,
+      "size": "minimum",
+      "client": [
+        1320,
+        924
+      ],
+      "status_width": 696,
+      "bottom_gap": 12,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 1.75,
+      "size": "maximum",
+      "client": [
+        1320,
+        924
+      ],
+      "status_width": 696,
+      "bottom_gap": 12,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 2,
+      "size": "initial",
+      "client": [
+        1310,
+        917
+      ],
+      "status_width": 688,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 2,
+      "size": "minimum",
+      "client": [
+        1310,
+        917
+      ],
+      "status_width": 688,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "fhd",
+      "dpi_scale": 2,
+      "size": "maximum",
+      "client": [
+        1310,
+        917
+      ],
+      "status_width": 688,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1,
+      "size": "initial",
+      "client": [
+        1000,
+        700
+      ],
+      "status_width": 524,
+      "bottom_gap": 10,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1,
+      "size": "minimum",
+      "client": [
+        760,
+        532
+      ],
+      "status_width": 396,
+      "bottom_gap": 8,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1,
+      "size": "maximum",
+      "client": [
+        1400,
+        980
+      ],
+      "status_width": 732,
+      "bottom_gap": 14,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.25,
+      "size": "initial",
+      "client": [
+        1250,
+        875
+      ],
+      "status_width": 652,
+      "bottom_gap": 12,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.25,
+      "size": "minimum",
+      "client": [
+        950,
+        665
+      ],
+      "status_width": 500,
+      "bottom_gap": 10,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.25,
+      "size": "maximum",
+      "client": [
+        1750,
+        1225
+      ],
+      "status_width": 919,
+      "bottom_gap": 18,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.5,
+      "size": "initial",
+      "client": [
+        1500,
+        1050
+      ],
+      "status_width": 785,
+      "bottom_gap": 14,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.5,
+      "size": "minimum",
+      "client": [
+        1140,
+        798
+      ],
+      "status_width": 596,
+      "bottom_gap": 11,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.5,
+      "size": "maximum",
+      "client": [
+        1840,
+        1288
+      ],
+      "status_width": 962,
+      "bottom_gap": 19,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.75,
+      "size": "initial",
+      "client": [
+        1750,
+        1225
+      ],
+      "status_width": 919,
+      "bottom_gap": 18,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.75,
+      "size": "minimum",
+      "client": [
+        1330,
+        931
+      ],
+      "status_width": 699,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 1.75,
+      "size": "maximum",
+      "client": [
+        1830,
+        1281
+      ],
+      "status_width": 956,
+      "bottom_gap": 19,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 2,
+      "size": "initial",
+      "client": [
+        1830,
+        1281
+      ],
+      "status_width": 956,
+      "bottom_gap": 19,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 2,
+      "size": "minimum",
+      "client": [
+        1520,
+        1064
+      ],
+      "status_width": 794,
+      "bottom_gap": 15,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "qhd",
+      "dpi_scale": 2,
+      "size": "maximum",
+      "client": [
+        1830,
+        1281
+      ],
+      "status_width": 956,
+      "bottom_gap": 19,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1,
+      "size": "initial",
+      "client": [
+        1000,
+        700
+      ],
+      "status_width": 524,
+      "bottom_gap": 10,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1,
+      "size": "minimum",
+      "client": [
+        760,
+        532
+      ],
+      "status_width": 396,
+      "bottom_gap": 8,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1,
+      "size": "maximum",
+      "client": [
+        1400,
+        980
+      ],
+      "status_width": 732,
+      "bottom_gap": 14,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.25,
+      "size": "initial",
+      "client": [
+        1250,
+        875
+      ],
+      "status_width": 652,
+      "bottom_gap": 12,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.25,
+      "size": "minimum",
+      "client": [
+        950,
+        665
+      ],
+      "status_width": 500,
+      "bottom_gap": 10,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.25,
+      "size": "maximum",
+      "client": [
+        1750,
+        1225
+      ],
+      "status_width": 919,
+      "bottom_gap": 18,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.5,
+      "size": "initial",
+      "client": [
+        1500,
+        1050
+      ],
+      "status_width": 785,
+      "bottom_gap": 14,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.5,
+      "size": "minimum",
+      "client": [
+        1140,
+        798
+      ],
+      "status_width": 596,
+      "bottom_gap": 11,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.5,
+      "size": "maximum",
+      "client": [
+        2100,
+        1470
+      ],
+      "status_width": 1103,
+      "bottom_gap": 22,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.75,
+      "size": "initial",
+      "client": [
+        1750,
+        1225
+      ],
+      "status_width": 919,
+      "bottom_gap": 18,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.75,
+      "size": "minimum",
+      "client": [
+        1330,
+        931
+      ],
+      "status_width": 699,
+      "bottom_gap": 13,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 1.75,
+      "size": "maximum",
+      "client": [
+        2450,
+        1715
+      ],
+      "status_width": 1290,
+      "bottom_gap": 25,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 2,
+      "size": "initial",
+      "client": [
+        2000,
+        1400
+      ],
+      "status_width": 1048,
+      "bottom_gap": 20,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 2,
+      "size": "minimum",
+      "client": [
+        1520,
+        1064
+      ],
+      "status_width": 794,
+      "bottom_gap": 15,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    },
+    {
+      "screen": "4k",
+      "dpi_scale": 2,
+      "size": "maximum",
+      "client": [
+        2800,
+        1960
+      ],
+      "status_width": 1467,
+      "bottom_gap": 28,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    }
+  ],
+  "status": "passed",
+  "no_progressbar": true,
+  "real_generated_audio_load_and_export": true,
+  "edits_preserved": true,
+  "callback_errors": []
+}

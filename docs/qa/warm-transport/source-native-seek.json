@@ -1,0 +1,115 @@
+{
+  "frozen": false,
+  "audio_device": "muted WinMM device",
+  "native_listening_tested": false,
+  "seeks": [
+    {
+      "source_seconds": 8.25,
+      "tempo_ratio": 1,
+      "pitch_semitones": 0,
+      "request_to_output_clock_seconds": 0.234,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 4.25,
+      "tempo_ratio": 1,
+      "pitch_semitones": 0,
+      "request_to_output_clock_seconds": 0.234,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 12.25,
+      "tempo_ratio": 1,
+      "pitch_semitones": 0,
+      "request_to_output_clock_seconds": 0.266,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 1.25,
+      "tempo_ratio": 1,
+      "pitch_semitones": 0,
+      "request_to_output_clock_seconds": 0.219,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 8.25,
+      "tempo_ratio": 0.5,
+      "pitch_semitones": 3,
+      "request_to_output_clock_seconds": 0.203,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 4.25,
+      "tempo_ratio": 0.5,
+      "pitch_semitones": 3,
+      "request_to_output_clock_seconds": 0.203,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 12.25,
+      "tempo_ratio": 0.5,
+      "pitch_semitones": 3,
+      "request_to_output_clock_seconds": 0.235,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 1.25,
+      "tempo_ratio": 0.5,
+      "pitch_semitones": 3,
+      "request_to_output_clock_seconds": 0.203,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 8.25,
+      "tempo_ratio": 2,
+      "pitch_semitones": -3,
+      "request_to_output_clock_seconds": 0.218,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 4.25,
+      "tempo_ratio": 2,
+      "pitch_semitones": -3,
+      "request_to_output_clock_seconds": 0.203,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 12.25,
+      "tempo_ratio": 2,
+      "pitch_semitones": -3,
+      "request_to_output_clock_seconds": 0.203,
+      "export_error_db": 0.0,
+      "same_player": true
+    },
+    {
+      "source_seconds": 1.25,
+      "tempo_ratio": 2,
+      "pitch_semitones": -3,
+      "request_to_output_clock_seconds": 0.219,
+      "export_error_db": 0.0,
+      "same_player": true
+    }
+  ],
+  "clock_ratios": [
+    0.9960463079640746,
+    0.9972247605496476,
+    0.998934873602611
+  ],
+  "maximum_pcm_feed_gaps_seconds": [
+    0.031000000002677552,
+    0.07799999999406282,
+    0.046999999991385266
+  ],
+  "status": "passed",
+  "clean_shutdown": true
+}

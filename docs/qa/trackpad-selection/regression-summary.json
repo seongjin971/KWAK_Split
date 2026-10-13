@@ -1,0 +1,15 @@
+{
+  "unique_passed": 70,
+  "unresolved_failures": [],
+  "skipped": [],
+  "runs": [
+    {
+      "file": "gestures.xml",
+      "cases": 38
+    },
+    {
+      "file": "range-regression.xml",
+      "cases": 44
+    }
+  ]
+}

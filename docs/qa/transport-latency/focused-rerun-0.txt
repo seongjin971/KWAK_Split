@@ -1,0 +1,13 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_play_pause_updates_transport_without_relayout_and_retains_resume_position _
+tests\test_transport_response.py:37: in test_play_pause_updates_transport_without_relayout_and_retains_resume_position
+    layout.assert_not_called();waveform.assert_not_called();eq.assert_not_called()
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py:900: in assert_not_called
+    raise AssertionError(msg)
+E   AssertionError: Expected 'draw_waveform' to not have been called. Called 1 times.
+E   Calls: [call()].
+=========================== short test summary info ===========================
+FAILED tests/test_transport_response.py::test_play_pause_updates_transport_without_relayout_and_retains_resume_position
+1 failed in 3.42s

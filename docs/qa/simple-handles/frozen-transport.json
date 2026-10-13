@@ -1,0 +1,152 @@
+{
+  "frozen": true,
+  "method": "real Tk Space events, muted WinMM device and native playback clock",
+  "physical_key_to_speaker_measured": false,
+  "runs": [
+    {
+      "mix_inputs": 1,
+      "cycles": [
+        {
+          "play_handler_ms": 1.0297999979229644,
+          "play_paint_ms": 1.8943999966722913,
+          "device_advance_ms": 27.56809999846155,
+          "queued_before_ms": 116.09977324263039,
+          "pause_handler_ms": 4.858000000240281,
+          "pause_paint_ms": 6.867600000987295
+        },
+        {
+          "play_handler_ms": 1.0997999997925945,
+          "play_paint_ms": 2.281799999764189,
+          "device_advance_ms": 14.855299996270332,
+          "queued_before_ms": 118.18594104308389,
+          "pause_handler_ms": 4.189200000837445,
+          "pause_paint_ms": 5.921399999351706
+        },
+        {
+          "play_handler_ms": 1.77570000232663,
+          "play_paint_ms": 3.016999995452352,
+          "device_advance_ms": 14.556900001480244,
+          "queued_before_ms": 115.21541950113378,
+          "pause_handler_ms": 4.492000000027474,
+          "pause_paint_ms": 6.503099997644313
+        },
+        {
+          "play_handler_ms": 1.3330000001587905,
+          "play_paint_ms": 2.318799997738097,
+          "device_advance_ms": 16.96809999702964,
+          "queued_before_ms": 118.04988662131521,
+          "pause_handler_ms": 2.9911999954492785,
+          "pause_paint_ms": 5.430799996247515
+        },
+        {
+          "play_handler_ms": 1.2208999978611246,
+          "play_paint_ms": 2.075399999739602,
+          "device_advance_ms": 19.541599998774473,
+          "queued_before_ms": 115.07936507936512,
+          "pause_handler_ms": 2.4849000037647784,
+          "pause_paint_ms": 4.859500004386064
+        },
+        {
+          "play_handler_ms": 1.0980000006384216,
+          "play_paint_ms": 2.2691999984090216,
+          "device_advance_ms": 20.373100000142585,
+          "queued_before_ms": 117.91383219954632,
+          "pause_handler_ms": 4.807499994058162,
+          "pause_paint_ms": 7.16169999941485
+        }
+      ],
+      "median_ms": {
+        "play_handler_ms": 1.1603499988268595,
+        "play_paint_ms": 2.2754999990866054,
+        "device_advance_ms": 18.254849997902056,
+        "queued_before_ms": 117.00680272108835,
+        "pause_handler_ms": 4.34060000043246,
+        "pause_paint_ms": 6.2122499984980095
+      },
+      "maximum_ms": {
+        "play_handler_ms": 1.77570000232663,
+        "play_paint_ms": 3.016999995452352,
+        "device_advance_ms": 27.56809999846155,
+        "queued_before_ms": 118.18594104308389,
+        "pause_handler_ms": 4.858000000240281,
+        "pause_paint_ms": 7.16169999941485
+      },
+      "same_decoder_throughout": true
+    },
+    {
+      "mix_inputs": 4,
+      "cycles": [
+        {
+          "play_handler_ms": 1.384499999403488,
+          "play_paint_ms": 9.017900003527757,
+          "device_advance_ms": 25.817599998845253,
+          "queued_before_ms": 116.09977324263039,
+          "pause_handler_ms": 3.3672999998088926,
+          "pause_paint_ms": 5.557600001338869
+        },
+        {
+          "play_handler_ms": 1.5063000028021634,
+          "play_paint_ms": 2.6413000014144927,
+          "device_advance_ms": 18.044800002826378,
+          "queued_before_ms": 118.93424036281175,
+          "pause_handler_ms": 4.903799999738112,
+          "pause_paint_ms": 7.216500001959503
+        },
+        {
+          "play_handler_ms": 1.346400000329595,
+          "play_paint_ms": 2.2116999971331097,
+          "device_advance_ms": 17.251999997824896,
+          "queued_before_ms": 115.96371882086164,
+          "pause_handler_ms": 5.190700001548976,
+          "pause_paint_ms": 7.204800000181422
+        },
+        {
+          "play_handler_ms": 1.3270999988890253,
+          "play_paint_ms": 2.386699998169206,
+          "device_advance_ms": 15.751200000522658,
+          "queued_before_ms": 118.79818594104307,
+          "pause_handler_ms": 4.3340000047464855,
+          "pause_paint_ms": 6.705400002829265
+        },
+        {
+          "play_handler_ms": 1.5912999951979145,
+          "play_paint_ms": 3.1358999985968694,
+          "device_advance_ms": 16.25439999770606,
+          "queued_before_ms": 115.82766439909298,
+          "pause_handler_ms": 3.8882000008015893,
+          "pause_paint_ms": 5.800500002806075
+        },
+        {
+          "play_handler_ms": 1.1515000005601905,
+          "play_paint_ms": 2.1135999995749444,
+          "device_advance_ms": 17.87029999832157,
+          "queued_before_ms": 118.66213151927418,
+          "pause_handler_ms": 3.8474000029964373,
+          "pause_paint_ms": 5.798700003651902
+        }
+      ],
+      "median_ms": {
+        "play_handler_ms": 1.3654499998665415,
+        "play_paint_ms": 2.5139999997918494,
+        "device_advance_ms": 17.561149998073233,
+        "queued_before_ms": 117.3809523809523,
+        "pause_handler_ms": 4.111100002774037,
+        "pause_paint_ms": 6.25295000281767
+      },
+      "maximum_ms": {
+        "play_handler_ms": 1.5912999951979145,
+        "play_paint_ms": 9.017900003527757,
+        "device_advance_ms": 25.817599998845253,
+        "queued_before_ms": 118.93424036281175,
+        "pause_handler_ms": 5.190700001548976,
+        "pause_paint_ms": 7.216500001959503
+      },
+      "same_decoder_throughout": true
+    }
+  ],
+  "device_handle": 2204517776400,
+  "held_space_toggles_once": true,
+  "single_device_for_all_sessions": true,
+  "clean_shutdown": true,
+  "status": "passed"
+}

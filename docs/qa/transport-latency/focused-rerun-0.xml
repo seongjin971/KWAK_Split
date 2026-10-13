@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="3.276" timestamp="2026-10-02T08:23:47.206206+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_transport_response" name="test_play_pause_updates_transport_without_relayout_and_retains_resume_position" time="2.739"><failure message="AssertionError: Expected 'draw_waveform' to not have been called. Called 1 times.&#10;Calls: [call()].">tests\test_transport_response.py:37: in test_play_pause_updates_transport_without_relayout_and_retains_resume_position
+    layout.assert_not_called();waveform.assert_not_called();eq.assert_not_called()
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py:900: in assert_not_called
+    raise AssertionError(msg)
+E   AssertionError: Expected 'draw_waveform' to not have been called. Called 1 times.
+E   Calls: [call()].</failure></testcase></testsuite></testsuites>

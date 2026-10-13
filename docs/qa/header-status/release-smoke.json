@@ -1,0 +1,30 @@
+{
+  "exe_sha256": "e087d8fd97a088af86fc5b8ab936b0f58d217c92c217fdcf1cf0adfa038baf89",
+  "development_python_excluded": true,
+  "runs": [
+    {
+      "option": "--qa-header-status",
+      "exit_code": 0,
+      "seconds": 68.908,
+      "stderr": "",
+      "status": "passed",
+      "frozen": true
+    },
+    {
+      "option": "--qa-transport",
+      "exit_code": 0,
+      "seconds": 5.993,
+      "stderr": "",
+      "status": "passed",
+      "frozen": true
+    },
+    {
+      "option": "--smoke-test",
+      "exit_code": 0,
+      "seconds": 1.179,
+      "stderr": "2026-10-02 18:37:35,011 [INFO] Drag and drop is ready on 118 windows.\n",
+      "status": "passed"
+    }
+  ],
+  "status": "passed"
+}

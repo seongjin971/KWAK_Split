@@ -94,7 +94,7 @@ def test_space_and_history_do_not_hijack_numeric_input(session):
 
 @pytest.mark.parametrize("scale",(1,1.25,1.5,1.75,2))
 def test_initial_window_and_minimum_fit_1080p_work_area(session,scale):
-    app=session.app;app.ui_scale=scale
+    app=session.app;app._ui_scale_override=scale;app._display_scale=scale
     with patch("backend.compact_ui.display_metrics",return_value=((0,0,1920,1040),scale)):
         app._set_initial_compact_window();app.update()
     assert app.winfo_rootx()+app.winfo_width()<=1920

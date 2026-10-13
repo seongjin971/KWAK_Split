@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "release": "compact-fix16",
+  "exe_sha256": "e6ecfae06271caa50000d750cdb0566201a236a96ef0e82314fd04ca684ed179",
+  "source_modules_matched": 13,
+  "source_unchanged_since_frozen_verification": true,
+  "unique_tests_passed": 184,
+  "subtests_passed": 3,
+  "package_self_checks": "passed",
+  "prior_files_unchanged": 8,
+  "migrated_audio_hashes_matched": 5,
+  "session_restore_passed": true,
+  "root_launcher": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\Run KWAK Split.cmd",
+  "launcher_sha256": "e9c50ecbad33fad592093030ba474717c781f2d0b975c7fd120f125bcf2ed715",
+  "documents_matched": [
+    "README.txt",
+    "project.md",
+    "docs/live-eq.md",
+    "docs/qa/transport-latency/verification.md",
+    "docs/qa/transport-latency/regression-summary.json"
+  ],
+  "git_diff_check_exit_code": 0,
+  "physical_key_to_speaker_measured": false
+}

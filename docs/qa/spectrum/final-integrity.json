@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "release": "compact-fix6",
+  "exe_sha256": "d6777e7309791bd1b20cd93368e2d9059929f79aa4e4428e21f1117703f4bf2f",
+  "tested_source_modules_match": 7,
+  "preserved_source_and_copied_audio_pairs": 5,
+  "active_settings_and_recovery_verified": 2,
+  "previous_release_and_source_session_preserved": true,
+  "accepted_previews_unchanged": 3,
+  "launcher": "compact-fix6",
+  "package_docs_synced": true,
+  "git_diff_check": "passed"
+}

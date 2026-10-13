@@ -17,7 +17,7 @@ def main():
         app=case.app;started=time.perf_counter();app.load_audio_path(args.audio)
         case.wait_idle(30);loaded=time.perf_counter()-started
         assert app.play_button.enabled and app.render_button.enabled and app.separate_button.enabled
-        assert not app.progressbar.winfo_ismapped() and not app.cancel_button.winfo_ismapped()
+        assert not app.cancel_button.winfo_ismapped()
         assert not app.stem_paths
         cpu_start=time.process_time();until=time.monotonic()+1.5
         while time.monotonic()<until:app.update();time.sleep(.01)

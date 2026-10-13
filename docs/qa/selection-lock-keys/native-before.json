@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "type": "4",
+      "x": 18,
+      "y": 106,
+      "state": 8,
+      "hit": "start",
+      "before_action": null,
+      "before_selection": [
+        0.0,
+        12.0
+      ]
+    },
+    {
+      "type": "6",
+      "x": 298,
+      "y": 106,
+      "state": 264,
+      "hit": "new",
+      "before_action": "seek",
+      "before_selection": [
+        0.0,
+        12.0
+      ]
+    },
+    {
+      "type": "5",
+      "x": 298,
+      "y": 106,
+      "state": 264,
+      "hit": "new",
+      "before_action": "seek",
+      "before_selection": [
+        0.0,
+        12.0
+      ]
+    }
+  ],
+  "errors": [],
+  "selection": [
+    0.0,
+    12.0
+  ],
+  "cursor": 1.8244897959183672,
+  "action": null,
+  "scale": 2.0,
+  "view": [
+    0.0,
+    12.0
+  ]
+}

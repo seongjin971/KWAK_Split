@@ -23,9 +23,11 @@ import tkinter as tk
 from tkinter import ttk
 
 from backend.app_paths import AppPaths
-from backend.ui_helpers import ScrollableFrame, ToolTip
+from backend.ui_helpers import ScrollableFrame
 from backend.workspace_features import StemRangeError, WorkspaceFeatures
 from backend.compact_ui import CompactInterface
+from backend.prepared_preview import PreparedPreview
+from backend.audio_processing.warm_transport import PlaybackRequest
 from backend.compact_widgets import enable_dpi_awareness
 from backend.compact_model import EQ_GAIN_LIMIT
 from backend.audio_processing import STEMS
@@ -41,6 +43,7 @@ from backend.audio_processing.ffmpeg_tools import (
     render_mix,
     safe_name,
     start_realtime_mix,
+    analyze_rendered_preview,
     waveform_peaks,
     stereo_waveform_peaks,
     audio_channels,
@@ -1257,7 +1260,7 @@ class StemFader(tk.Canvas):
         self.variable.set(round(ratio * 200.0))
 
 
-class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
+class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk.Tk):
     def __init__(self, *, ui_scale=None) -> None:
         self._ui_scale_override = ui_scale
         enable_dpi_awareness()
@@ -1268,6 +1271,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.output_dir = self._load_output_dir()
         self.output_dir_label_var = tk.StringVar(value=self._format_output_dir_label())
         self._configure_logging()
+        self._init_prepared_preview(lambda **kwargs: start_realtime_mix(self.paths, **kwargs))
 
         self.current_input: Path | None = None
         self.source_wav: Path | None = None
@@ -1307,6 +1311,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.pending_preview_mode: tuple[str, str | None] | None = None
         self.live_restart_after_id: str | None = None
         self.realtime_processes: list[subprocess.Popen] = []
+        self._file_spectrum = None
         self.log_messages: list[str] = []
         self.log_visible = False
         self._drop_wndproc: object | None = None
@@ -1375,12 +1380,16 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.after(0, self._set_dark_title_bar)
         self._bind_space_shortcut(self)
         self.bind_all("<KeyPress-space>", self._space_toggle_playback)
+        self.bind_all("<KeyRelease-space>", self._space_key_released)
+        self.bind("<FocusOut>", self._space_key_released, add="+")
         self._enable_file_drop()
+        self._enable_window_constraints()
         self._refresh_action_states()
         self.worker_queue_after_id = self.after(100, self._process_worker_queue)
         self.drop_queue_after_id = self.after(100, self._process_drop_queue)
         self.playback_progress_after_id = self.after(100, self._process_playback_progress)
         self._finish_workspace()
+        self._prepared_after = self.after(20, self._prepared_tick)
 
     def _configure_logging(self) -> None:
         log_file = self.paths.logs / "app.log"
@@ -1566,7 +1575,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.wave_canvas = tk.Canvas(waveform_frame, height=140, background="#0b1018", highlightthickness=0)
         self.wave_canvas.grid(row=0, column=0, sticky="nsew")
         self.wave_canvas.bind("<Configure>", self._schedule_waveform_resize_draw)
-        self.wave_canvas.bind("<Button-1>", self._wave_seek_to_event)
+        self.wave_canvas.bind("<Button-1>", self._wave_seek_begin)
+        self.wave_canvas.bind("<B1-Motion>", self._wave_seek_to_event)
+        self.wave_canvas.bind("<ButtonRelease-1>", self._wave_seek_end)
         self.wave_canvas.bind("<Button-3>", self._wave_mouse_down)
         self.wave_canvas.bind("<B3-Motion>", self._wave_mouse_drag)
         self.wave_canvas.bind("<ButtonRelease-3>", self._wave_mouse_up)
@@ -2978,6 +2989,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         if self.busy:
             return
         if self.preview_playing:
+            pause = getattr(self, "_pause_prepared_preview", None)
+            if pause and pause():
+                return
             self.stop_preview()
             return
         if not self.source_wav:
@@ -3001,7 +3015,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         if not self.stem_paths:
             label = "Source"
             return [MixStem("source", self.source_wav, 1.0)], label, ("source", None)
-        return self._build_mix_stems(), "Current Mix", ("mix", None)
+        return self._build_mix_stems(include_silent=True), "Current Mix", ("mix", None)
 
     def _restart_context_preview_from_cursor(self) -> None:
         self.stop_preview(show_status=False)
@@ -3043,6 +3057,13 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         fade_out = float(self.fade_out_var.get())
         fade_bounds = self._selection_bounds()
         effects = self._build_audio_effects()
+        warm = getattr(self, "_warm_transport", None)
+        if warm is not None and not warm.unavailable:
+            if effects.peak_normalize:
+                self.append_log("Peak normalize is skipped during realtime preview and applied to final renders.")
+            request = PlaybackRequest(tuple(stems), start, duration, fade_in, fade_out, effects, fade_bounds)
+            self._begin_prepared_preview(request, label)
+            return
         try:
             self.stop_preview(show_status=False)
             self.realtime_processes = start_realtime_mix(
@@ -3070,7 +3091,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.playback_output_duration_seconds = duration / effects.tempo_ratio
         self._set_playback_position(start)
         self.status_var.set(f"Realtime preview: {label}")
-        self._refresh_action_states()
+        self._refresh_action_states(transport_only=True)
 
     def _start_rendered_preview(
         self,
@@ -3104,6 +3125,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
                 process_callback=self._register_process,
                 effects=effects,
                 fade_bounds=fade_bounds,
+                include_silent=True,
             )
             output_duration = read_duration(self.paths, output_path)
             self.worker_queue.put(
@@ -3123,6 +3145,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self._run_worker("Prepare Preview", worker)
 
     def stop_preview(self, show_status: bool = True) -> None:
+        if getattr(self, "_warm_transport", None) is not None:
+            self._pending_playback = None
+            self._warm_transport.cancel()
         if getattr(self, "_loop_after", None):
             self.after_cancel(self._loop_after)
             self._loop_after = None
@@ -3138,14 +3163,20 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             winsound.PlaySound(None, 0)
         self.preview_playing = False
         self.playback_started_at = None
+        self.playback_seek_dragging = False
         if getattr(self, "_loop_after", None):
             self.after_cancel(self._loop_after)
             self._loop_after = None
         if show_status:
             self.status_var.set("Playback stopped.")
-        self._refresh_action_states()
+        self._refresh_action_states(transport_only=True)
 
     def _cancel_live_preview_restart(self) -> None:
+        for name in ("_live_eq_after_id", "_live_mixer_after_id"):
+            pending = getattr(self, name, None)
+            if pending:
+                self.after_cancel(pending)
+                setattr(self, name, None)
         if not self.live_restart_after_id:
             return
         try:
@@ -3154,6 +3185,27 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             pass
         self.live_restart_after_id = None
 
+    def _schedule_live_eq_update(self) -> None:
+        if not self.preview_playing or self.busy or self.playback_seek_dragging or self.current_preview_file:
+            return
+        if not getattr(self, "_live_eq_after_id", None):
+            # A leading throttle keeps applying while a drag continues.
+            self._live_eq_after_id = self.after(16, self._apply_live_eq_update)
+
+    def _apply_live_eq_update(self) -> None:
+        self._live_eq_after_id = None
+        if getattr(self, "_pending_playback", None):return
+        if not self.preview_playing or self.busy or self.playback_seek_dragging or self.current_preview_file:
+            return
+        try:
+            effects = self._build_audio_effects()
+        except (ValueError, tk.TclError, AudioProcessingError):
+            return  # Incomplete text entries must not interrupt playing audio.
+        update = getattr(self.realtime_processes, "update_eq", None)
+        if update and update(effects):
+            return
+        self._schedule_live_preview_restart()
+
     def _schedule_live_preview_restart(self) -> None:
         if not self.preview_playing or self.busy or self.playback_seek_dragging:
             return
@@ -3161,6 +3213,27 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             return
         self._cancel_live_preview_restart()
         self.live_restart_after_id = self.after(180, self._restart_live_preview)
+
+    def _schedule_live_mixer_update(self) -> None:
+        if not self.preview_playing or self.busy or self.playback_seek_dragging or self.current_preview_file:
+            return
+        if not getattr(self, "_live_mixer_after_id", None):
+            self._live_mixer_after_id = self.after(16, self._apply_live_mixer_update)
+
+    def _apply_live_mixer_update(self) -> None:
+        self._live_mixer_after_id = None
+        if getattr(self, "_pending_playback", None):return
+        if not self.preview_playing or self.busy or self.playback_seek_dragging or self.current_preview_file:
+            return
+        try:
+            stems, _label = self._build_last_preview_request()
+        except (ValueError, tk.TclError, AudioProcessingError):
+            return
+        update = getattr(self.realtime_processes, "update_mixer", None)
+        if update and update(stems):
+            self.last_preview_stems = list(stems)
+            return
+        self._schedule_live_preview_restart()
 
     def _schedule_fade_live_preview_restart(self) -> None:
         if self.fade_control_dragging:
@@ -3193,6 +3266,9 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.status_var.set(f"Preview settings need attention: {exc}")
 
     def _stop_realtime_playback(self) -> None:
+        close = getattr(self.realtime_processes, "close", None)
+        if close:
+            close()
         for process in self.realtime_processes:
             if process.poll() is not None:
                 continue
@@ -3203,6 +3279,13 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
                 process.kill()
                 process.wait(timeout=2)
         self.realtime_processes = []
+        file_spectrum = getattr(self, "_file_spectrum", None)
+        if file_spectrum is not None:
+            file_spectrum.close()
+            self._file_spectrum = None
+        editor = getattr(self, "eq_editor", None)
+        if editor is not None and hasattr(editor, "clear_spectrum"):
+            editor.clear_spectrum()
 
     def select_all_audio(self) -> None:
         if self.duration_seconds <= 0:
@@ -3218,7 +3301,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
 
     def _on_stem_volume_changed(self, stem: str) -> None:
         self._update_volume_label(stem)
-        self._schedule_live_preview_restart()
+        self._schedule_live_mixer_update()
 
     def _legacy_update_volume_label(self, stem: str) -> None:
         value = max(float(self.stem_vars[stem]["volume"].get()), 0.0)
@@ -3298,13 +3381,13 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             return [MixStem(stem, path, gain, self.stem_range[0])], stem
 
         if self.last_preview_mode == "mix":
-            return self._build_mix_stems(), self.last_preview_label or "Current Mix"
+            return self._build_mix_stems(include_silent=True), self.last_preview_label or "Current Mix"
 
         if self.last_preview_stems:
             return list(self.last_preview_stems), self.last_preview_label or "Preview"
         raise AudioProcessingError("No preview state to restart.")
 
-    def _build_mix_stems(self) -> list[MixStem]:
+    def _build_mix_stems(self, include_silent: bool = False) -> list[MixStem]:
         if not self.stem_paths:
             assert self.source_wav is not None
             return [MixStem("source", self.source_wav, 1.0)]
@@ -3318,12 +3401,14 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         missing_files: list[str] = []
         for stem in STEMS:
             path = self.stem_paths.get(stem)
-            if not path or stem not in selected:
+            if not path or (not include_silent and stem not in selected):
                 continue
             if not path.exists():
                 missing_files.append(stem)
                 continue
             gain = max(float(self.stem_vars[stem]["volume"].get()) / 100.0, 0.0)
+            if stem not in selected:
+                gain = 0.0
             mix_stems.append(MixStem(stem, path, gain, self.stem_range[0]))
         if missing_files:
             self._clear_stem_state("Waiting")
@@ -3395,7 +3480,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             raise AudioProcessingError("Select a range longer than 0 seconds.")
         return start, end
 
-    def _playback_bounds(self) -> tuple[float, float]:
+    def _playback_bounds(self, update_cursor: bool = True) -> tuple[float, float]:
         selection_start, selection_end = self._selection_bounds()
         if not self.playback_cursor_manual:
             return selection_start, selection_end
@@ -3403,10 +3488,10 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         cursor = max(0.0, min(float(self.playback_position_var.get()), self.duration_seconds))
         if cursor >= self.duration_seconds:
             cursor = selection_start
-            self._set_playback_position(cursor)
+            if update_cursor:self._set_playback_position(cursor)
         if not selection_start <= cursor < selection_end:
             cursor = selection_start
-            self._set_playback_position(cursor)
+            if update_cursor:self._set_playback_position(cursor)
         return cursor, selection_end
 
     def open_output_folder(self) -> None:
@@ -3562,6 +3647,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.cancel_button.configure(state="disabled")
 
     def _cleanup_session_files(self, clear_state: bool) -> None:
+        if getattr(self, "_warm_transport", None) is not None:
+            self._warm_transport.cancel(wait=True)
         targets = [
             self.paths.temp / "sessions" / self.session_name,
             self.paths.temp / "stems" / self.session_name,
@@ -3658,14 +3745,10 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.busy_started_at = time.monotonic()
             self.busy_progress_percent = None
             self.busy_animation_step = 0
-            self.progressbar.configure(mode="indeterminate")
-            self.progressbar.start(12)
             self._start_busy_animation()
         else:
             self._stop_loading_messages()
             self._stop_busy_animation()
-            self.progressbar.stop()
-            self.progressbar.configure(mode="determinate")
             self.progress_var.set(0.0)
             self.busy_status_base = ""
             self.busy_started_at = None
@@ -3830,14 +3913,39 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self._refresh_action_states()
 
     def _update_playback_position(self) -> None:
+        if getattr(self, "_pending_playback", None):return
         if self.playback_started_at is None:
             return
         elapsed = max(time.monotonic() - self.playback_started_at, 0.0)
+        audio_clock = getattr(self.realtime_processes, "position_seconds", None)
+        if audio_clock is not None:
+            elapsed = audio_clock()
+        take_eq_error = getattr(self.realtime_processes, "take_eq_error", None)
+        if take_eq_error:
+            error = take_eq_error()
+            if error:
+                self.append_log(f"Live EQ/mixer update failed: {error}")
+                self.status_var.set("Live audio could not update. Reapplying the current settings.")
+                self._schedule_live_preview_restart()
+        read_position = getattr(self.realtime_processes, "playback_position", None)
+        state = read_position() if read_position else None
+        take_seek_error = getattr(self.realtime_processes, "take_seek_error", None)
+        seek_error = take_seek_error() if take_seek_error else ""
+        if seek_error:
+            self.append_log(f"Live seek failed: {seek_error}")
+            self.status_var.set("Could not move to that position. Playback continued.")
+        if state is not None:
+            self.playback_start_seconds = state.start_seconds
+            self.playback_duration_seconds = state.duration_seconds
+            self.playback_tempo_ratio = state.tempo_ratio
+            self.playback_output_duration_seconds = state.duration_seconds / state.tempo_ratio
         play_end = self.playback_start_seconds + self.playback_duration_seconds
         # The waveform uses source time, while the player uses output time.
         # Keep the speed captured at playback start until a restart applies edits.
-        position = min(self.playback_start_seconds + elapsed * self.playback_tempo_ratio, play_end)
-        self._set_playback_position(position)
+        position = (state.position_seconds if state is not None else
+                    min(self.playback_start_seconds + elapsed * self.playback_tempo_ratio, play_end))
+        if not self.playback_seek_dragging and not (state and state.seeking):
+            self._set_playback_position(position)
 
         failed = False
         if self.realtime_processes:
@@ -3903,6 +4011,15 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
     def _restart_preview_from_cursor(self, show_errors: bool = True) -> None:
         try:
             stems, label = self._build_last_preview_request()
+            seek = getattr(self.realtime_processes, "seek", None)
+            if self.preview_playing and seek:
+                start, end = self._playback_bounds()
+                if seek(start, end - start, stems=tuple(stems), effects=self._build_audio_effects(),
+                        fade_in=float(self.fade_in_var.get()), fade_out=float(self.fade_out_var.get()),
+                        fade_bounds=self._selection_bounds()):
+                    self._cancel_live_preview_restart()
+                    self.last_preview_stems = list(stems)
+                    return
         except StemRangeError as exc:
             self.stop_preview(show_status=False)
             self.status_var.set(str(exc))
@@ -3988,8 +4105,6 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         elif kind == "status":
             self._set_busy_status(str(payload))
         elif kind == "progress":
-            self.progressbar.stop()
-            self.progressbar.configure(mode="determinate")
             self.busy_progress_percent = float(payload)
             self.progress_var.set(self.busy_progress_percent)
             self._apply_busy_status()
@@ -4014,7 +4129,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.append_log(str(payload))
         elif kind == "error":
             self._pending_project = None
-            self.status_var.set("Error. Check the detailed log.")
+            self._stop_busy_animation()
+            self.status_var.set(f"Error: {payload}")
             self.set_log_visible(True)
             messagebox.showerror("Error", str(payload))
         elif kind == "done":
@@ -4051,6 +4167,7 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             return
         self.status_var.set("Stem Split complete.")
         self.append_log("Stem Split complete.")
+        self._selection_changed()
         self._saved_edits = None
         self._commit_edit()
         self._refresh_action_states()
@@ -4083,6 +4200,10 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         self.playback_duration_seconds = duration_seconds
         self.playback_tempo_ratio = float(payload["tempo_ratio"])
         self.playback_output_duration_seconds = float(payload["output_duration"])
+        try:
+            self._file_spectrum = analyze_rendered_preview(self.paths, preview_path)
+        except (OSError, AudioProcessingError) as exc:
+            self.append_log(f"Spectrum unavailable for rendered preview: {exc}")
         self._set_playback_position(start_seconds)
         self.status_var.set(f"Preview playing: {preview_path.name}")
         self._refresh_action_states()
@@ -4142,8 +4263,12 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
             self.status_var.set("Enter numeric start and end times.")
             return
         if self.duration_seconds > 0:
-            start = min(self.duration_seconds, round(max(0.0, float(self.selection_start_var.get())), 2))
-            end = min(self.duration_seconds, round(max(0.0, float(self.selection_end_var.get())), 2))
+            # Quantize user input at its gesture/entry, not here: translating a
+            # range or restoring history must preserve fractional file/stem ends.
+            start = min(self.duration_seconds, max(0.0, float(self.selection_start_var.get())))
+            end = min(self.duration_seconds, max(0.0, float(self.selection_end_var.get())))
+            start, end = self._clamp_stem_selection(start, end)
+            self._configure_selection_limits(self.duration_seconds)
             if start != self.selection_start_var.get():
                 self.selection_start_var.set(start)
             if end != self.selection_end_var.get():
@@ -4163,11 +4288,8 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
 
     def _schedule_waveform_resize_draw(self, _event: tk.Event | None = None) -> None:
         if self.waveform_resize_after_id:
-            try:
-                self.after_cancel(self.waveform_resize_after_id)
-            except tk.TclError:
-                pass
-        self.waveform_resize_after_id = self.after(90, self._draw_waveform_after_resize)
+            return
+        self.waveform_resize_after_id = self.after_idle(self._draw_waveform_after_resize)
 
     def _draw_waveform_after_resize(self) -> None:
         self.waveform_resize_after_id = None
@@ -4359,34 +4481,33 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         return start, end
 
     def _wave_mouse_down(self, event: tk.Event) -> None:
-        if self.duration_seconds <= 0 or self.busy:
-            return
-        self.wave_canvas.focus_set()
-        seconds = self._event_to_seconds(event)
-        self.playback_cursor_manual = False
-        self.drag_start_seconds = seconds
-        self.selection_start_var.set(seconds)
-        self.selection_end_var.set(seconds)
-        self._selection_changed()
+        self._wave_selection.begin(event)
 
     def _wave_mouse_drag(self, event: tk.Event) -> None:
-        if self.duration_seconds <= 0 or self.drag_start_seconds is None or self.busy:
-            return
-        seconds = self._event_to_seconds(event)
-        self.selection_start_var.set(min(self.drag_start_seconds, seconds))
-        self.selection_end_var.set(max(self.drag_start_seconds, seconds))
-        self._selection_changed()
+        self._wave_selection.update(event)
 
     def _wave_mouse_up(self, _event: tk.Event) -> None:
-        selecting = self.drag_start_seconds is not None
-        self.drag_start_seconds = None
+        selecting = self._wave_selection.finish(_event)
         if selecting and self.preview_playing and not self.busy:
-            self.stop_preview(show_status=False)
-            self.playback_cursor_manual = False
-            try:
-                self._start_context_preview()
-            except (ValueError, tk.TclError, AudioProcessingError) as exc:
-                self.status_var.set(f"Preview settings need attention: {exc}")
+            # Read the current audio clock before applying the new endpoint.
+            # Live seek keeps the output device and applies the new bounds/fades;
+            # only a cursor outside the new range returns to its start.
+            self._update_playback_position()
+            if self.preview_playing:
+                self.playback_cursor_manual = True
+                self._restart_preview_from_cursor(show_errors=False)
+
+    def _wave_seek_begin(self, event: tk.Event) -> None:
+        if self.duration_seconds <= 0 or self.busy:
+            return
+        self._wave_selection.cancel()
+        self.playback_seek_dragging = True
+        self._wave_seek_to_event(event)
+
+    def _wave_seek_end(self, _event: tk.Event) -> None:
+        self.playback_seek_dragging = False
+        self._schedule_live_eq_update()
+        self._schedule_live_mixer_update()
 
     def _wave_seek_to_event(self, event: tk.Event) -> None:
         if self.duration_seconds <= 0 or self.busy:
@@ -4406,6 +4527,13 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         return start + ratio * (end - start)
 
     def _cancel_main_after_callbacks(self) -> None:
+        if getattr(self, "_wave_selection", None):
+            self._wave_selection.cancel()
+        if getattr(self, "_prepared_after", None):
+            self.after_cancel(self._prepared_after)
+            self._prepared_after = None
+        if self.closing and getattr(self, "_warm_transport", None) is not None:
+            self._warm_transport.close(wait=False)
         for attr in (
             "_layout_after",
             "_compact_after",
@@ -4440,6 +4568,12 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
         if self.cancel_event:
             self.cancel_event.set()
         processes = list(self.realtime_processes)
+        close = getattr(self.realtime_processes, "close", None)
+        if close:
+            close(wait=False)
+        if self._file_spectrum is not None:
+            self._file_spectrum.close(wait=False)
+            self._file_spectrum = None
         if self.current_process is not None:
             processes.append(self.current_process)
         for process in processes:
@@ -4462,6 +4596,33 @@ class StemSamplePrepApp(CompactInterface, WorkspaceFeatures, tk.Tk):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-numeric-reset-current":
+        from backend.qa_numeric_reset import check
+        raise SystemExit(check(StemSamplePrepApp, sys.argv[2]))
+    if len(sys.argv) == 3 and sys.argv[1] in ("--qa-wave-selection", "--qa-wave-selection-current"):
+        from backend.qa_wave_selection import check
+        raise SystemExit(check(StemSamplePrepApp, sys.argv[2], current_display_only=sys.argv[1].endswith("-current")))
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-resize":
+        from backend.qa_resize import check
+        raise SystemExit(check(StemSamplePrepApp, sys.argv[2]))
+    if len(sys.argv) == 3 and sys.argv[1] in ("--qa-header-status", "--qa-header-status-current"):
+        from backend.qa_header_status import check
+        raise SystemExit(check(StemSamplePrepApp, sys.argv[2], current_display_only=sys.argv[1].endswith("-current")))
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-native-seek":
+        from backend.audio_processing.qa_live_seek import check
+        raise SystemExit(check(sys.argv[2], native=True))
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-native-eq":
+        from backend.audio_processing.qa_live_eq import check
+        raise SystemExit(check(sys.argv[2], native=True))
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-transport":
+        from backend.audio_processing.qa_transport import check
+        raise SystemExit(check(StemSamplePrepApp, sys.argv[2]))
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-live-seek":
+        from backend.audio_processing.qa_live_seek import check
+        raise SystemExit(check(sys.argv[2]))
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-live-eq":
+        from backend.audio_processing.qa_live_eq import check
+        raise SystemExit(check(sys.argv[2]))
     app = StemSamplePrepApp()
     if "--smoke-test" in sys.argv:
         app.after(750, app.on_close)

@@ -51,14 +51,15 @@ def drag(app, widget, dy, *, shift=False):
     app.update()
 
 
-def click(app, widget, *, double=False, arrow=False):
+def click(app, widget, *, double=False, arrow=False, ctrl=False, numlock=False):
     app.update()
     x = widget.winfo_width()-5 if arrow else min(12, widget.winfo_width() // 2)
     y = max(3, widget.winfo_height() // 2)
     stamp = next(_times)
+    state = (4 if ctrl else 0) | (8 if numlock else 0)
     for offset in ((0, 100) if double else (0,)):
-        widget.event_generate("<ButtonPress-1>", x=x, y=y, time=stamp+offset)
-        widget.event_generate("<ButtonRelease-1>", x=x, y=y, time=stamp+offset+20)
+        widget.event_generate("<ButtonPress-1>", x=x, y=y, state=state, time=stamp+offset)
+        widget.event_generate("<ButtonRelease-1>", x=x, y=y, state=state, time=stamp+offset+20)
     app.update()
 
 
@@ -123,6 +124,7 @@ def test_all_numeric_fields_drag_with_one_undo_and_clamp_bounds(session):
         assert variable.get() == pytest.approx(float(widget.cget("from")))
         variable.set(original)
         app.update()
+
     app.open_advanced()
     app.update()
     for variable in (app.eq_mid_q_var, app.high_pass_q_var, app.low_pass_q_var):
@@ -143,6 +145,31 @@ def test_all_numeric_fields_drag_with_one_undo_and_clamp_bounds(session):
         assert variable.get() == pytest.approx(float(widget.cget("from")))
         variable.set(original)
     app._close_render_settings()
+
+
+def test_stem_range_clamps_typed_wheel_and_drag_edits_with_single_undo(session):
+    from test_split_scope import attach_selected_stems
+
+    app = session.app
+    attach_selected_stems(session)
+    app.selection_start_var.set(2.5)
+    app.selection_end_var.set(3.5)
+    app._commit_edit()
+    before = app.history.index
+    drag(app, app.end_spinbox, 30000)
+    assert app._selection_bounds() == (2.5, 4)
+    assert app.history.index == before + 1
+    app.undo_edit()
+    assert app._selection_bounds() == (2.5, 3.5)
+    app.redo_edit()
+    assert app._selection_bounds() == (2.5, 4)
+    wheel(app, app.start_spinbox, -120000)
+    assert app._selection_bounds() == (2, 4)
+    display = next(display for widget, display, *_ in app._numeric_fields if widget == app.end_spinbox)
+    display.set("100")
+    app._commit_numeric(app.end_spinbox)
+    assert app._selection_bounds() == (2, 4)
+    assert app.end_spinbox.get() == "4.00"
 
 
 def test_normal_click_typing_and_double_click_remain_text_editing(session):
@@ -276,7 +303,7 @@ def test_active_knob_and_fader_readouts_drag_undo_and_reset(session):
     assert app.eq_mid_var.get() == 0
     app.redo_edit()
     assert app.eq_mid_var.get() == 24
-    click(app, knob_label, double=True)
+    click(app, knob_label, ctrl=True)
     assert app.eq_mid_var.get() == 0
     fader_label = next(w for w in children(app.stem_cards)
                        if isinstance(w, tk.Label) and str(w.cget("textvariable")) == str(app.stem_volume_label_vars["vocals"]))
@@ -287,5 +314,144 @@ def test_active_knob_and_fader_readouts_drag_undo_and_reset(session):
     assert app.stem_vars["vocals"]["volume"].get() == 100
     app.redo_edit()
     assert app.stem_vars["vocals"]["volume"].get() > 100
-    click(app, fader_label, double=True)
+    click(app, fader_label, ctrl=True)
     assert app.stem_vars["vocals"]["volume"].get() == 100
+
+
+def reset_controls(app):
+    controls=[]
+    for band,knob in app.compact_knobs.items():
+        label=next(w for w in children(app.bands) if isinstance(w,tk.Label)
+                   and str(w.cget("textvariable"))==str(app.band_values[band]))
+        controls.extend((widget,getattr(app,"eq_"+band+"_var"),8,0) for widget in (knob,label))
+    for stem,widgets in app.stem_widgets.items():
+        label=next(w for w in children(app.stem_cards) if isinstance(w,tk.Label)
+                   and str(w.cget("textvariable"))==str(app.stem_volume_label_vars[stem]))
+        controls.extend((widget,app.stem_vars[stem]["volume"],50,100) for widget in (widgets[0],label))
+    return controls
+
+
+def test_ctrl_reset_is_one_undo_step_and_does_not_start_a_drag(session):
+    app=session.app
+    app.stem_paths={stem:app.source_wav for stem in app.stem_vars}
+    app.stem_range=(0,app.duration_seconds)
+    app._refresh_action_states();app.update()
+    for widget,variable,changed,default in reset_controls(app):
+        variable.set(changed);app.update();app._commit_edit()
+        before=app._edit_snapshot()
+        x,y=widget.winfo_width()//2,widget.winfo_height()//2
+        stamp=next(_times)
+        widget.event_generate("<ButtonPress-1>",x=x,y=y,state=4,time=stamp)
+        app.update()
+        assert variable.get()==default
+        # Releasing Ctrl while still holding the mouse must not jump a fader
+        # to the click position or continue a stale knob/readout drag.
+        widget.event_generate("<B1-Motion>",x=x,y=y-20,state=0x100,time=stamp+50)
+        widget.event_generate("<ButtonRelease-1>",x=x,y=y-20,state=0,time=stamp+80)
+        app.update()
+        assert variable.get()==default
+        assert not app._history_dragging
+        app.undo_edit()
+        assert app._edit_snapshot()==before
+        app.redo_edit()
+        assert variable.get()==default
+        variable.set(changed);app.update();app._commit_edit()
+        click(app,widget,double=True)
+        assert variable.get()!=default  # Ordinary clicks, with no reset shortcut.
+
+
+def test_ctrl_reset_pass_slope_defaults_and_disabled_controls(session):
+    app=session.app
+    for band,shape,slope in (("low","High Pass",app.high_pass_slope_var),
+                             ("high","Low Pass",app.low_pass_slope_var)):
+        getattr(app,"eq_"+band+"_shape_var").set(shape)
+        getattr(app,"eq_"+band+"_freq_var").set(240 if band=="low" else 6000)
+        knob=app.compact_knobs[band]
+        label=next(w for w in children(app.bands) if isinstance(w,tk.Label)
+                   and str(w.cget("textvariable"))==str(app.band_values[band]))
+        for widget in (knob,label):
+            slope.set(48);app.update();app._commit_edit()
+            before=app._edit_snapshot()
+            click(app,widget,ctrl=True)
+            assert slope.get()==24
+            assert getattr(app,"eq_"+band+"_freq_var").get()==(240 if band=="low" else 6000)
+            app.undo_edit();assert app._edit_snapshot()==before
+    # Stem controls without separated audio, then all controls during a job.
+    for widget,variable,changed,default in reset_controls(app)[6:]:
+        variable.set(changed);app.update()
+        click(app,widget,ctrl=True)
+        assert variable.get()==changed
+    app.stem_paths={stem:app.source_wav for stem in app.stem_vars}
+    app.stem_range=(0,app.duration_seconds)
+    app.busy=True;app._refresh_action_states();app.update()
+    before=app._edit_snapshot()
+    for widget,*_ in reset_controls(app):click(app,widget,ctrl=True)
+    assert app._edit_snapshot()==before
+    app.busy=False;app._refresh_action_states()
+
+
+def numeric_reset_controls(app):
+    from backend.project_store import EDIT_DEFAULTS
+    for key, changed in (("eq_low_freq",1150),("eq_mid_freq",2400),("eq_high_freq",6000),
+                         ("tempo_percent",162),("pitch_semitones",-4),("fade_in",.8),("fade_out",1.2)):
+        variable=getattr(app,key+"_var")
+        yield entry_for(app,variable),variable,changed,EDIT_DEFAULTS[key]
+
+
+@pytest.mark.parametrize("lock_state",[0,8])
+def test_numeric_ctrl_reset_one_undo_and_no_drag_after_releasing_ctrl(session,lock_state):
+    app=session.app
+    app.playback_cursor_seconds=2;app.playback_cursor_manual=True
+    for widget,variable,changed,default in numeric_reset_controls(app):
+        variable.set(changed);app.update();app._commit_edit()
+        before,index=app._edit_snapshot(),app.history.index
+        x,y=12,widget.winfo_height()//2
+        stamp=next(_times)
+        widget.event_generate("<ButtonPress-1>",x=x,y=y,state=4|lock_state,time=stamp)
+        app.update()
+        assert variable.get()==default
+        widget.event_generate("<B1-Motion>",x=x,y=y-30,state=0x100|lock_state,time=stamp+50)
+        widget.event_generate("<ButtonRelease-1>",x=x,y=y-30,state=lock_state,time=stamp+80)
+        app.update()
+        assert variable.get()==default and float(widget.get())==default
+        assert app.history.index==index+1 and not app._history_dragging
+        assert app.playback_cursor_seconds==2
+        after=app._edit_snapshot()
+        app.undo_edit();assert app._edit_snapshot()==before
+        app.redo_edit();assert app._edit_snapshot()==after
+        click(app,widget,ctrl=True,numlock=bool(lock_state))
+        assert app.history.index==index+1  # Resetting a default adds no history entry.
+
+
+def test_numeric_ctrl_reset_consumes_spin_arrows_and_repairs_incomplete_text(session):
+    app=session.app
+    for widget,variable,changed,default in numeric_reset_controls(app):
+        variable.set(changed);app.update();app._commit_edit()
+        click(app,widget,arrow=True,ctrl=True,numlock=True)
+        assert variable.get()==default and float(widget.get())==default
+        click(app,widget,arrow=True,numlock=True)
+        assert variable.get()!=default  # Unmodified native arrows still step.
+        variable.set(changed);app.update();app._commit_edit()
+        click(app,widget,double=True,numlock=True)
+        assert variable.get()==changed and widget.selection_present()
+        widget.delete(0,"end");widget.insert(0,"-")
+        click(app,widget,ctrl=True,numlock=True)
+        assert variable.get()==default and float(widget.get())==default
+    assert app.fade_in_spinbox.get()==app.fade_out_spinbox.get()=="0.02"
+
+
+def test_numeric_ctrl_reset_ignores_busy_and_disabled_fields(session):
+    app=session.app
+    for widget,variable,changed,_ in numeric_reset_controls(app):variable.set(changed)
+    app.update();app._commit_edit()
+    before,index=app._edit_snapshot(),app.history.index
+    app.busy=True;app._refresh_action_states();app.update()
+    for widget,*_ in numeric_reset_controls(app):
+        click(app,widget,ctrl=True,numlock=True)
+        click(app,widget,arrow=True,ctrl=True,numlock=True)
+    assert app._edit_snapshot()==before and app.history.index==index
+    app.busy=False;app._refresh_action_states();app.update()
+    widget=app.tempo_spinbox;widget.state(("disabled",))
+    click(app,widget,ctrl=True,numlock=True)
+    assert app._edit_snapshot()==before and app.history.index==index
+    assert not app._history_dragging

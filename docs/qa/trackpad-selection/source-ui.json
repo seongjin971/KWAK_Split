@@ -1,0 +1,617 @@
+{
+  "frozen": false,
+  "method": "real Tk generated gestures; simulated display areas; muted native audio",
+  "physical_input_tested": false,
+  "display_cases": [
+    {
+      "screen": "fhd",
+      "dpi": 1,
+      "size": "minimum",
+      "client": [
+        760,
+        532
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1,
+      "size": "initial",
+      "client": [
+        1000,
+        700
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1,
+      "size": "maximum",
+      "client": [
+        1350,
+        945
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.25,
+      "size": "minimum",
+      "client": [
+        950,
+        665
+      ],
+      "range": [
+        3.9800000000000004,
+        8.99
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.25,
+      "size": "initial",
+      "client": [
+        1250,
+        875
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.25,
+      "size": "maximum",
+      "client": [
+        1340,
+        938
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.5,
+      "size": "minimum",
+      "client": [
+        1140,
+        798
+      ],
+      "range": [
+        4.01,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.5,
+      "size": "initial",
+      "client": [
+        1330,
+        931
+      ],
+      "range": [
+        3.99,
+        8.99
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.5,
+      "size": "maximum",
+      "client": [
+        1330,
+        931
+      ],
+      "range": [
+        3.99,
+        8.99
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.75,
+      "size": "minimum",
+      "client": [
+        1320,
+        924
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.75,
+      "size": "initial",
+      "client": [
+        1320,
+        924
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 1.75,
+      "size": "maximum",
+      "client": [
+        1320,
+        924
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 2,
+      "size": "minimum",
+      "client": [
+        1310,
+        917
+      ],
+      "range": [
+        4.01,
+        9.01
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 2,
+      "size": "initial",
+      "client": [
+        1310,
+        917
+      ],
+      "range": [
+        4.01,
+        9.01
+      ]
+    },
+    {
+      "screen": "fhd",
+      "dpi": 2,
+      "size": "maximum",
+      "client": [
+        1310,
+        917
+      ],
+      "range": [
+        4.01,
+        9.01
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1,
+      "size": "minimum",
+      "client": [
+        760,
+        532
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1,
+      "size": "initial",
+      "client": [
+        1000,
+        700
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1,
+      "size": "maximum",
+      "client": [
+        1400,
+        980
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.25,
+      "size": "minimum",
+      "client": [
+        950,
+        665
+      ],
+      "range": [
+        3.9800000000000004,
+        8.99
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.25,
+      "size": "initial",
+      "client": [
+        1250,
+        875
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.25,
+      "size": "maximum",
+      "client": [
+        1750,
+        1225
+      ],
+      "range": [
+        3.99,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.5,
+      "size": "minimum",
+      "client": [
+        1140,
+        798
+      ],
+      "range": [
+        4.01,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.5,
+      "size": "initial",
+      "client": [
+        1500,
+        1050
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.5,
+      "size": "maximum",
+      "client": [
+        1840,
+        1288
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.75,
+      "size": "minimum",
+      "client": [
+        1330,
+        931
+      ],
+      "range": [
+        3.99,
+        8.99
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.75,
+      "size": "initial",
+      "client": [
+        1750,
+        1225
+      ],
+      "range": [
+        3.99,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 1.75,
+      "size": "maximum",
+      "client": [
+        1830,
+        1281
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 2,
+      "size": "minimum",
+      "client": [
+        1520,
+        1064
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 2,
+      "size": "initial",
+      "client": [
+        1830,
+        1281
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "qhd",
+      "dpi": 2,
+      "size": "maximum",
+      "client": [
+        1830,
+        1281
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1,
+      "size": "minimum",
+      "client": [
+        760,
+        532
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1,
+      "size": "initial",
+      "client": [
+        1000,
+        700
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1,
+      "size": "maximum",
+      "client": [
+        1400,
+        980
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.25,
+      "size": "minimum",
+      "client": [
+        950,
+        665
+      ],
+      "range": [
+        3.9800000000000004,
+        8.99
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.25,
+      "size": "initial",
+      "client": [
+        1250,
+        875
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.25,
+      "size": "maximum",
+      "client": [
+        1750,
+        1225
+      ],
+      "range": [
+        3.99,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.5,
+      "size": "minimum",
+      "client": [
+        1140,
+        798
+      ],
+      "range": [
+        4.01,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.5,
+      "size": "initial",
+      "client": [
+        1500,
+        1050
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.5,
+      "size": "maximum",
+      "client": [
+        2100,
+        1470
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.75,
+      "size": "minimum",
+      "client": [
+        1330,
+        931
+      ],
+      "range": [
+        3.99,
+        8.99
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.75,
+      "size": "initial",
+      "client": [
+        1750,
+        1225
+      ],
+      "range": [
+        3.99,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 1.75,
+      "size": "maximum",
+      "client": [
+        2450,
+        1715
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 2,
+      "size": "minimum",
+      "client": [
+        1520,
+        1064
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 2,
+      "size": "initial",
+      "client": [
+        2000,
+        1400
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    },
+    {
+      "screen": "4k",
+      "dpi": 2,
+      "size": "maximum",
+      "client": [
+        2800,
+        1960
+      ],
+      "range": [
+        4.0,
+        9.0
+      ]
+    }
+  ],
+  "playback": [
+    {
+      "inputs": 1,
+      "marked_range": [
+        0.87,
+        1.48
+      ],
+      "shift_click_keeps_stream_and_anchor": true,
+      "same_stream_while_marking": true,
+      "next_play_uses_range": true
+    },
+    {
+      "inputs": 4,
+      "marked_range": [
+        0.85,
+        1.45
+      ],
+      "shift_click_keeps_stream_and_anchor": true,
+      "same_stream_while_marking": true,
+      "next_play_uses_range": true
+    }
+  ],
+  "restored_point_selects_both_directions": true,
+  "callback_errors": [],
+  "status": "passed"
+}

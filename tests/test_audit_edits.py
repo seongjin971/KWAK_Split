@@ -120,7 +120,7 @@ def test_crossed_pass_filters_report_validation_and_recover(session):
     app.eq_high_freq_var.set(1000)
     app.update()
     error = app.status_var.get()
-    error_visible = app.status_frame.winfo_ismapped()
+    error_visible = app.status_label.winfo_ismapped()
     was_busy = app.busy
 
     # Restore a usable range before assertions so failed audit runs still close

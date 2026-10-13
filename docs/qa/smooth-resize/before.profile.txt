@@ -1,0 +1,53 @@
+         2774358 function calls (2677827 primitive calls) in 8.318 seconds
+
+   Ordered by: cumulative time
+   List reduced from 218 to 45 due to restriction <45>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       11    0.001    0.000    8.322    0.757 qa_resize_latency.py:25(frame)
+       12    0.000    0.000    8.110    0.676 __init__.py:1370(update)
+ 93446/12    5.852    0.000    8.110    0.676 {method 'call' of '_tkinter.tkapp' objects}
+     3331    0.013    0.000    1.919    0.001 __init__.py:1962(__call__)
+      360    0.001    0.000    1.200    0.003 __init__.py:859(callit)
+55954/52868    0.911    0.000    0.926    0.000 StemSamplePrep.py:2549(wndproc)
+       39    0.140    0.004    0.835    0.021 compact_ui.py:644(draw_waveform)
+       33    0.002    0.000    0.777    0.024 compact_ui.py:466(_layout_compact)
+    46635    0.090    0.000    0.731    0.000 __init__.py:2841(_create)
+       77    0.027    0.000    0.520    0.007 compact_widgets.py:301(draw)
+    41585    0.017    0.000    0.508    0.000 __init__.py:2865(create_line)
+       55    0.001    0.000    0.384    0.007 compact_widgets.py:286(<lambda>)
+       17    0.000    0.000    0.371    0.022 StemSamplePrep.py:4295(_draw_waveform_after_resize)
+    49781    0.141    0.000    0.273    0.000 __init__.py:1543(_options)
+       11    0.064    0.006    0.211    0.019 window_bounds.py:136(resize)
+     3529    0.002    0.000    0.204    0.000 __init__.py:2881(create_text)
+    14091    0.139    0.000    0.188    0.000 equalizer.py:69(response_db)
+    37470    0.067    0.000    0.169    0.000 StemSamplePrep.py:4432(_fade_display_gain)
+       11    0.010    0.001    0.155    0.014 compact_ui.py:436(_rescale_compact)
+     2927    0.039    0.000    0.142    0.000 __init__.py:1622(_substitute)
+    15708    0.026    0.000    0.120    0.000 compact_widgets.py:298(xy)
+    77/66    0.068    0.001    0.113    0.002 window_bounds.py:102(_message)
+      684    0.008    0.000    0.112    0.000 compact_widgets.py:148(draw)
+      152    0.000    0.000    0.100    0.001 compact_widgets.py:228(<lambda>)
+      152    0.007    0.000    0.099    0.001 compact_widgets.py:260(draw)
+    51321    0.063    0.000    0.096    0.000 __init__.py:102(_cnfmerge)
+    81807    0.039    0.000    0.092    0.000 __init__.py:613(get)
+    15785    0.023    0.000    0.082    0.000 compact_widgets.py:295(bounds)
+      139    0.005    0.000    0.067    0.000 StemSamplePrep.py:3422(_build_audio_effects)
+      310    0.000    0.000    0.066    0.000 compact_widgets.py:92(<lambda>)
+   353747    0.055    0.000    0.055    0.000 {built-in method builtins.max}
+      139    0.006    0.000    0.054    0.000 compact_ui.py:114(_edit_snapshot)
+    88238    0.054    0.000    0.054    0.000 {method 'globalgetvar' of '_tkinter.tkapp' objects}
+   123464    0.053    0.000    0.053    0.000 {method 'getint' of '_tkinter.tkapp' objects}
+    32197    0.019    0.000    0.052    0.000 __init__.py:1628(getint_event)
+     1518    0.001    0.000    0.050    0.000 __init__.py:1714(configure)
+     1540    0.003    0.000    0.049    0.000 __init__.py:1701(_configure)
+   369260    0.042    0.000    0.042    0.000 {built-in method builtins.isinstance}
+       62    0.001    0.000    0.038    0.001 prepared_preview.py:65(_prepared_tick)
+    17069    0.011    0.000    0.037    0.000 __init__.py:1353(winfo_width)
+      139    0.001    0.000    0.036    0.000 workspace_features.py:157(_edit_snapshot)
+   200746    0.035    0.000    0.035    0.000 {built-in method builtins.min}
+       62    0.001    0.000    0.035    0.001 prepared_preview.py:19(_prepared_request)
+     1241    0.002    0.000    0.033    0.000 __init__.py:2894(delete)
+      187    0.001    0.000    0.031    0.000 compact_widgets.py:129(configure)
+
+

@@ -1,0 +1,27 @@
+{
+  "frozen": false,
+  "method": "isolated real Tk, generated audio",
+  "display_scope": "current monitor and initial size only",
+  "physical_monitor_switch_tested": false,
+  "cases": [
+    {
+      "screen": "current",
+      "dpi_scale": 2.0,
+      "size": "initial",
+      "client": [
+        2000,
+        1400
+      ],
+      "status_width": 1052,
+      "bottom_gap": 22,
+      "stable_states": 6,
+      "cancel_and_detail_actions": true
+    }
+  ],
+  "empty_startup_status_painted": true,
+  "status": "passed",
+  "no_progressbar": true,
+  "real_generated_audio_load_and_export": true,
+  "edits_preserved": true,
+  "callback_errors": []
+}

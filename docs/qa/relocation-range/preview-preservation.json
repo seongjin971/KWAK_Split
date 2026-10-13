@@ -1,0 +1,20 @@
+[
+  {
+    "path": "output/ui-preview/kwak-split-compact-v2.html",
+    "bytes": 63086,
+    "sha256": "2394219cc74ae2adaab3c6005c6bb5e66cd7d194ae1c2c810697d6f7d2dc3dc4",
+    "original_bytes_preserved": true
+  },
+  {
+    "path": "output/ui-preview/kwak-split-preview.html",
+    "bytes": 116823,
+    "sha256": "c0f7164084f4ec78978ac56e5f5e6e7cc6eea7e7fd2a65967e38c8350d5a51fb",
+    "original_bytes_preserved": true
+  },
+  {
+    "path": "output/ui-preview/filter-preview/index.html",
+    "bytes": 100105,
+    "sha256": "4260c8ee84f5c9c11c3b3ced8b973a9c1c88922c54e4504c23c00e3aaffbb1dd",
+    "original_bytes_preserved": true
+  }
+]

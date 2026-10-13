@@ -4,17 +4,21 @@ import tkinter as tk
 
 
 class NumericGestures:
-    def __init__(self, app, widget, getter, setter, limits, step, quantum, commit=None, enabled=None):
+    def __init__(self, app, widget, getter, setter, limits, step, quantum, commit=None, enabled=None, default=None):
         self.app, self.widget = app, widget
         self.getter, self.setter = getter, setter
         self.limits, self.step, self.quantum = limits, step, quantum
         self.commit, self.enabled = commit, enabled
+        self.default = default
         self.origin = None
+        self.resetting = False
         app._track_edit_widget(widget)
         widget.bind("<ButtonPress-1>", self.press, add="+")
         widget.bind("<B1-Motion>", self.drag, add="+")
         widget.bind("<ButtonRelease-1>", self.release, add="+")
         widget.bind("<MouseWheel>", self.wheel)
+        if default is not None:
+            widget.bind("<Control-ButtonPress-1>", self.reset)
 
     def available(self):
         return (not self.app.busy and (self.enabled is None or self.enabled())
@@ -30,6 +34,7 @@ class NumericGestures:
 
     def press(self, event):
         self.origin = None
+        self.resetting = False
         if not self.available():return
         if hasattr(self.widget, "identify") and "arrow" in self.widget.identify(event.x, event.y):
             return  # Keep native spin arrows and combo dropdowns.
@@ -41,7 +46,17 @@ class NumericGestures:
                 self.widget.focus_set()
                 return "break"
 
+    def reset(self, _event):
+        self.origin = None
+        self.resetting = True
+        if self.available():
+            self.apply(self.default)
+            self.widget.focus_set()
+        return "break"
+
     def drag(self, event):
+        # Keep consuming this gesture even if Ctrl is released before the mouse.
+        if self.resetting:return "break"
         if self.origin is None or not self.available():return
         x, y, value, step, moved = self.origin
         dy = (y - event.y_root) / self.app.ui_scale
@@ -53,13 +68,15 @@ class NumericGestures:
         return "break"
 
     def release(self, _event):
-        moved = self.origin is not None and self.origin[-1]
+        moved = self.resetting or (self.origin is not None and self.origin[-1])
         self.origin = None
+        self.resetting = False
         self.app._end_edit_drag()
         if moved:
-            if self.commit:self.commit()
-            self.app._commit_edit()
-            self.widget.winfo_toplevel().focus_set()
+            if self.available():
+                if self.commit:self.commit()
+                self.app._commit_edit()
+                self.widget.winfo_toplevel().focus_set()
             return "break"
 
     def wheel(self, event):

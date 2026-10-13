@@ -1,0 +1,561 @@
+{
+  "baseline": "dfb2ab5",
+  "tracked_files": [
+    {
+      "path": ".gitignore",
+      "sha256": "9d6b876aead369d435e7bdb38fcc92461abd6be87c6c176b2007738d97d926c5"
+    },
+    {
+      "path": "build.ps1",
+      "sha256": "750563e1ac35d0a8a2af7a25349aa89a8f8ddca763dcc615f0b47615d2d5c79a"
+    },
+    {
+      "path": "project.md",
+      "sha256": "b81516db982a753f4ed712c08f3231dff8f20918fa8d304578176982edb621ac"
+    },
+    {
+      "path": "README.txt",
+      "sha256": "a8a5aa00d8177a77ba510b708fe2c7a351ce930dc4e2d3d12159a1a267e3ccbf"
+    },
+    {
+      "path": "requirements-build.txt",
+      "sha256": "c19677d5acb65662a3ca353f1715ef17ff954a22179a2fb6b67c397bf6df9349"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "sha256": "f4b261a8c9fb22a3a981a1bee1f9e3967d3edfea933054307143d39bb2841591"
+    },
+    {
+      "path": "Run KWAK Split.cmd",
+      "sha256": "2059cdf3abbf2cf985dc8b0e855519510f8b88cd0c0c0d3cdd049133395e5bc4"
+    },
+    {
+      "path": "run_dev.ps1",
+      "sha256": "ba3994159bed0f03bc1d395cb88ea121f37f3b1d16d1fa07b2741d9a85e102da"
+    },
+    {
+      "path": "StemSamplePrep.py",
+      "sha256": "842df978fb4f57c179442451b3d0c78468e6353b30ce45c26e4d3e9a40041faa"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.txt",
+      "sha256": "7b9a9a3ea19d26ebb4f0c32a594fef1daf172113187a590d2127eccad129c0b6"
+    },
+    {
+      "path": "backend/app_paths.py",
+      "sha256": "0950b2ad1229dc0661268c3de5f2f73cedbffe90fb21ba8522f42a5aa79bbb12"
+    },
+    {
+      "path": "backend/compact_model.py",
+      "sha256": "60a884e9960367d2b8e094ec0a2861aeda7e30f0b55b50ae07c8b7415c174578"
+    },
+    {
+      "path": "backend/compact_ui.py",
+      "sha256": "e4b4ced054a40362e9644141a93c67927adfc83fc6700ef14f6e9348f7e4cddc"
+    },
+    {
+      "path": "backend/compact_widgets.py",
+      "sha256": "6f97cad493420570844aef08d78a669732bda6ac660cf26415ac9e63c8cd0f9e"
+    },
+    {
+      "path": "backend/numeric_gestures.py",
+      "sha256": "9bcc8f17f89ea7307f214e599aa93662cec9f2fe69a9347de91cb6890d894ff1"
+    },
+    {
+      "path": "backend/project_store.py",
+      "sha256": "4cffe7827b49999d031febd44cd6efaee5eec87d792990a304bb9d2130f94e27"
+    },
+    {
+      "path": "backend/ui_helpers.py",
+      "sha256": "49f4d7bad31144850fd80231437e56e90573806295430df91ee25dd084dd0688"
+    },
+    {
+      "path": "backend/workspace_features.py",
+      "sha256": "f8682e7bb2afc907443a280f91eb02a23ab20a4ac531ec6268bd98f7deb6d45d"
+    },
+    {
+      "path": "backend/__init__.py",
+      "sha256": "3fba70f6d76630c546e22f8726b181ee8df9f3e182f1b074e451e591952b3469"
+    },
+    {
+      "path": "backend/audio_processing/equalizer.py",
+      "sha256": "03a234af07fa86fb15dcc69d676ad49a8160389bffc9fe9b28c857650cfd71a2"
+    },
+    {
+      "path": "backend/audio_processing/ffmpeg_tools.py",
+      "sha256": "cbc1f65df4ed38b8aa7ec55c925ffb4cdd3e32c6eb3b0da4cab288db8e211fc7"
+    },
+    {
+      "path": "backend/audio_processing/musical.py",
+      "sha256": "6a57caa5948e82c4448bbc0c7c4aea10281b2a05f28001af99748365eb0f4b60"
+    },
+    {
+      "path": "backend/audio_processing/separation.py",
+      "sha256": "40a3f10a2eb1185ab6960bdceb0b84d578dcfcd4a12a1005fac32ae3befca016"
+    },
+    {
+      "path": "backend/audio_processing/__init__.py",
+      "sha256": "00d2c1ca432f02f362b06990ac889f64bd3152f1d4a185f6fa2f7d1de49d477a"
+    },
+    {
+      "path": "bin/.gitkeep",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "docs/compact-ui-implementation.md",
+      "sha256": "b0cd4b70e16fb38e548a41667df57f9b169811b868ff61470a204259056c9213"
+    },
+    {
+      "path": "docs/qa/G01-playback.md",
+      "sha256": "d42018cd1588a855588225d339508ef16ede0e67e585540ce2862b956c3dc9d7"
+    },
+    {
+      "path": "docs/qa/G02-G08-workflow.md",
+      "sha256": "13e0041a5529e3830cc71110b903219cfa0db45f1c2913d257501c6157906ad4"
+    },
+    {
+      "path": "docs/qa/workflow-results.json",
+      "sha256": "89137669ade550b9bf920bcc7332da83b25516b3015fc48d7293e7dbbface8c5"
+    },
+    {
+      "path": "docs/qa/captures/compact-eq.png",
+      "sha256": "919314db5973584fcf4175897bc1453216e4380fd7a7e2d308d5da8874688904"
+    },
+    {
+      "path": "docs/qa/captures/compact-top.png",
+      "sha256": "d5ffc42afb1e0285f470adb9531dde6862b135004c5f5db1ec86b39645dbdcfa"
+    },
+    {
+      "path": "docs/qa/captures/desktop-top.png",
+      "sha256": "35eaaf5238416a1cb2d5a0b16469e763b00d395a5a5f3f89ea084e8a5a6ddfcc"
+    },
+    {
+      "path": "docs/qa/captures/settings.png",
+      "sha256": "e57e26dfd489b883519dd475aa3afc2b45ed0772727ab52d3bc18a3db6cc67d1"
+    },
+    {
+      "path": "docs/qa/captures/small-results.png",
+      "sha256": "cbaac13273b292638d9e032d6d8e11cdfde3b233e5811c060abe511696e5aa11"
+    },
+    {
+      "path": "docs/qa/compact/audio-results.json",
+      "sha256": "329a689969e5c68017207f792515495c42a67034942cde7176a602cb79b09c69"
+    },
+    {
+      "path": "docs/qa/compact/release-results.json",
+      "sha256": "aadb1f1480cebfb7f3c78df61c20c82022fc439af8e50af00d9cd2df3ec179b4"
+    },
+    {
+      "path": "docs/qa/compact/ui-results.json",
+      "sha256": "fdfd0606b1c82e1d8aa48e2c05ceaad220edab91cce8c7e48c007992793032e3"
+    },
+    {
+      "path": "docs/qa/compact/verification.md",
+      "sha256": "cedca3d525a58040bf7dbae9b373e273154b4b6cee9d6ee8a280c65849b9a13f"
+    },
+    {
+      "path": "docs/qa/compact/captures/1080p-100.png",
+      "sha256": "8b20819bb975160413b1b003bdbd51009f379f5b04df15f8c30982d237b54006"
+    },
+    {
+      "path": "docs/qa/compact/captures/1080p-125.png",
+      "sha256": "8f4caad74b4ee32651cd1532e4734ae4591454e9027be5de97172f211d787e93"
+    },
+    {
+      "path": "docs/qa/compact/captures/1080p-150.png",
+      "sha256": "9c99fbed3636e8f2ea07cabf7d6762f5c71177092959dca6c0f25e41479f6606"
+    },
+    {
+      "path": "docs/qa/compact/captures/1080p-175.png",
+      "sha256": "4f38379cabf2804f298333ce8e8599b956b57c9ea206010f8761a32c41a3bfa9"
+    },
+    {
+      "path": "docs/qa/compact/captures/1080p-200.png",
+      "sha256": "3c3a01cca7bd38bd451955da404ca58987f71e04d45bbb17de0f03ec2e5c6b0a"
+    },
+    {
+      "path": "docs/qa/compact/captures/1440p-150.png",
+      "sha256": "93c2eeee9a63985b39ec1886e7d2d0cf303cc8eed32e8c2741dba069ddec6c1b"
+    },
+    {
+      "path": "docs/qa/compact/captures/4k-175.png",
+      "sha256": "4e5d428dcb8f7756e5050e169727a51b56bd64e89654c2d0af4100ed0f1ce079"
+    },
+    {
+      "path": "docs/qa/compact/captures/4k-200.png",
+      "sha256": "ff1d465f006017b2d84c530dc7841f72a5807e0baafa8936b7ab0a98fc1148cb"
+    },
+    {
+      "path": "docs/qa/compact/captures/advanced.png",
+      "sha256": "ed7d30e3d47944f9fa65342e4ec7b986cab076bec545faee07c7bf0ad68581af"
+    },
+    {
+      "path": "docs/qa/compact/captures/automatic-dpi.png",
+      "sha256": "83c74a31ae0922490e7f43ce60581bfa564d9a3835ee5a19f77a949e65e914ea"
+    },
+    {
+      "path": "docs/qa/compact/captures/compact-1000.png",
+      "sha256": "16124368bb918c7ba063d306305ad3f575a06f20ed569b8d0cd1e8b10f2fae8e"
+    },
+    {
+      "path": "docs/qa/compact/captures/compact-640-bottom.png",
+      "sha256": "b509415f11798a5d447ca563382e16eb05e4c254e573b78a23f832520db27fc0"
+    },
+    {
+      "path": "docs/qa/compact/captures/compact-640.png",
+      "sha256": "bb65212290f96a83875dc91af2ec2a6b0c22e62828952804af0d44fa183ef47c"
+    },
+    {
+      "path": "docs/qa/compact/captures/compact-760.png",
+      "sha256": "b63458bdc07edf871d0b082d21792de9e69ac4dff87db823636f2409c0585095"
+    },
+    {
+      "path": "docs/qa/compact/captures/settings.png",
+      "sha256": "256500f15eabce0ca13f838579701bf0788a95feda6f1142d707747690638377"
+    },
+    {
+      "path": "docs/qa/english/verification.md",
+      "sha256": "27faf0121297ba33312c300aff73533f14e906814d869505ed915954ac042ff2"
+    },
+    {
+      "path": "docs/qa/english/workflow-results.json",
+      "sha256": "30e90fd8f861c108ffc40dfe9b740c38023212ffcad58841d22ac1ca3b6efe33"
+    },
+    {
+      "path": "docs/qa/english/captures/compact-eq.png",
+      "sha256": "bf67283fc00f15a445da8eea7c345c9800d2e058873b1446a3743072c03d3538"
+    },
+    {
+      "path": "docs/qa/english/captures/compact-top.png",
+      "sha256": "1e55dc815d6d8752416af3eea6e9e1adfc0f550fb1c9ea08a5153d92e046fc3c"
+    },
+    {
+      "path": "docs/qa/english/captures/desktop-top.png",
+      "sha256": "df0c007711d3371ee4d6ab03aeaa0d6faba9d030c7f60468d242f7d0b149aafd"
+    },
+    {
+      "path": "docs/qa/english/captures/settings.png",
+      "sha256": "3fcb79012bc94c381f4ab49efbd7c8371181461d2aabf624c75ffa58a8826b03"
+    },
+    {
+      "path": "docs/qa/english/captures/small-results.png",
+      "sha256": "e6e4cb2a8fac4db5884ba26b9b7b23b15a7fb86fcae195d53c86cd68183cadde"
+    },
+    {
+      "path": "docs/qa/interaction-audit/release-results.json",
+      "sha256": "541a25be07d482253cd4c24b6aad4f5d4f859f6061c3ef0dd6d5d20dcc91b297"
+    },
+    {
+      "path": "docs/qa/interaction-audit/verification.md",
+      "sha256": "df7aadda2cbad714b8685fecf5da9675d21b8bcb63957bfc1bb3affc3706928d"
+    },
+    {
+      "path": "docs/qa/interaction-audit/captures/automatic-dpi.png",
+      "sha256": "3a59fcd52bc8b03afaad69a2191d9252c6ef5d1034233da68c17847b27e95158"
+    },
+    {
+      "path": "docs/qa/loading-fix/reported-file-results.json",
+      "sha256": "f21d0bf27e35a0b150ce7006ed49a6e5f79882b1e803b3b69eb3e5080a48fa83"
+    },
+    {
+      "path": "docs/qa/loading-fix/verification.md",
+      "sha256": "9716943c5de6f6bbf8471b9ab4e94b646603a0df9fc0ff08fa52afb8cabf0da7"
+    },
+    {
+      "path": "docs/qa/precision-controls/release-results.json",
+      "sha256": "1bf311dc29927ad8f9b2d3fda66048f81ebd39ec710aad8c743997deb4adbda4"
+    },
+    {
+      "path": "docs/qa/precision-controls/ui-results.json",
+      "sha256": "01e00fe75fd0b2a44ecb3ed8213f7be6a13e1e8a58aa67fba219413132e9ad03"
+    },
+    {
+      "path": "docs/qa/precision-controls/verification.md",
+      "sha256": "c98b18ed04b9cda583c133dd7af335398d0efcefb93985eef60878030281330f"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/20ms-fade-zoom.png",
+      "sha256": "440f0b88e72d326eab91b825c7878197ceab88f955b65f4943cf3c5e6123cb9f"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/automatic-dpi.png",
+      "sha256": "87b0bc826e38f8906390ea87cf5f73af0c6cf7191bd441e5f31d0c2a12d6ba7c"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/fades-1000x700.png",
+      "sha256": "8c284d838f168eca77bc103624f3812b234a53d76ca337212414b25628eef84b"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/fades-640x480.png",
+      "sha256": "b05f7347f4bd5adec9307e8f5df43ac5d83d146879036b959d65059bdbc8200d"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/fades-760x620.png",
+      "sha256": "98dd9c6baba3666cb95f0a4ba8601eb88ae88d9cf12ed4ed9598e6a3da7b4371"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/narrow-mixer.png",
+      "sha256": "6fcd749143118b40c2898388e8f9ddc90b99f24b40e6665d22de04229ca681dc"
+    },
+    {
+      "path": "docs/qa/precision-controls/captures/settings.png",
+      "sha256": "777247569f6717fa92fda50fbd0a5ff18760ef71c481bb5a240ffea702198df4"
+    },
+    {
+      "path": "docs/qa/stem-export/native-results.json",
+      "sha256": "50d7c93d5249168e02deb8062175182b36db36193f6316bcc9f0eed3624a0c40"
+    },
+    {
+      "path": "docs/qa/stem-export/release-results.json",
+      "sha256": "006b31fc880f7b8beb01556356521186c0d033738020fafd739a45d5575344ce"
+    },
+    {
+      "path": "docs/qa/stem-export/restoration-results.json",
+      "sha256": "0b3a11e4f0e9ec5b036cb634e5c8f990c5f91465df34d75081ba37433c496f22"
+    },
+    {
+      "path": "docs/qa/stem-export/ui-results.json",
+      "sha256": "bd5e7cba2f147ed9fec821603917d18a19961956c5441342a2c6f0d85a05babf"
+    },
+    {
+      "path": "docs/qa/stem-export/verification.md",
+      "sha256": "71176482f3ae28b62511036c75803024741571ab1b02e8f0347b1894be4829ab"
+    },
+    {
+      "path": "docs/qa/stem-export/captures/automatic-dpi.png",
+      "sha256": "0d0110a08057d3e5dc7cdfda50c6cacd1f8e259128f52b11a980876148b9ce26"
+    },
+    {
+      "path": "docs/qa/stem-export/captures/export-1000x700.png",
+      "sha256": "3b4ae3c5395ff68eaa728f62ec0bef196b26b40ee7bb588145a974c0cb69ea5a"
+    },
+    {
+      "path": "docs/qa/stem-export/captures/export-640x480.png",
+      "sha256": "9f3fadbbdae8b751c172fa69d38d6d85b53f856bd7ecab68f53dc3abaf806859"
+    },
+    {
+      "path": "docs/qa/stem-export/captures/export-760x620.png",
+      "sha256": "cf4bb6c37f92387054a4992bb475b26a69ba2c6702e4533cdf935b6859e1a1d2"
+    },
+    {
+      "path": "docs/qa/stem-export/captures/four-files-saved.png",
+      "sha256": "f429492998af71be88d98d8211fe20dfade7568deb9ff93693a7220017bb1d11"
+    },
+    {
+      "path": "docs/qa/stem-export/captures/settings-stem-format.png",
+      "sha256": "bdf97d891a6d7067c02b3de2185911e1654863dfd8b3883ac1025c43aefb3df7"
+    },
+    {
+      "path": "LICENSES/FFMPEG_SOURCE_NOTICE.txt",
+      "sha256": "35ffb73a71fad346d31b65947e02d12d41f52b37891ecaf4946871fe466930be"
+    },
+    {
+      "path": "LICENSES/GPL-3.0.txt",
+      "sha256": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809"
+    },
+    {
+      "path": "LICENSES/LGPL-3.0.txt",
+      "sha256": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059"
+    },
+    {
+      "path": "logs/.gitkeep",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "models/.gitkeep",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "output/.gitkeep",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "output/ui-preview/kwak-split-compact-v2.html",
+      "sha256": "f169d73938efb68817980c5e559d223f4e0013ae990edfcfce39598281dc9550"
+    },
+    {
+      "path": "output/ui-preview/kwak-split-preview.html",
+      "sha256": "c0f7164084f4ec78978ac56e5f5e6e7cc6eea7e7fd2a65967e38c8350d5a51fb"
+    },
+    {
+      "path": "output/ui-preview/filter-preview/index.html",
+      "sha256": "4260c8ee84f5c9c11c3b3ced8b973a9c1c88922c54e4504c23c00e3aaffbb1dd"
+    },
+    {
+      "path": "promo/vercel-site/contact.html",
+      "sha256": "b40c42dd63624b161ae02e8ba7b32bec8aa8e01e0f59e3433e3c2b7bf1bd3431"
+    },
+    {
+      "path": "promo/vercel-site/download.html",
+      "sha256": "6ef05224f49422b8caca1795c3b161b3ede573d1de3c5bbf9b49c316759aa59f"
+    },
+    {
+      "path": "promo/vercel-site/faq.html",
+      "sha256": "4c7e6c64164eb385148485453306bc52848bea5b81fae231eb526da07ebcb56a"
+    },
+    {
+      "path": "promo/vercel-site/features.html",
+      "sha256": "4778947232db6e540276fef4b7c5a27237f25f22ad4f00a04d3cbccbcb77b552"
+    },
+    {
+      "path": "promo/vercel-site/index.html",
+      "sha256": "979add7735dba4e2e2ac007dc22bc290674100fe6fb18af3f42b4aec4aa8e329"
+    },
+    {
+      "path": "promo/vercel-site/vercel.json",
+      "sha256": "31930960a697a75965ad8c5d6fc1fc14c27db2ea195485f14694b21fc14203d2"
+    },
+    {
+      "path": "promo/vercel-site/assets/kwak-eq.png",
+      "sha256": "8602576ca4df6eee8dada4719e3465a076cb33be90a1fb46203e4e109fd1a3a2"
+    },
+    {
+      "path": "promo/vercel-site/assets/kwak-mixer.png",
+      "sha256": "d28f2351f7063f06b58246841591b36444f1198e94ec0e6f8773988cf7baf440"
+    },
+    {
+      "path": "promo/vercel-site/assets/kwak-monitor.png",
+      "sha256": "3fab5f08d842800f8da6576c43a7cd787af0d4253aefb84b918c7f0729d82639"
+    },
+    {
+      "path": "promo/vercel-site/assets/kwak-split-app.png",
+      "sha256": "51a91c3c498f55937739634038898a147bab120f49e6a2571b4d881754fdea2a"
+    },
+    {
+      "path": "promo/vercel-site/assets/kwak-waveform.png",
+      "sha256": "e265e35910d77a001a8c8f261592dd782f944ba91166bf1c7b654f29bfdf9ea2"
+    },
+    {
+      "path": "scripts/backup_design_work.ps1",
+      "sha256": "96784bf324cb0c0255e6a883d8643964d103730c3022b1b2fcfde779fa9419c6"
+    },
+    {
+      "path": "scripts/bundle_demucs_runtime.py",
+      "sha256": "7ffcfd24666589778013f3ab42d05a77446378e1d2bffefd9d6666f8b62079b7"
+    },
+    {
+      "path": "scripts/download_ffmpeg.ps1",
+      "sha256": "9471c1a3e78855fd6c9408584775297f71385adac94376e9fd760b7215b491d0"
+    },
+    {
+      "path": "scripts/patch_demucs_audio.py",
+      "sha256": "403f45f75ce5272484d741a6d82fe670417ac0a7bb5fb31b5f35c9bd8c87f0eb"
+    },
+    {
+      "path": "scripts/prepare_demucs_runtime.ps1",
+      "sha256": "68a6636999256f3a8432961a6f33f160095bc4da5e7aed47103f86d8c66eb5f2"
+    },
+    {
+      "path": "scripts/qa_compact.py",
+      "sha256": "1f51e12f9b10b3bf0d974973dd5967468a8f2c02881621f00dc2f0230e757ee2"
+    },
+    {
+      "path": "scripts/qa_compact_release.py",
+      "sha256": "715bfa405ec91f4a7d5f26686423cef73a685f58f4348df9256a7e11e0ecf014"
+    },
+    {
+      "path": "scripts/qa_loading_fix.py",
+      "sha256": "f4a9b5ec9326aa5d1a6233335de6e5bc8af2be5b9edf4c206178b82a5d7d576d"
+    },
+    {
+      "path": "scripts/qa_precision_controls.py",
+      "sha256": "00c5ca6a175e1987d782aad51d2fae65567dde6420e64551c1a475957a428532"
+    },
+    {
+      "path": "scripts/qa_stem_export_ui.py",
+      "sha256": "55e9f2926da4e3abaa8b18e50c4f3810c282ab4f86601907b94320679f72ff2a"
+    },
+    {
+      "path": "scripts/qa_workspace.py",
+      "sha256": "d561eb64e09a5ac5f5e9dba2561769572688017c38f1e73a2a1edecc5623f3e3"
+    },
+    {
+      "path": "scripts/run_tests.ps1",
+      "sha256": "60b3c907c1ed347571cf84b85d5b99aec66551e6a9a9cf42dbd0a07229e1b7bf"
+    },
+    {
+      "path": "temp/.gitkeep",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": "tests/conftest.py",
+      "sha256": "c3985eb3df1066b18111b96cfe3c07828648581e6d6eb9ef69f38851fe51e37a"
+    },
+    {
+      "path": "tests/test_audio_helpers.py",
+      "sha256": "c96976f775c2f03007ba45fe729960c0551b8d3add2bddd579e66b3f01f0a1d2"
+    },
+    {
+      "path": "tests/test_audit_audio.py",
+      "sha256": "ebc09377eddc5d5a6f78063fecfad6bbcdc13c534ae5c91f3e8c4f957d925937"
+    },
+    {
+      "path": "tests/test_audit_edits.py",
+      "sha256": "01153e728b135232bca9431f5ab005384246e82ecc5141cb861de60218687b46"
+    },
+    {
+      "path": "tests/test_audit_lifecycle.py",
+      "sha256": "950f095a72e822992decb7adaf593f527728012734395b7dc8c93dea9e97a56c"
+    },
+    {
+      "path": "tests/test_compact_audio.py",
+      "sha256": "9a5250ceaebf39af8d3373022f6419686bd560ca48fd4c80d9593590126de6ff"
+    },
+    {
+      "path": "tests/test_compact_keyboard.py",
+      "sha256": "99f185e14191e2a435bb331f299cbffe17c59443747a43866ee305bb8afdb6af"
+    },
+    {
+      "path": "tests/test_compact_workflow.py",
+      "sha256": "273a99c4e4b8204e8e2a53d004b21a3554c087aa039f68d07153f04c63a45719"
+    },
+    {
+      "path": "tests/test_english.py",
+      "sha256": "ac0a2a46e919788827a3ceb99b60aca25d6a424c12c3dddbbc3f2d40c3066279"
+    },
+    {
+      "path": "tests/test_eq_curve.py",
+      "sha256": "ba9d35778769d7aae0f25eb5f2b7efc17dd83c67c3fbeed1b1363e01aed1b8ff"
+    },
+    {
+      "path": "tests/test_loading_lifecycle.py",
+      "sha256": "e6d0160837ada2150be3cda407a7f509818da453d8a224a1a7ef3c9eab12d146"
+    },
+    {
+      "path": "tests/test_musical.py",
+      "sha256": "20d80ad52c33ad52152620ee4152e2e46accc6b88e3f68395a326376324887ce"
+    },
+    {
+      "path": "tests/test_numeric_gestures.py",
+      "sha256": "82df65103ae5fc1f279d754e1a5ed2bb845e90427f9dcbf04e1a48f57b53d21e"
+    },
+    {
+      "path": "tests/test_playback.py",
+      "sha256": "0c11488d796db1eda344f04b35ad2d0375b0daac98962779f1965db8f17d32e2"
+    },
+    {
+      "path": "tests/test_playback_audio.py",
+      "sha256": "ddd6d5fb33a62d3c06731a990ff27584fa002d1954bceeaf946d7f4c4a62ff1b"
+    },
+    {
+      "path": "tests/test_precision_audio.py",
+      "sha256": "19d69ba3752920a88ed96a6bc00def41fac11d43c9cca4007de8d22ca5030a35"
+    },
+    {
+      "path": "tests/test_projects.py",
+      "sha256": "f6771ba1231622834f37ff0193c219fb279bdacfa933db7eee983922f2dd7090"
+    },
+    {
+      "path": "tests/test_split_scope.py",
+      "sha256": "acd9314cfe5bf3768babafdab062c0d55fcb6b22ee8e8cf98f0a952fd1962bc2"
+    },
+    {
+      "path": "tests/test_stem_export.py",
+      "sha256": "74ef47af018e769f3e0af63c98b28c91e6949bc81604bcbb095e456c1f895e76"
+    },
+    {
+      "path": "tests/test_workspace.py",
+      "sha256": "982a1e8ff46674d0bad6ba17bf209a03eaac5b53639e5ad49e6b690eb2562c81"
+    }
+  ]
+}

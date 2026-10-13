@@ -1,0 +1,70 @@
+{
+  "exe_sha256": "e6ecfae06271caa50000d750cdb0566201a236a96ef0e82314fd04ca684ed179",
+  "modules": [
+    {
+      "module": "StemSamplePrep",
+      "source_sha256": "5d9ea740e0e89a5e3df3b9badd690239282a34bf5ab1284c95774bae71e9d1f3",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_ui",
+      "source_sha256": "063d42c43be8827af18c872882cca3f85583f7c9aeacb2da025fb338dff22638",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_widgets",
+      "source_sha256": "f64f2dbcb93718ac03b7d86556784fa07f71425a80cf54362463e7bd5126e6f0",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.compact_model",
+      "source_sha256": "bded2a5b3177219a4f96aa331e261fa86e5bcf745fe4bab96bfae9eeea52a4e6",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.window_bounds",
+      "source_sha256": "6bc73aa4fc20c9b3a577185f3be9bf4e78a533331d2bf5a618488e433cf0555a",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.workspace_features",
+      "source_sha256": "f8682e7bb2afc907443a280f91eb02a23ab20a4ac531ec6268bd98f7deb6d45d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.ffmpeg_tools",
+      "source_sha256": "25a628fc63de55f6942d287dc76a98f6354b3954e602877c0d03a7d358309679",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.spectrum",
+      "source_sha256": "271920da6fc579d2ffb2ac427c56ba5220edce1084ae23decf04b43258fec52d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.playback_stream",
+      "source_sha256": "4bc0369414c5c97c4e2eecf42547c43627001c325924e843983608ae29647e4b",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.live_eq",
+      "source_sha256": "0d2e4a5b9ccee562e3fda6278cda9c9437b12540893437431a9163951aab9c5f",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.qa_live_eq",
+      "source_sha256": "2fc8fd994d00f94a344811ca26a8f21401f776b1a9c64be4e6b84e6a051ebc5d",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.qa_live_seek",
+      "source_sha256": "0a3f836149161f5c381adff992e263d0894ecd304378dce08c3311ccefe2dc45",
+      "frozen_code_matches": true
+    },
+    {
+      "module": "backend.audio_processing.qa_transport",
+      "source_sha256": "880c742d61863aab5178f4f9a32db11645f7361f9fd135cce26e4e189e64038b",
+      "frozen_code_matches": true
+    }
+  ]
+}

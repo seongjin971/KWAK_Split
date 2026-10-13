@@ -1,0 +1,10 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___________ test_mode_transition_crossfades_without_dry_level_spike ___________
+tests\test_live_eq.py:198: in test_mode_transition_crossfades_without_dry_level_spike
+    assert max(abs(b-a) for a,b in zip(samples[::2],samples[2::2])) < 500
+E   assert 647 < 500
+E    +  where 647 = max(<generator object test_mode_transition_crossfades_without_dry_level_spike.<locals>.<genexpr> at 0x000001D63CC99300>)
+=========================== short test summary info ===========================
+FAILED tests/test_live_eq.py::test_mode_transition_crossfades_without_dry_level_spike
+1 failed in 2.57s

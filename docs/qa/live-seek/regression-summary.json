@@ -1,0 +1,32 @@
+{
+  "runs": [
+    {
+      "file": "regression.xml",
+      "passed": 175,
+      "test_cases": 179,
+      "subtests": 6
+    },
+    {
+      "file": "stream-regression.xml",
+      "passed": 75,
+      "test_cases": 76,
+      "subtests": 3
+    },
+    {
+      "file": "seek-final.xml",
+      "passed": 12,
+      "test_cases": 12,
+      "subtests": 0
+    },
+    {
+      "file": "ui-final.xml",
+      "passed": 4,
+      "test_cases": 4,
+      "subtests": 0
+    }
+  ],
+  "latest_passed": 179,
+  "unresolved": [],
+  "unique_test_cases": 179,
+  "unique_subtests": 6
+}

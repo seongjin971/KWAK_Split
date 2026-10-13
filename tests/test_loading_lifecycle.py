@@ -19,6 +19,7 @@ def session():
         except tk.TclError:alive=False
         if alive:case.tearDown()
         else:
+            case.app._warm_transport.close()
             for mock in reversed(case.patches):mock.stop()
             case.folder.cleanup()
 
@@ -35,7 +36,7 @@ def test_fractional_duration_finishes_loading_and_enables_controls(session):
     assert not session.callback_errors,session.callback_errors
     assert not app.busy
     assert app.play_button.enabled and app.render_button.enabled
-    assert not app.progressbar.winfo_ismapped()
+    assert not app.cancel_button.winfo_ismapped()
     assert not app.stem_paths  # Open Audio does not split automatically.
     assert app.selection_end_var.get()<=app.duration_seconds
 

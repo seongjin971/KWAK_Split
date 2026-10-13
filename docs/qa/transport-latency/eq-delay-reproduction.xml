@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="2.799" timestamp="2026-10-02T08:34:33.386855+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_live_eq" name="test_mode_transition_crossfades_without_dry_level_spike[0.06]" time="2.676"><failure message="assert 695 &lt; 500&#10; +  where 695 = max(&lt;generator object test_mode_transition_crossfades_without_dry_level_spike.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000164CA78D3F0&gt;)">tests\test_live_eq.py:205: in test_mode_transition_crossfades_without_dry_level_spike
+    assert max(abs(b-a) for a,b in zip(samples[::2],samples[2::2])) &lt; 500
+E   assert 695 &lt; 500
+E    +  where 695 = max(&lt;generator object test_mode_transition_crossfades_without_dry_level_spike.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000164CA78D3F0&gt;)</failure></testcase></testsuite></testsuites>

@@ -25,6 +25,23 @@ If this app is redistributed with the FFmpeg executables, provide the GPLv3 lice
 the corresponding FFmpeg source for the exact distributed binaries available to recipients.
 If a public download page is used, place the FFmpeg notice and source link next to the app download.
 
+Live EQ command client
+----------------------
+
+PyZMQ 27.2.0 is bundled with the desktop app for local FFmpeg EQ commands.
+- PyZMQ: BSD 3-Clause; https://github.com/zeromq/pyzmq
+- The wheel also contains libzmq 4.3.5 and libsodium; its upstream license
+  notices are preserved under
+  LICENSES/pyzmq/. All EQ traffic is restricted to 127.0.0.1.
+
+Resize preview images
+---------------------
+
+Pillow 12.3.0 is bundled for scaling the temporary editor image while resizing.
+- Pillow: MIT-CMU; https://github.com/python-pillow/Pillow
+- The wheel's complete license, including its bundled-library notices, is
+  preserved in LICENSES/pillow/LICENSE.
+
 Python runtimes
 ---------------
 

@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix24\\KWAK Split",
+  "exe_sha256": "d14027651b61d70408b0007d4021fc2fe4accc899003a75fb58a049718df2b96",
+  "frozen_modules_match": 24,
+  "previous_release_preservation": [
+    {
+      "path": "release\\compact-fix23\\KWAK Split\\KWAK Split.exe",
+      "sha256": "8c7eabab5673c9d15856831d7395439155ad319cc9c258d5982da11b46123b15",
+      "after_sha256": "8c7eabab5673c9d15856831d7395439155ad319cc9c258d5982da11b46123b15",
+      "bytes_unchanged": true
+    },
+    {
+      "path": "release\\compact-fix23\\KWAK Split\\settings.json",
+      "sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408",
+      "after_sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963",
+      "bytes_unchanged": false,
+      "settings_values_unchanged": true,
+      "note": "Running prior app closed and reserialized identical settings; original file not written by this task."
+    },
+    {
+      "path": "release\\compact-fix23\\KWAK Split\\temp\\recovery.json",
+      "sha256": "94dce1100ae48a4383da0772125cbbe1294b6652d244f30d208ec5bcc5211208",
+      "after_sha256": "94dce1100ae48a4383da0772125cbbe1294b6652d244f30d208ec5bcc5211208",
+      "bytes_unchanged": true
+    }
+  ],
+  "copied_documents_match": 873,
+  "audio_and_session_hashes_match": true,
+  "native_startup_visual_check": "source native button input reproduced and fixed both drags with Num Lock; frozen Tk gesture checks passed",
+  "display_scope": "current monitor only",
+  "launcher": "Run KWAK Split.cmd",
+  "git_diff_check": "passed"
+}

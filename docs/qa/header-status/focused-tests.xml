@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="1" skipped="0" tests="65" time="135.533" timestamp="2026-10-02T18:18:08.358427+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_proportional_resize" name="test_audio_load_and_status_changes_keep_the_same_composition[size0]" time="2.848" /><testcase classname="tests.test_proportional_resize" name="test_audio_load_and_status_changes_keep_the_same_composition[size1]" time="0.163"><failure message="_tkinter.TclError: Can't find a usable tk.tcl in the following directories: &#10;    {C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tcl_data/tk8.6} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/tk8.6} C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/library&#10;&#10;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl: couldn't read file &quot;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/ttk/sizegrip.tcl&quot;: no such file or directory&#10;couldn't read file &quot;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/ttk/sizegrip.tcl&quot;: no such file or directory&#10;    while executing&#10;&quot;source -encoding utf-8 [file join $::ttk::library sizegrip.tcl]&quot;&#10;    (file &quot;C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data/ttk/ttk.tcl&quot; line 111)&#10;    invoked from within&#10;&quot;source -encoding utf-8 {C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data/ttk/ttk.tcl}&quot;&#10;    (&quot;uplevel&quot; body line 1)&#10;    invoked from within&#10;&quot;uplevel \#0 [list source -encoding utf-8 $::ttk::library/ttk.tcl]&quot;&#10;    (file &quot;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl&quot; line 706)&#10;    invoked from within&#10;&quot;source {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl}&quot;&#10;    (&quot;uplevel&quot; body line 1)&#10;    invoked from within&#10;&quot;uplevel #0 [list source $file]&quot;&#10;&#10;&#10;This probably means that tk wasn't installed properly.">size = (900, 630)
+
+    @pytest.mark.parametrize("size",((1000,700),(900,630),(760,532),(480,360)))
+    def test_audio_load_and_status_changes_keep_the_same_composition(size):
+&gt;       case=test_workspace.WorkspaceTests();case.setUp();app=case.app
+                                             ^^^^^^^^^^^^
+
+tests\test_proportional_resize.py:10: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_workspace.py:42: in setUp
+    self.app = StemSamplePrepApp(ui_scale=getattr(self, "ui_scale", 1.0))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StemSamplePrep.py:1267: in __init__
+    super().__init__()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;StemSamplePrep.StemSamplePrepApp object .&gt;, screenName = None
+baseName = '__main__', className = 'Tk', useTk = True, sync = False, use = None
+
+    def __init__(self, screenName=None, baseName=None, className='Tk',
+                 useTk=True, sync=False, use=None):
+        """Return a new top level widget on screen SCREENNAME. A new Tcl interpreter will
+        be created. BASENAME will be used for the identification of the profile file (see
+        readprofile).
+        It is constructed from sys.argv[0] without extensions if None is given. CLASSNAME
+        is the name of the widget class."""
+        self.master = None
+        self.children = {}
+        self._tkloaded = False
+        # to avoid recursions in the getattr code in case of failure, we
+        # ensure that self.tk is always _something_.
+        self.tk = None
+        if baseName is None:
+            import os
+            baseName = os.path.basename(sys.argv[0])
+            baseName, ext = os.path.splitext(baseName)
+            if ext not in ('.py', '.pyc'):
+                baseName = baseName + ext
+        interactive = False
+&gt;       self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       _tkinter.TclError: Can't find a usable tk.tcl in the following directories: 
+E           {C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tcl_data/tk8.6} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/tk8.6} C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/library
+E       
+E       C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl: couldn't read file "C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/ttk/sizegrip.tcl": no such file or directory
+E       couldn't read file "C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/ttk/sizegrip.tcl": no such file or directory
+E           while executing
+E       "source -encoding utf-8 [file join $::ttk::library sizegrip.tcl]"
+E           (file "C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data/ttk/ttk.tcl" line 111)
+E           invoked from within
+E       "source -encoding utf-8 {C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data/ttk/ttk.tcl}"
+E           ("uplevel" body line 1)
+E           invoked from within
+E       "uplevel \#0 [list source -encoding utf-8 $::ttk::library/ttk.tcl]"
+E           (file "C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl" line 706)
+E           invoked from within
+E       "source {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl}"
+E           ("uplevel" body line 1)
+E           invoked from within
+E       "uplevel #0 [list source $file]"
+E       
+E       
+E       This probably means that tk wasn't installed properly.
+
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\tkinter\__init__.py:2345: TclError</failure></testcase><testcase classname="tests.test_proportional_resize" name="test_audio_load_and_status_changes_keep_the_same_composition[size2]" time="3.042" /><testcase classname="tests.test_proportional_resize" name="test_audio_load_and_status_changes_keep_the_same_composition[size3]" time="3.040" /><testcase classname="tests.test_proportional_resize" name="test_fit_and_roundtrip_preserve_geometry_and_edits[1]" time="5.959" /><testcase classname="tests.test_proportional_resize" name="test_fit_and_roundtrip_preserve_geometry_and_edits[1.25]" time="11.693" /><testcase classname="tests.test_proportional_resize" name="test_fit_and_roundtrip_preserve_geometry_and_edits[1.5]" time="10.560" /><testcase classname="tests.test_proportional_resize" name="test_fit_and_roundtrip_preserve_geometry_and_edits[1.75]" time="6.406" /><testcase classname="tests.test_proportional_resize" name="test_fit_and_roundtrip_preserve_geometry_and_edits[2]" time="8.079" /><testcase classname="tests.test_proportional_resize" name="test_context_status_and_dpi_change_still_fit" time="4.045" /><testcase classname="tests.test_transport_response" name="test_play_pause_updates_transport_without_relayout_and_retains_resume_position" time="2.448" /><testcase classname="tests.test_transport_response" name="test_context_errors_and_progress_remain_visible_without_editor_relayout" time="1.357" /><testcase classname="tests.test_loading_lifecycle" name="test_fractional_duration_finishes_loading_and_enables_controls" time="1.931" /><testcase classname="tests.test_loading_lifecycle" name="test_worker_completion_survives_ui_result_handler_error" time="1.059" /><testcase classname="tests.test_loading_lifecycle" name="test_close_during_work_is_immediate_cancels_child_and_keeps_recovery" time="1.756" /><testcase classname="tests.test_loading_lifecycle" name="test_late_process_registration_after_close_is_terminated" time="2.693" /><testcase classname="tests.test_audit_lifecycle" name="test_cancel_before_process_registration_stops_late_child" time="2.284" /><testcase classname="tests.test_audit_lifecycle" name="test_rejected_relink_does_not_apply_project_to_next_audio" time="2.159" /><testcase classname="tests.test_audit_lifecycle" name="test_corrupt_project_audio_clears_pending_and_preserves_open_audio" time="1.922" /><testcase classname="tests.test_audit_lifecycle" name="test_cancelled_audio_conversion_preserves_loaded_session" time="1.123" /><testcase classname="tests.test_audit_lifecycle" name="test_worker_failure_allows_next_audio_load" time="1.910" /><testcase classname="tests.test_audit_audio" name="test_open_audio_only_prepares_source_and_waveform" time="1.025" /><testcase classname="tests.test_audit_audio" name="test_pause_resume_keeps_source_position_at_changed_speed" time="1.921" /><testcase classname="tests.test_audit_audio" name="test_stem_preview_and_export_share_selection_effects_and_offsets" time="0.211"><error message="failed on setup with &quot;_tkinter.TclError: Can't find a usable tk.tcl in the following directories: &#10;    {C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tcl_data/tk8.6} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/tk8.6} C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/library&#10;&#10;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl: couldn't read file &quot;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/button.tcl&quot;: no such file or directory&#10;couldn't read file &quot;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/button.tcl&quot;: no such file or directory&#10;    while executing&#10;&quot;source -encoding utf-8 {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/button.tcl}&quot;&#10;    (in namespace eval &quot;::&quot; script line 1)&#10;    invoked from within&#10;&quot;namespace eval :: [list source -encoding utf-8 [file join $::tk_library $file.tcl]]&quot;&#10;    (procedure &quot;SourceLibFile&quot; line 2)&#10;    invoked from within&#10;&quot;SourceLibFile button&quot;&#10;    (in namespace eval &quot;::tk&quot; script line 3)&#10;    invoked from within&#10;&quot;namespace eval ::tk {&#10;&#09;SourceLibFile icons&#10;&#09;SourceLibFile button&#10;&#09;SourceLibFile entry&#10;&#09;SourceLibFile listbox&#10;&#09;SourceLibFile menu&#10;&#09;SourceLibFile panedw...&quot;&#10;    (file &quot;C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl&quot; line 501)&#10;    invoked from within&#10;&quot;source {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl}&quot;&#10;    (&quot;uplevel&quot; body line 1)&#10;    invoked from within&#10;&quot;uplevel #0 [list source $file]&quot;&#10;&#10;&#10;This probably means that tk wasn't installed properly.&quot;">@pytest.fixture
+    def session():
+        # Do not map a QA window over the user's running application.
+        original = StemSamplePrepApp._set_initial_compact_window
+    
+        def hidden_window(app):
+            original(app)
+            app.withdraw()
+    
+        case = test_workspace.WorkspaceTests()
+        with patch.object(StemSamplePrepApp, "_set_initial_compact_window", hidden_window), \
+                patch("StemSamplePrep.StemSeparator.separate") as separate:
+            try:
+&gt;               case.setUp()
+
+tests\test_audit_audio.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_workspace.py:42: in setUp
+    self.app = StemSamplePrepApp(ui_scale=getattr(self, "ui_scale", 1.0))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StemSamplePrep.py:1267: in __init__
+    super().__init__()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;StemSamplePrep.StemSamplePrepApp object .&gt;, screenName = None
+baseName = '__main__', className = 'Tk', useTk = True, sync = False, use = None
+
+    def __init__(self, screenName=None, baseName=None, className='Tk',
+                 useTk=True, sync=False, use=None):
+        """Return a new top level widget on screen SCREENNAME. A new Tcl interpreter will
+        be created. BASENAME will be used for the identification of the profile file (see
+        readprofile).
+        It is constructed from sys.argv[0] without extensions if None is given. CLASSNAME
+        is the name of the widget class."""
+        self.master = None
+        self.children = {}
+        self._tkloaded = False
+        # to avoid recursions in the getattr code in case of failure, we
+        # ensure that self.tk is always _something_.
+        self.tk = None
+        if baseName is None:
+            import os
+            baseName = os.path.basename(sys.argv[0])
+            baseName, ext = os.path.splitext(baseName)
+            if ext not in ('.py', '.pyc'):
+                baseName = baseName + ext
+        interactive = False
+&gt;       self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       _tkinter.TclError: Can't find a usable tk.tcl in the following directories: 
+E           {C:\Users\brian\Dev\active\Kwaksplit\release\compact-fix17\KWAK Split\_internal\_tk_data} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tcl_data/tk8.6} {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/tk8.6} C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/library
+E       
+E       C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl: couldn't read file "C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/button.tcl": no such file or directory
+E       couldn't read file "C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/button.tcl": no such file or directory
+E           while executing
+E       "source -encoding utf-8 {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/button.tcl}"
+E           (in namespace eval "::" script line 1)
+E           invoked from within
+E       "namespace eval :: [list source -encoding utf-8 [file join $::tk_library $file.tcl]]"
+E           (procedure "SourceLibFile" line 2)
+E           invoked from within
+E       "SourceLibFile button"
+E           (in namespace eval "::tk" script line 3)
+E           invoked from within
+E       "namespace eval ::tk {
+E       	SourceLibFile icons
+E       	SourceLibFile button
+E       	SourceLibFile entry
+E       	SourceLibFile listbox
+E       	SourceLibFile menu
+E       	SourceLibFile panedw..."
+E           (file "C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl" line 501)
+E           invoked from within
+E       "source {C:/Users/brian/Dev/active/Kwaksplit/release/compact-fix17/KWAK Split/_internal/_tk_data/tk.tcl}"
+E           ("uplevel" body line 1)
+E           invoked from within
+E       "uplevel #0 [list source $file]"
+E       
+E       
+E       This probably means that tk wasn't installed properly.
+
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\tkinter\__init__.py:2345: TclError</error></testcase><testcase classname="tests.test_audit_audio" name="test_stem_coverage_rejects_outside_selection_before_audio_starts" time="2.716" /><testcase classname="tests.test_audit_audio" name="test_routine_transport_state_does_not_open_duplicate_status_row[playing]" time="1.305" /><testcase classname="tests.test_audit_audio" name="test_routine_transport_state_does_not_open_duplicate_status_row[paused]" time="1.522" /><testcase classname="tests.test_audit_audio" name="test_routine_transport_state_does_not_open_duplicate_status_row[finished]" time="1.184" /><testcase classname="tests.test_audit_audio" name="test_waveform_selection_applies_to_current_playback_on_release" time="1.252" /><testcase classname="tests.test_audit_audio" name="test_empty_waveform_selection_does_not_keep_old_range_playing" time="1.192" /><testcase classname="tests.test_audit_audio" name="test_outside_stem_selection_stops_old_audio_and_explains_range" time="1.375" /><testcase classname="tests.test_audit_edits" name="test_fader_track_jump_and_drag_are_one_undo_step" time="1.725" /><testcase classname="tests.test_audit_edits" name="test_advanced_cannot_commit_out_of_range_q_by_closing" time="1.602" /><testcase classname="tests.test_audit_edits" name="test_invalid_save_folder_keeps_existing_output_and_dialog" time="1.618" /><testcase classname="tests.test_audit_edits" name="test_resizing_after_undo_preserves_edit_and_scroll_access" time="5.276" /><testcase classname="tests.test_audit_edits" name="test_crossed_pass_filters_report_validation_and_recover" time="1.913" /><testcase classname="tests.test_compact_keyboard" name="test_mouse_clicked_buttons_release_focus_and_space_controls_transport" time="2.406" /><testcase classname="tests.test_compact_keyboard" name="test_keyboard_focused_button_uses_enter_but_space_still_controls_transport" time="2.062" /><testcase classname="tests.test_compact_keyboard" name="test_waveform_click_leaves_numeric_input_and_space_controls_transport[1]" time="1.446" /><testcase classname="tests.test_compact_keyboard" name="test_waveform_click_leaves_numeric_input_and_space_controls_transport[3]" time="2.323" /><testcase classname="tests.test_compact_keyboard" name="test_space_in_numeric_entry_or_settings_does_not_start_playback" time="2.033" /><testcase classname="tests.test_compact_keyboard" name="test_held_space_toggles_once_and_release_allows_the_next_press" time="1.281" /><testcase classname="tests.test_compact_keyboard" name="test_focus_loss_releases_a_space_latch_without_toggling" time="1.476" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_drag_is_one_undo_step_and_redo_restores_it" time="1.384" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_english_ui_summaries_and_dialogs" time="1.542" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_loop_restarts_and_explicit_stop_cancels_repeat" time="3.198" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_new_project_resets_and_keep_option_preserves_adjustments" time="1.404" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_output_profiles_and_normalize_use_requested_format" time="1.464" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_project_roundtrip_and_recovery" time="1.964" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_responsive_compact_layout_and_reachable_actions" time="3.228" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_result_actions_are_connected" time="0.886" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_selected_stem_offsets_match_original_render" time="1.190" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_zero_volume_stem_can_export_silent_wav" time="0.942" /><testcase classname="tests.test_workspace.WorkspaceTests" name="test_zoom_seek_and_selection_only_preview" time="0.952" /></testsuite></testsuites>

@@ -1,0 +1,74 @@
+{
+  "status": "applied",
+  "source_release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix19\\KWAK Split",
+  "destination_release": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix20\\KWAK Split",
+  "old_workspace": "C:\\Users\\brian\\Dev\\active\\Kwaksplit",
+  "new_workspace": "C:\\Users\\brian\\Dev\\active\\Kwaksplit",
+  "backups": [
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix19\\KWAK Split\\settings.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\waveform-selection\\session-migration-final\\source\\settings.json",
+      "size": 376,
+      "sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963"
+    },
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix19\\KWAK Split\\temp\\recovery.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\waveform-selection\\session-migration-final\\source\\recovery.json",
+      "size": 1712,
+      "sha256": "750078ba83c435b9e44badc1619501d118daaa83333bbc7c4ae68ee4cf0c4ccb"
+    },
+    {
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix20\\KWAK Split\\settings.json",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\waveform-selection\\session-migration-final\\destination\\settings.json",
+      "size": 377,
+      "sha256": "7676c4507883453a55fb6e0c39dc5d2cf38443b8e9294ec27849e779bf036944"
+    }
+  ],
+  "audio_copies": [
+    {
+      "name": "source",
+      "source": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix19\\KWAK Split\\temp\\sessions\\20261002_222959_39b23b9f_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\source.wav",
+      "destination": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix20\\KWAK Split\\temp\\restored-session\\source.wav",
+      "size": 91759412,
+      "sha256": "fe096003a3f57e50c6dfdec083e44fd9aab3307041e041a450a73ed6d0185fbc",
+      "verified_sha256": "fe096003a3f57e50c6dfdec083e44fd9aab3307041e041a450a73ed6d0185fbc"
+    }
+  ],
+  "json_writes": [
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix20\\KWAK Split\\settings.json",
+      "sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408",
+      "previous_sha256": "7676c4507883453a55fb6e0c39dc5d2cf38443b8e9294ec27849e779bf036944",
+      "verified_sha256": "14fbb421ead04a55c4cb2832c3900301968412b365de4445be38efa739b03408"
+    },
+    {
+      "path": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix20\\KWAK Split\\temp\\recovery.json",
+      "sha256": "fff71a7b033a84c73f33918ece787462d38eb5b10087e29cca8cd992821f0a85",
+      "previous_sha256": null,
+      "verified_sha256": "fff71a7b033a84c73f33918ece787462d38eb5b10087e29cca8cd992821f0a85"
+    }
+  ],
+  "manifest": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\docs\\qa\\waveform-selection\\session-migration-final\\manifest.json",
+  "preserved_references": [
+    {
+      "field": "original_input",
+      "path": "C:\\Users\\brian\\Downloads\\LocalTube\\NewJeans (뉴진스) 'Cookie' Official MV [VOmIplFAGeg].mp3",
+      "exists": true,
+      "action": "preserve"
+    }
+  ],
+  "changes": {
+    "settings.output_dir": {
+      "before": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+      "after": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output"
+    },
+    "recovery.source": {
+      "before": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix19\\KWAK Split\\temp\\sessions\\20261002_222959_39b23b9f_NewJeans_Cookie_Official_MV_VOmIplFAGeg\\source.wav",
+      "after": "restored-session/source.wav"
+    },
+    "recovery.stems": {
+      "before": {},
+      "after": {}
+    }
+  }
+}

@@ -1,0 +1,592 @@
+{
+  "method": "real isolated Tk windows, generated audio, mocked monitor work area and app DPI",
+  "os_display_settings_changed": false,
+  "physical_monitor_switch_tested": false,
+  "cases": [
+    {
+      "name": "fhd",
+      "screen": [
+        1920,
+        1080
+      ],
+      "dpi_scale": 1,
+      "work_area": [
+        0,
+        0,
+        1920,
+        1040
+      ],
+      "minimum": [
+        760,
+        532
+      ],
+      "maximum": [
+        1350,
+        945
+      ],
+      "initial": [
+        1000,
+        700
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1000,
+        700
+      ],
+      "maximized": [
+        1350,
+        945
+      ],
+      "scroll": false
+    },
+    {
+      "name": "fhd",
+      "screen": [
+        1920,
+        1080
+      ],
+      "dpi_scale": 1.25,
+      "work_area": [
+        0,
+        0,
+        1920,
+        1040
+      ],
+      "minimum": [
+        950,
+        665
+      ],
+      "maximum": [
+        1340,
+        938
+      ],
+      "initial": [
+        1250,
+        875
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1250,
+        875
+      ],
+      "maximized": [
+        1340,
+        938
+      ],
+      "scroll": false
+    },
+    {
+      "name": "fhd",
+      "screen": [
+        1920,
+        1080
+      ],
+      "dpi_scale": 1.5,
+      "work_area": [
+        0,
+        0,
+        1920,
+        1040
+      ],
+      "minimum": [
+        1140,
+        798
+      ],
+      "maximum": [
+        1330,
+        931
+      ],
+      "initial": [
+        1330,
+        931
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1330,
+        931
+      ],
+      "maximized": [
+        1330,
+        931
+      ],
+      "scroll": false
+    },
+    {
+      "name": "fhd",
+      "screen": [
+        1920,
+        1080
+      ],
+      "dpi_scale": 1.75,
+      "work_area": [
+        0,
+        0,
+        1920,
+        1040
+      ],
+      "minimum": [
+        1320,
+        924
+      ],
+      "maximum": [
+        1320,
+        924
+      ],
+      "initial": [
+        1320,
+        924
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1320,
+        924
+      ],
+      "maximized": [
+        1320,
+        924
+      ],
+      "scroll": false
+    },
+    {
+      "name": "fhd",
+      "screen": [
+        1920,
+        1080
+      ],
+      "dpi_scale": 2,
+      "work_area": [
+        0,
+        0,
+        1920,
+        1040
+      ],
+      "minimum": [
+        1310,
+        917
+      ],
+      "maximum": [
+        1310,
+        917
+      ],
+      "initial": [
+        1310,
+        917
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1310,
+        917
+      ],
+      "maximized": [
+        1310,
+        917
+      ],
+      "scroll": false
+    },
+    {
+      "name": "qhd",
+      "screen": [
+        2560,
+        1440
+      ],
+      "dpi_scale": 1,
+      "work_area": [
+        0,
+        0,
+        2560,
+        1400
+      ],
+      "minimum": [
+        760,
+        532
+      ],
+      "maximum": [
+        1400,
+        980
+      ],
+      "initial": [
+        1000,
+        700
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1000,
+        700
+      ],
+      "maximized": [
+        1400,
+        980
+      ],
+      "scroll": false
+    },
+    {
+      "name": "qhd",
+      "screen": [
+        2560,
+        1440
+      ],
+      "dpi_scale": 1.25,
+      "work_area": [
+        0,
+        0,
+        2560,
+        1400
+      ],
+      "minimum": [
+        950,
+        665
+      ],
+      "maximum": [
+        1750,
+        1225
+      ],
+      "initial": [
+        1250,
+        875
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1250,
+        875
+      ],
+      "maximized": [
+        1750,
+        1225
+      ],
+      "scroll": false
+    },
+    {
+      "name": "qhd",
+      "screen": [
+        2560,
+        1440
+      ],
+      "dpi_scale": 1.5,
+      "work_area": [
+        0,
+        0,
+        2560,
+        1400
+      ],
+      "minimum": [
+        1140,
+        798
+      ],
+      "maximum": [
+        1840,
+        1288
+      ],
+      "initial": [
+        1500,
+        1050
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1500,
+        1050
+      ],
+      "maximized": [
+        1840,
+        1288
+      ],
+      "scroll": false
+    },
+    {
+      "name": "qhd",
+      "screen": [
+        2560,
+        1440
+      ],
+      "dpi_scale": 1.75,
+      "work_area": [
+        0,
+        0,
+        2560,
+        1400
+      ],
+      "minimum": [
+        1330,
+        931
+      ],
+      "maximum": [
+        1830,
+        1281
+      ],
+      "initial": [
+        1750,
+        1225
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1750,
+        1225
+      ],
+      "maximized": [
+        1830,
+        1281
+      ],
+      "scroll": false
+    },
+    {
+      "name": "qhd",
+      "screen": [
+        2560,
+        1440
+      ],
+      "dpi_scale": 2,
+      "work_area": [
+        0,
+        0,
+        2560,
+        1400
+      ],
+      "minimum": [
+        1520,
+        1064
+      ],
+      "maximum": [
+        1830,
+        1281
+      ],
+      "initial": [
+        1830,
+        1281
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1830,
+        1281
+      ],
+      "maximized": [
+        1830,
+        1281
+      ],
+      "scroll": false
+    },
+    {
+      "name": "4k",
+      "screen": [
+        3840,
+        2160
+      ],
+      "dpi_scale": 1,
+      "work_area": [
+        0,
+        0,
+        3840,
+        2120
+      ],
+      "minimum": [
+        760,
+        532
+      ],
+      "maximum": [
+        1400,
+        980
+      ],
+      "initial": [
+        1000,
+        700
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1000,
+        700
+      ],
+      "maximized": [
+        1400,
+        980
+      ],
+      "scroll": false
+    },
+    {
+      "name": "4k",
+      "screen": [
+        3840,
+        2160
+      ],
+      "dpi_scale": 1.25,
+      "work_area": [
+        0,
+        0,
+        3840,
+        2120
+      ],
+      "minimum": [
+        950,
+        665
+      ],
+      "maximum": [
+        1750,
+        1225
+      ],
+      "initial": [
+        1250,
+        875
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1250,
+        875
+      ],
+      "maximized": [
+        1750,
+        1225
+      ],
+      "scroll": false
+    },
+    {
+      "name": "4k",
+      "screen": [
+        3840,
+        2160
+      ],
+      "dpi_scale": 1.5,
+      "work_area": [
+        0,
+        0,
+        3840,
+        2120
+      ],
+      "minimum": [
+        1140,
+        798
+      ],
+      "maximum": [
+        2100,
+        1470
+      ],
+      "initial": [
+        1500,
+        1050
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1500,
+        1050
+      ],
+      "maximized": [
+        2100,
+        1470
+      ],
+      "scroll": false
+    },
+    {
+      "name": "4k",
+      "screen": [
+        3840,
+        2160
+      ],
+      "dpi_scale": 1.75,
+      "work_area": [
+        0,
+        0,
+        3840,
+        2120
+      ],
+      "minimum": [
+        1330,
+        931
+      ],
+      "maximum": [
+        2450,
+        1715
+      ],
+      "initial": [
+        1750,
+        1225
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        1750,
+        1225
+      ],
+      "maximized": [
+        2450,
+        1715
+      ],
+      "scroll": false
+    },
+    {
+      "name": "4k",
+      "screen": [
+        3840,
+        2160
+      ],
+      "dpi_scale": 2,
+      "work_area": [
+        0,
+        0,
+        3840,
+        2120
+      ],
+      "minimum": [
+        1520,
+        1064
+      ],
+      "maximum": [
+        2800,
+        1960
+      ],
+      "initial": [
+        2000,
+        1400
+      ],
+      "actual_decoration": [
+        26,
+        71
+      ],
+      "capture_client": [
+        2000,
+        1400
+      ],
+      "maximized": [
+        2800,
+        1960
+      ],
+      "scroll": false
+    }
+  ]
+}

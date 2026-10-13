@@ -1,0 +1,78 @@
+{
+  "recorded_at": "2026-10-03T09:12:33.565952+09:00",
+  "status": "USER_REVIEW_READY",
+  "release": "compact-fix22",
+  "exe_sha256": "2a51dd8db35f76e61c9be25e2dab4e468429198d5d1679c7ca8d6d0e6107bfd0",
+  "frozen_modules_match_source": 24,
+  "root_launcher_target": "release/compact-fix22/KWAK Split/KWAK Split.exe",
+  "packaged_launcher_preserved": true,
+  "regression": {
+    "passed": 39,
+    "failed": 0,
+    "skipped": 0,
+    "run": "focused-tests.xml"
+  },
+  "display_scope": "current monitor / initial window only",
+  "source_display_cases": [
+    {
+      "screen": "current",
+      "dpi": 2.0,
+      "size": "initial",
+      "client": [
+        2000,
+        1400
+      ]
+    }
+  ],
+  "frozen_display_cases": [
+    {
+      "screen": "current",
+      "dpi": 2.0,
+      "size": "initial",
+      "client": [
+        2000,
+        1400
+      ]
+    }
+  ],
+  "display_matrix_run": false,
+  "frozen_checks_passed": [
+    "--qa-wave-selection-current",
+    "--qa-transport",
+    "--smoke-test"
+  ],
+  "protected_old_release_files": [
+    {
+      "path": "release\\compact-fix21\\KWAK Split\\KWAK Split.exe",
+      "sha256": "0ec7fb8029271a558a3de17311b925e700143ccd66584d119bd7a56a44514377"
+    },
+    {
+      "path": "release\\compact-fix21\\KWAK Split\\settings.json",
+      "sha256": "a11acaacfbe64fd160ff16f29b5a97482a0accb756952639682bd9c95657b963"
+    },
+    {
+      "path": "release\\compact-fix21\\KWAK Split\\temp\\recovery.json",
+      "sha256": "5ec23bd8e294f7e711d6cd4a45bbb4b69d6ec2512e719acfe4529151708a3a12"
+    }
+  ],
+  "old_and_new_audio_hashes_match": true,
+  "session_restored": {
+    "method": "real Tk restore in isolated settings/workspace; no playback/export",
+    "edits_preserved": true,
+    "four_stems_restored": false,
+    "source_only_restored": true,
+    "selection": [
+      0.0,
+      238.956563
+    ],
+    "selection_has_length": true,
+    "save_folder": "C:\\Users\\brian\\Dev\\active\\Kwaksplit\\release\\compact-fix1\\KWAK Split\\output",
+    "export_available": false,
+    "callback_errors": [],
+    "user_session_hashes_unchanged": true
+  },
+  "git_diff_check_exit_code": 0,
+  "physical_input_and_listening_tested": false,
+  "synced_document_files": 822,
+  "documentation_matches": true
+}
