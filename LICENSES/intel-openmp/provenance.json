@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "component": "intel-openmp",
+  "version": "2024.2.1",
+  "license_expression": "Intel End User License Agreement for Developer Tools (April 2023); bundled third-party licenses",
+  "verified_on": "2026-10-14",
+  "files": [
+    {
+      "path": "LICENSES/intel-openmp/LICENSE.txt",
+      "sha256": "4f22ba1dfcf3b6c34bc84c2f9a9d7e05ad84475558bb44574da7b6c381126fd7",
+      "bytes": 26661,
+      "role": "license",
+      "download": {
+        "url": "https://files.pythonhosted.org/packages/c8/6c/9334569937fd3c6ec93f9fe3da268db38f5113673d568854fa18a20f36ec/intel_openmp-2024.2.1-py2.py3-none-win_amd64.whl",
+        "sha256": "b1fb47eefc6cbc2358216684dd87bd2315464e6d29ac84f9313819fe1528d969",
+        "bytes": 3602212,
+        "archive": "zip",
+        "member": "intel_openmp-2024.2.1.dist-info/LICENSE.txt"
+      }
+    },
+    {
+      "path": "LICENSES/intel-openmp/third-party-programs.txt",
+      "sha256": "f8ce918fe7311ce279e68380a2e233f8a42b1cd3dda8f4c48d6de97a0255c1d7",
+      "bytes": 31578,
+      "role": "license",
+      "download": {
+        "url": "https://files.pythonhosted.org/packages/c8/6c/9334569937fd3c6ec93f9fe3da268db38f5113673d568854fa18a20f36ec/intel_openmp-2024.2.1-py2.py3-none-win_amd64.whl",
+        "sha256": "b1fb47eefc6cbc2358216684dd87bd2315464e6d29ac84f9313819fe1528d969",
+        "bytes": 3602212,
+        "archive": "zip",
+        "member": "intel_openmp-2024.2.1.data/data/share/doc/compiler/licensing/openmp/third-party-programs.txt"
+      }
+    },
+    {
+      "path": "LICENSES/intel-openmp/fredist.txt",
+      "sha256": "0aaa67c8a73b68e8dffe34c56714b80d5fda4bfa1a4f1465e3decab9b46d2803",
+      "bytes": 2834,
+      "role": "license",
+      "download": {
+        "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/ea23d696-a77f-4a4a-8996-20d02cdbc48f/w_ifort_runtime_p_2024.2.1.1084.exe",
+        "sha256": "86c91257706458d4cfafcd527df055d1b273092e384760d93343044e848b6ec7",
+        "bytes": 31493952,
+        "archive": "zip-msi-cab",
+        "outer_member": "w_ifort_runtime_p_2024.2.1.1084.msi",
+        "msi_sha256": "1e48d66dac93ee9b900fa3c6c26511de186304d927d7eecf3613068ac2f801fe",
+        "msi_stream": "data1.cab",
+        "cabinet_sha256": "8dc494ee41c61ea2bba301c0b417a3977d193853573b5555f2af1999458dbd5b",
+        "member": "fredist_txt.8A0D7435_59A8_4C93_BB1B_7E4F1E20AF74"
+      }
+    },
+    {
+      "path": "LICENSES/intel-openmp/TCM-LICENSE.txt",
+      "sha256": "6c00ae54b2a610ea009e0f5c5d3aa79023eb694c7fb72857654c53c6e99d7c97",
+      "bytes": 4090,
+      "role": "license",
+      "download": {
+        "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/ea23d696-a77f-4a4a-8996-20d02cdbc48f/w_ifort_runtime_p_2024.2.1.1084.exe",
+        "sha256": "86c91257706458d4cfafcd527df055d1b273092e384760d93343044e848b6ec7",
+        "bytes": 31493952,
+        "archive": "zip-msi-cab",
+        "outer_member": "w_ifort_runtime_p_2024.2.1.1084.msi",
+        "msi_sha256": "1e48d66dac93ee9b900fa3c6c26511de186304d927d7eecf3613068ac2f801fe",
+        "msi_stream": "data1.cab",
+        "cabinet_sha256": "8dc494ee41c61ea2bba301c0b417a3977d193853573b5555f2af1999458dbd5b",
+        "member": "license_txt.B1868581_8745_4F2A_9E8D_D8895E99D5CA"
+      }
+    },
+    {
+      "path": "LICENSES/intel-openmp/TCM-third-party-programs.txt",
+      "sha256": "0c359ebe1a1c58c3bb42eb228b6c3310361fe75d99ddb2fa29c536bf2a290955",
+      "bytes": 14689,
+      "role": "license",
+      "download": {
+        "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/ea23d696-a77f-4a4a-8996-20d02cdbc48f/w_ifort_runtime_p_2024.2.1.1084.exe",
+        "sha256": "86c91257706458d4cfafcd527df055d1b273092e384760d93343044e848b6ec7",
+        "bytes": 31493952,
+        "archive": "zip-msi-cab",
+        "outer_member": "w_ifort_runtime_p_2024.2.1.1084.msi",
+        "msi_sha256": "1e48d66dac93ee9b900fa3c6c26511de186304d927d7eecf3613068ac2f801fe",
+        "msi_stream": "data1.cab",
+        "cabinet_sha256": "8dc494ee41c61ea2bba301c0b417a3977d193853573b5555f2af1999458dbd5b",
+        "member": "third_party_programs_txt.B1868581_8745_4F2A_9E8D_D8895E99D5CA"
+      }
+    },
+    {
+      "path": "LICENSES/intel-openmp/oneTBB-third-party-programs.txt",
+      "sha256": "1634857eb058dce5278c57a832b8974190785145f4be9acdbdb511f3a0c4091c",
+      "bytes": 11631,
+      "role": "license",
+      "download": {
+        "url": "https://raw.githubusercontent.com/oneapi-src/oneTBB/v2021.13.1/third-party-programs.txt",
+        "sha256": "1634857eb058dce5278c57a832b8974190785145f4be9acdbdb511f3a0c4091c",
+        "bytes": 11631
+      }
+    }
+  ],
+  "bundled_binaries": [
+    {
+      "path": "Lib/site-packages/torch/lib/libiomp5md.dll",
+      "sha256": "7f37e24b28383b21a06a198927c3adda2f0e3a780d553922b3819220e84f7615",
+      "official_wheel": "https://files.pythonhosted.org/packages/c8/6c/9334569937fd3c6ec93f9fe3da268db38f5113673d568854fa18a20f36ec/intel_openmp-2024.2.1-py2.py3-none-win_amd64.whl",
+      "official_wheel_sha256": "b1fb47eefc6cbc2358216684dd87bd2315464e6d29ac84f9313819fe1528d969",
+      "member": "intel_openmp-2024.2.1.data/data/Library/bin/libiomp5md.dll",
+      "match": "byte-for-byte"
+    },
+    {
+      "path": "Lib/site-packages/torch/lib/libiompstubs5md.dll",
+      "sha256": "c649831e9cc5fdbf6863dad2de9fae765dba09142a0c16782809f85d80a0aee0",
+      "official_wheel": "https://files.pythonhosted.org/packages/c8/6c/9334569937fd3c6ec93f9fe3da268db38f5113673d568854fa18a20f36ec/intel_openmp-2024.2.1-py2.py3-none-win_amd64.whl",
+      "official_wheel_sha256": "b1fb47eefc6cbc2358216684dd87bd2315464e6d29ac84f9313819fe1528d969",
+      "member": "intel_openmp-2024.2.1.data/data/Library/bin/libiompstubs5md.dll",
+      "match": "byte-for-byte"
+    }
+  ],
+  "supplemental_notice_scope": {
+    "oneTBB": {
+      "version_texts_compared": [
+        "https://raw.githubusercontent.com/oneapi-src/oneTBB/v2021.13.0/third-party-programs.txt",
+        "https://raw.githubusercontent.com/oneapi-src/oneTBB/v2021.13.1/third-party-programs.txt"
+      ],
+      "match": "byte-for-byte",
+      "sha256": "1634857eb058dce5278c57a832b8974190785145f4be9acdbdb511f3a0c4091c"
+    },
+    "TCM": "Original license and notice from the same Intel runtime installer; supplemental referenced notices do not assert a separate TCM or oneTBB DLL is bundled."
+  },
+  "redistribution_designation": {
+    "official_download_page": "https://www.intel.com/content/www/us/en/developer/articles/tool/compilers-redistributable-libraries-by-version.html",
+    "installer": {
+      "url": "https://registrationcenter-download.intel.com/akdlm/IRC_NAS/ea23d696-a77f-4a4a-8996-20d02cdbc48f/w_ifort_runtime_p_2024.2.1.1084.exe",
+      "sha256": "86c91257706458d4cfafcd527df055d1b273092e384760d93343044e848b6ec7",
+      "bytes": 31493952,
+      "archive": "zip-msi-cab",
+      "outer_member": "w_ifort_runtime_p_2024.2.1.1084.msi",
+      "msi_sha256": "1e48d66dac93ee9b900fa3c6c26511de186304d927d7eecf3613068ac2f801fe",
+      "msi_stream": "data1.cab",
+      "cabinet_sha256": "8dc494ee41c61ea2bba301c0b417a3977d193853573b5555f2af1999458dbd5b"
+    },
+    "designation_file": "LICENSES/intel-openmp/fredist.txt",
+    "designation_entries": [
+      "<installdir>/bin/libiomp5md.dll",
+      "<installdir>/bin/libiompstubs5md.dll"
+    ],
+    "matching_binaries": [
+      {
+        "runtime_path": "Lib/site-packages/torch/lib/libiomp5md.dll",
+        "cabinet_member": "libiomp5md_dll.18BB45A0_2267_4162_BA13_1247E18E29B5",
+        "sha256": "7f37e24b28383b21a06a198927c3adda2f0e3a780d553922b3819220e84f7615",
+        "bytes": 1250312,
+        "match": "byte-for-byte"
+      },
+      {
+        "runtime_path": "Lib/site-packages/torch/lib/libiompstubs5md.dll",
+        "cabinet_member": "libiompstubs5md_dll.18BB45A0_2267_4162_BA13_1247E18E29B5",
+        "sha256": "c649831e9cc5fdbf6863dad2de9fae765dba09142a0c16782809f85d80a0aee0",
+        "bytes": 41992,
+        "match": "byte-for-byte"
+      }
+    ],
+    "method": "Read-only ZIP/MSI/CAB data extraction; no installer actions executed."
+  }
+}

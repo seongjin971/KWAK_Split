@@ -2,7 +2,8 @@ param(
     [string]$PythonExe = "",
     [ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$ReleaseName = "compact",
     [switch]$SkipDependencyInstall,
-    [string]$PreparedRuntime = ""
+    [string]$PreparedRuntime = "",
+    [switch]$LocalOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -37,10 +38,29 @@ if (-not (Test-Path $VenvPython)) {
     if ($LASTEXITCODE -ne 0) { throw "Build environment creation failed." }
 }
 
+# Fail before packaging or copying weights. A local build is explicitly marked
+# and cannot be mistaken for approval to publish third-party model weights.
+$LicenseCheckArgs = @("-B", (Join-Path $Root "scripts\check_distribution.py"), "--root", $Root)
+if ($LocalOnly) { $LicenseCheckArgs += "--local-only" }
+& $VenvPython @LicenseCheckArgs
+if ($LASTEXITCODE -ne 0) { throw "Distribution licensing checks failed. See LICENSES/distribution-status.json. Use -LocalOnly only for a non-public build." }
+
+$LicenseRuntimeSource = Join-Path $Root "backend\demucs_runtime"
+if ($PreparedRuntime) { $LicenseRuntimeSource = (Resolve-Path -LiteralPath $PreparedRuntime).Path }
+& $VenvPython -B (Join-Path $Root "scripts\prepare_license_materials.py") --verify --runtime $LicenseRuntimeSource
+if ($LASTEXITCODE -ne 0) { throw "Third-party notices, source materials or runtime identities failed verification." }
+& (Join-Path $Root "scripts\download_ffmpeg.ps1") -ValidateOnly
+if ($LASTEXITCODE -ne 0) { throw "FFmpeg does not match the licensed, pinned distribution." }
+& $VenvPython -B (Join-Path $Root "scripts\prepare_distribution_sources.py")
+if ($LASTEXITCODE -ne 0) { throw "FFmpeg/LAME corresponding source is missing or has changed." }
+
 if (-not $SkipDependencyInstall) {
     & $VenvPython -m pip install -r (Join-Path $Root "requirements-build.txt")
     if ($LASTEXITCODE -ne 0) { throw "Build dependencies could not be installed." }
 }
+
+& $VenvPython -B (Join-Path $Root "scripts\check_desktop_licenses.py")
+if ($LASTEXITCODE -ne 0) { throw "Desktop dependencies do not match the retained notices. Install the pinned requirements or review the new licenses." }
 
 Set-Location $Root
 & $VenvPython -m PyInstaller `
@@ -82,7 +102,7 @@ $backendDest = Join-Path $AppOut "backend"
 New-Item -ItemType Directory -Force -Path $backendDest | Out-Null
 Copy-Item -LiteralPath (Join-Path $Root "backend\demucs_runner.py") -Destination $backendDest
 
-$runtimeSource = Join-Path $Root "backend\demucs_runtime"
+$runtimeSource = $LicenseRuntimeSource
 if (Test-Path $runtimeSource) {
     $runtimeDest = Join-Path $AppOut "backend\demucs_runtime"
     New-Item -ItemType Directory -Force -Path $runtimeDest | Out-Null
@@ -99,6 +119,8 @@ if (Test-Path $runtimeSource) {
         & $VenvPython -B (Join-Path $Root "scripts\bundle_demucs_runtime.py") --source $runtimeSource --destination $runtimeDest
         if ($LASTEXITCODE -ne 0) { throw "App-local Demucs runtime bundling failed." }
     }
+    & $VenvPython -B (Join-Path $Root "scripts\prepare_license_materials.py") --verify --runtime $runtimeDest
+    if ($LASTEXITCODE -ne 0) { throw "The packaged runtime does not match the audited dependency inventory." }
 }
 
 Get-ChildItem -LiteralPath $AppOut -Recurse -Directory -Filter "__pycache__" -Force -ErrorAction SilentlyContinue |
@@ -120,7 +142,7 @@ Get-ChildItem -LiteralPath $AppOut -Recurse -File -Filter "*.pyc" -Force -ErrorA
   "output_dir": ""
 }
 '@ | Set-Content -LiteralPath (Join-Path $AppOut "settings.json") -Encoding ASCII
-foreach ($doc in @("README.txt", "THIRD_PARTY_NOTICES.txt", "project.md")) {
+foreach ($doc in @("LICENSE", "README.txt", "THIRD_PARTY_NOTICES.txt", "project.md")) {
     $docPath = Join-Path $Root $doc
     if (Test-Path -LiteralPath $docPath) {
         Copy-Item -LiteralPath $docPath -Destination (Join-Path $AppOut $doc) -Force
@@ -136,9 +158,8 @@ $licensesSource = Join-Path $Root "LICENSES"
 if (Test-Path -LiteralPath $licensesSource) {
     $licensesDest = Join-Path $AppOut "LICENSES"
     New-Item -ItemType Directory -Force -Path $licensesDest | Out-Null
-    Get-ChildItem -LiteralPath $licensesSource -Force | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination $licensesDest -Recurse -Force
-    }
+    & robocopy.exe $licensesSource $licensesDest /E /R:1 /W:1 /NFL /NDL /NJH /NJS /XD __pycache__ /XF '*.pyc'
+    if ($LASTEXITCODE -ge 8) { throw "Third-party license copy failed." }
 }
 
 $LauncherName = "Run $AppName.cmd"
@@ -150,3 +171,12 @@ $LauncherPath = Join-Path $AppOut $LauncherName
 
 Write-Host "Build complete with app-local Python (verify on each target PC):"
 Write-Host "  $AppOut\$AppExe"
+if ($LocalOnly) {
+    "LOCAL BUILD ONLY - public distribution is on hold. See LICENSES/distribution-status.json." |
+        Set-Content -LiteralPath (Join-Path $AppOut "DO_NOT_DISTRIBUTE.txt") -Encoding ASCII
+    Write-Warning "LOCAL BUILD ONLY: public distribution is not authorized."
+} else {
+    & $VenvPython -B (Join-Path $Root "scripts\prepare_distribution_sources.py") --destination $ReleaseRoot
+    if ($LASTEXITCODE -ne 0) { throw "Required public-release source materials could not be staged." }
+    Write-Host "Publish the source/ materials beside the app download; do not ship the app folder alone."
+}

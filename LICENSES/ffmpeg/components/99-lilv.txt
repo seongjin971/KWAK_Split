@@ -1,0 +1,37 @@
+Original notices from 99-lilv_0543a3c15e7971c2371260e51aad5ead6ffbc7a539de39540a906ebf944d829d.tar.xz
+SHA-256: c376edca722630a84f70aa9a7635b293a289f47d7edf6c05b5d7761acdf4e49f
+
+==============================================================================
+./AUTHORS
+==============================================================================
+Author:
+	David Robillard <d@drobilla.net>
+
+GTK2 GUI and I18N support:
+	Lars Luthman <lars.luthman@gmail.com>
+
+Dynamic manifest support:
+	Stefano D'Angelo
+
+Plugin execution via Python bindings:
+    Kaspar Emanuel <kaspar.emanuel@gmail.com>
+
+Python preset script:
+    Christopher Arndt <chris@chrisarndt.de>
+
+==============================================================================
+./COPYING
+==============================================================================
+Copyright 2011-2026 David Robillard <d@drobilla.net>
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.

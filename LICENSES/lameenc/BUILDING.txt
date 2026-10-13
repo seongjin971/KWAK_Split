@@ -1,0 +1,72 @@
+Reconstructing the bundled Windows CPython 3.11 lameenc extension
+===============================================================
+
+Source inputs
+-------------
+
+Use the two source/lameenc/*.tar.gz files supplied with the distribution.
+In a source checkout they are under vendor-sources/lameenc/ instead.
+Their exact SHA-256 values are listed in provenance.json. The upstream
+LAME 3.100 hash is also written into the wrapper's CMakeLists.txt.
+
+Extract the archives into a separate build directory. Windows tar can read
+these .tar.gz files. The wrapper directory has the name:
+lameenc-813cce2f818dbd6888c0e02bc229e764e6491be6
+
+Tools
+-----
+
+Use Windows x64 CPython 3.11, Visual Studio C++ Build Tools (MSVC and a
+Windows SDK), CMake and Python's build backend. The wrapper's pyproject.toml
+declares its build requirements; the .github/workflows/cmake.yml in the
+archive records the upstream platform build workflow. Build in an x64
+Developer Command Prompt so that cl.exe and nmake.exe are available.
+These general-purpose build tools are not part of the application runtime.
+
+An example build from the extracted wrapper directory is:
+
+  set SETUPTOOLS_SCM_PRETEND_VERSION=1.8.4
+  py -3.11 -m pip install build
+  cmake -S . -B build -G "NMake Makefiles" -DPYTHON_VERSIONS=3.11 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+  cmake --build build --config Release
+
+The version environment variable is needed when building from a source
+archive without Git metadata. The wheel is written under build/.
+
+Using the supplied LAME source without a network download
+-------------------------------------------------------
+
+In the extracted wrapper's CMakeLists.txt, replace ONLY the LAME download
+URL in ExternalProject_Add(lame ...) with the absolute path to the supplied
+lame-3.100.tar.gz, written with forward slashes. Retain the URL_HASH line.
+This is a local build-path adjustment; it does not change the library.
+CMake applies patch-lame.cmake and fixed-libmp3lame.sym and builds the
+static libmp3lame library exactly as recorded by the upstream recipe.
+
+Python build isolation may obtain its backend packages from PyPI. An
+offline build needs those declared backend requirements installed in the
+build environment beforehand; use the standard Python build frontend's
+no-isolation option in the extracted CMake recipe if building offline.
+
+Replacing the extension
+-----------------------
+
+1. Close KWAK Split and its Demucs process.
+2. Keep a backup copy of the original extension.
+3. Open the generated .whl as a ZIP and copy lameenc.cp311-win_amd64.pyd to:
+   backend/demucs_runtime/Lib/site-packages/lameenc.cp311-win_amd64.pyd
+4. Use that runtime's python.exe -B to import lameenc and construct
+   lameenc.Encoder(), then test the intended encode operation.
+
+Use the same CPython 3.11 x64 ABI, or rebuild the runtime consistently.
+The app performs ordinary Python imports and does not check this binary's
+hash at runtime. Release-preparation hash verification will of course
+report a changed binary and must be updated truthfully for a new release.
+
+Verification limit
+------------------
+
+The distributed original extension was matched byte for byte to its
+official wheel, and the source commit was matched to the wheel's embedded
+SCM metadata. This recipe follows that source's upstream build mechanism;
+KWAK Split has not claimed a bit-for-bit independent compiler rebuild.

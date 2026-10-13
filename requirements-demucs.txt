@@ -1,0 +1,31 @@
+# Audited Windows x64 CPython 3.11 runtime, 2026-10-14.
+# Review licenses and corresponding sources before changing these versions.
+--extra-index-url https://download.pytorch.org/whl/cpu
+antlr4-python3-runtime==4.9.3
+cloudpickle==3.1.2
+colorama==0.4.6
+demucs==4.0.1
+dora_search==0.1.13
+einops==0.8.2
+filelock==3.32.3
+fsspec==2026.7.0
+Jinja2==3.1.6
+julius==0.2.8
+lameenc==1.8.4
+MarkupSafe==3.0.3
+mpmath==1.3.0
+networkx==3.6.1
+numpy==2.4.6
+omegaconf==2.3.1
+openunmix==1.3.0
+pip==26.2.1
+PyYAML==6.0.3
+retrying==1.4.2
+setuptools==65.5.0
+submitit==1.5.4
+sympy==1.13.1
+torch==2.5.1+cpu
+torchaudio==2.5.1+cpu
+tqdm==4.70.1
+treetable==0.2.6
+typing_extensions==4.16.0

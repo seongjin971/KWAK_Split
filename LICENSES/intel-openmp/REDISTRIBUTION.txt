@@ -1,0 +1,28 @@
+Terms for the two Intel OpenMP Redistributables in KWAK Split
+==========================================================
+
+These terms apply only to the Intel files:
+backend/demucs_runtime/Lib/site-packages/torch/lib/libiomp5md.dll
+backend/demucs_runtime/Lib/site-packages/torch/lib/libiompstubs5md.dll
+
+They are supplied as part of KWAK Split under the accompanying Intel End
+User License Agreement for Developer Tools (April 2023), in LICENSE.txt,
+and the applicable third-party terms in this directory. They are not
+licensed solely under KWAK Split's own license.
+
+Under Intel's redistribution terms, reverse engineering, decompilation
+and disassembly of these Intel Redistributables are prohibited, subject
+to the separate third-party terms and applicable mandatory legal rights.
+Any further redistribution must retain the applicable Intel and third-party
+notices and comply with the accompanying Intel agreement, including the
+requirement to distribute the Intel Redistributables only as part of a
+product that adds significant primary functionality.
+
+This restriction is limited to Intel's Redistributables. It does not apply
+to KWAK Split source, does not change its MIT license, and does not narrow
+the rights granted by the LGPL or other separate third-party licenses.
+Intel's agreement separately excludes Third Party Software from Materials
+and provides that its separate third-party terms govern that software.
+
+KWAK Split is not certified or endorsed by Intel. Intel does not guarantee
+the application's performance or provide application support on our behalf.

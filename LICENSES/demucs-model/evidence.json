@@ -1,0 +1,44 @@
+{
+  "review_date": "2026-10-14",
+  "status": "PUBLIC_BINARY_RELEASE_ON_HOLD",
+  "scope": "Evidence record; no license grant or legal opinion.",
+  "legacy_model": {
+    "relative_path": "models/torch/hub/checkpoints/955717e8-8726e21a.th",
+    "size_bytes": 84141911,
+    "sha256": "8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4"
+  },
+  "evidence": [
+    {
+      "role": "historical_model_card",
+      "source_url": "https://huggingface.co/adefossez/HTDemucs/raw/bf35a81b663819a8255c8fefee17f9d812b786b5/README.md",
+      "sha256_of_complete_upstream_response": "369d146638e76979e9cfbe5e359ef44e77fa13cfd2da2eb4753c9022572ee7b9",
+      "license_metadata_lines": [
+        "license: mit"
+      ],
+      "identifies_checkpoint": true
+    },
+    {
+      "role": "current_model_card_at_review",
+      "source_url": "https://huggingface.co/adefossez/HTDemucs/raw/cbc8a9b1a87023b7fd74e7b3412e6321c0eab003/README.md",
+      "sha256_of_complete_upstream_response": "b34c13f1b6c3473bf44978f70b5c62666ee309514d6d50b34cf44827f9a38104",
+      "license_metadata_lines": [],
+      "identifies_checkpoint": true
+    },
+    {
+      "role": "upstream_author_statement",
+      "source_url": "https://github.com/facebookresearch/demucs/issues/327#issuecomment-1134828611",
+      "api_url": "https://api.github.com/repos/facebookresearch/demucs/issues/327/comments",
+      "author": "adefossez",
+      "created_at": "2022-05-23T15:36:04Z",
+      "body": "The model weights are not covered by the MIT license, and are provided only for scientific purposes."
+    },
+    {
+      "role": "upstream_author_statement",
+      "source_url": "https://github.com/facebookresearch/demucs/issues/508#issuecomment-1663033356",
+      "api_url": "https://api.github.com/repos/facebookresearch/demucs/issues/508/comments",
+      "author": "adefossez",
+      "created_at": "2023-08-02T22:01:51Z",
+      "body": "Weights are provided for research purpose!"
+    }
+  ]
+}

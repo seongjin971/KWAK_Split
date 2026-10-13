@@ -1,0 +1,35 @@
+Historical Gyan FFmpeg 8.1.1 build -- unresolved corresponding source
+=================================================================
+
+Do not redistribute this old build while its complete corresponding-source
+package remains unavailable. Replacing it with a different build does not
+fulfil obligations owed to recipients of a previous release.
+
+The locally retained binaries identify themselves as:
+8.1.1-essentials_build-www.gyan.dev, GPLv3-or-later, static.
+
+SHA-256:
+ffmpeg.exe  228d7a8556258de907fdb55f36850078ebc7680b84ec30d84ea02e99bec1d1eb
+ffprobe.exe 0fde260f5abd35c9cafd96f594cc76365a780c1b73a90e35b6a3409ea1db1bf0
+ffplay.exe  ba3697eebac866a3dbcef41e97053ab7689ebcb4b0531f9909e46e5abe3b3e70
+
+Official release: https://github.com/GyanD/codexffmpeg/releases/tag/8.1.1
+FFmpeg commit recorded by Gyan: 239f2c733d
+The core FFmpeg commit alone does not include the statically linked dependency
+sources and complete build scripts/configuration for these executables.
+The old KWAK Split v1.0.0 public release referred to this Gyan build; its ZIP was
+not downloaded by this audit, so byte identity with the retained files is not
+asserted. Changing that release to a draft only stops future public downloads.
+
+Supplier request draft -- NOT SENT
+---------------------------------
+Hello, we are reviewing the corresponding-source material for the Windows
+8.1.1 essentials GPL/static package from your 8.1.1 release (the three retained
+executable SHA-256 values are listed above). Could you provide the exact FFmpeg
+source, all linked dependency source versions, patches and scripts/configuration
+used to build these binaries? A complete archived source/build package, with
+permission to mirror the sources under their respective licenses, would help us
+provide lasting source access to our previous recipients. Please identify any
+material needed in addition to the FFmpeg commit 239f2c733d. Thank you.
+
+No request has been sent and no supplier response or permission is recorded.

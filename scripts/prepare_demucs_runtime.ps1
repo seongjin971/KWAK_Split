@@ -33,10 +33,9 @@ if (-not (Test-Path $RuntimePython)) {
 }
 
 Write-Host "Installing Demucs into backend/demucs_runtime. This can take a while and may use several GB."
-& $RuntimePython -m pip install --upgrade pip
-& $RuntimePython -m pip install torch==2.5.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu
-if ($LASTEXITCODE -ne 0) { throw "Failed to install the CPU audio runtime." }
-& $RuntimePython -m pip install demucs==4.0.1
+& $RuntimePython -B -c "import sys; assert sys.version_info[:2] == (3, 11), 'The audited runtime requires CPython 3.11.'"
+if ($LASTEXITCODE -ne 0) { throw "Unsupported Python version for the audited runtime." }
+& $RuntimePython -m pip install -r (Join-Path $Root "requirements-demucs.txt")
 if ($LASTEXITCODE -ne 0) { throw "Failed to install Demucs." }
 & $RuntimePython (Join-Path $ScriptDir "patch_demucs_audio.py") $RuntimeDir
 if ($LASTEXITCODE -ne 0) { throw "Failed to patch Demucs WAV output." }

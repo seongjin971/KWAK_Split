@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "component": "antlr4",
+  "version": "4.9.3",
+  "license_expression": "BSD-3-Clause",
+  "verified_on": "2026-10-14",
+  "files": [
+    {
+      "path": "LICENSES/antlr4/LICENSE.txt",
+      "sha256": "b1b379fcaf3219593a4c433feb1b35c780bed23fafaae440b1ae2771a9521e3a",
+      "bytes": 2699,
+      "role": "license",
+      "download": {
+        "url": "https://raw.githubusercontent.com/antlr/antlr4/4.9.3/LICENSE.txt",
+        "sha256": "b1b379fcaf3219593a4c433feb1b35c780bed23fafaae440b1ae2771a9521e3a",
+        "bytes": 2699
+      }
+    }
+  ],
+  "bundled_binaries": []
+}

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "component": "lameenc",
+  "version": "1.8.4 / LAME 3.100",
+  "license_expression": "LGPL-3.0-or-later (wrapper); LGPL-2.0-or-later (LAME)",
+  "verified_on": "2026-10-14",
+  "files": [
+    {
+      "path": "vendor-sources/lameenc/lameenc-1.8.4.tar.gz",
+      "sha256": "b5f515ddc673c2cf2eb4ce8c5d7ebd17e58b3d4abc663c172bddbfc416fa15b3",
+      "bytes": 13495,
+      "role": "corresponding-source",
+      "download": {
+        "url": "https://codeload.github.com/chrisstaite/lameenc/tar.gz/813cce2f818dbd6888c0e02bc229e764e6491be6",
+        "sha256": "b5f515ddc673c2cf2eb4ce8c5d7ebd17e58b3d4abc663c172bddbfc416fa15b3",
+        "bytes": 13495
+      },
+      "bundle_path": "source/lameenc/lameenc-1.8.4.tar.gz"
+    },
+    {
+      "path": "LICENSES/lameenc/LICENSE.txt",
+      "sha256": "6039b8a570773eb83c43a7d3b332bbc9f805c6975411eaefd4120a39d9c5daeb",
+      "bytes": 7655,
+      "role": "license",
+      "download": {
+        "url": "https://codeload.github.com/chrisstaite/lameenc/tar.gz/813cce2f818dbd6888c0e02bc229e764e6491be6",
+        "sha256": "b5f515ddc673c2cf2eb4ce8c5d7ebd17e58b3d4abc663c172bddbfc416fa15b3",
+        "bytes": 13495,
+        "archive": "tar.gz",
+        "member": "lameenc-813cce2f818dbd6888c0e02bc229e764e6491be6/LICENSE"
+      }
+    },
+    {
+      "path": "vendor-sources/lameenc/lame-3.100.tar.gz",
+      "sha256": "ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e",
+      "bytes": 1524133,
+      "role": "corresponding-source",
+      "download": {
+        "url": "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz",
+        "sha256": "ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e",
+        "bytes": 1524133
+      },
+      "bundle_path": "source/lameenc/lame-3.100.tar.gz"
+    },
+    {
+      "path": "LICENSES/lameenc/LAME-COPYING.txt",
+      "sha256": "bfe4a52dc4645385f356a8e83cc54216a293e3b6f1cb4f79f5fc0277abf937fd",
+      "bytes": 25284,
+      "role": "license",
+      "download": {
+        "url": "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz",
+        "sha256": "ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e",
+        "bytes": 1524133,
+        "archive": "tar.gz",
+        "member": "lame-3.100/COPYING"
+      }
+    },
+    {
+      "path": "LICENSES/lameenc/LAME-LICENSE.txt",
+      "sha256": "7a40cbd8818c57e5285e83c772a459a996d1662c824a879836b97b473c07cae4",
+      "bytes": 487,
+      "role": "license",
+      "download": {
+        "url": "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz",
+        "sha256": "ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e",
+        "bytes": 1524133,
+        "archive": "tar.gz",
+        "member": "lame-3.100/LICENSE"
+      }
+    },
+    {
+      "path": "LICENSES/lameenc/LAME-MPGLIB-AUTHORS.txt",
+      "sha256": "d8ecf9556aafa8c653796d6be3dc43deea374257680e21c30109a5c3c4484263",
+      "bytes": 604,
+      "role": "license",
+      "download": {
+        "url": "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz",
+        "sha256": "ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e",
+        "bytes": 1524133,
+        "archive": "tar.gz",
+        "member": "lame-3.100/mpglib/AUTHORS"
+      }
+    }
+  ],
+  "bundled_binaries": [
+    {
+      "path": "Lib/site-packages/lameenc.cp311-win_amd64.pyd",
+      "sha256": "57e493672e019fc14d010bc0f0de7b84829d3213746bdc6bbeee81d73bb32a3a",
+      "official_wheel": "https://files.pythonhosted.org/packages/70/9b/d6536b83d688f87150b6e6f2a57a7d3eb0dcb84efd4974605febc4d5c513/lameenc-1.8.4-cp311-cp311-win_amd64.whl",
+      "official_wheel_sha256": "28e51e725de35fe9492cfeb83f19e5f676765342139794e50d5d5e3827c124ff",
+      "member": "lameenc.cp311-win_amd64.pyd",
+      "match": "byte-for-byte"
+    }
+  ],
+  "source_commit": "813cce2f818dbd6888c0e02bc229e764e6491be6",
+  "wheel_source_metadata": {
+    "tag": "1.8.4",
+    "distance": 0,
+    "node": "g813cce2f818dbd6888c0e02bc229e764e6491be6",
+    "dirty": false,
+    "branch": "HEAD",
+    "node_date": "2026-06-27"
+  }
+}

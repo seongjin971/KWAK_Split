@@ -1,0 +1,27 @@
+PyZMQ 27.2.0 and bundled libzmq 4.3.5
+====================================
+
+PyZMQ is BSD-3-Clause licensed. Its full notice is LICENSE.md in this folder.
+The bundled libzmq 4.3.5 is licensed under the Mozilla Public License 2.0;
+the complete terms are in licenses/LICENSE.zeromq.txt.
+
+The Source Code Form for the bundled libzmq is available under MPL-2.0:
+https://github.com/zeromq/libzmq/releases/tag/v4.3.5
+https://github.com/zeromq/libzmq/releases/download/v4.3.5/zeromq-4.3.5.tar.gz
+
+PyZMQ source and the Windows wheel build configuration that selects this
+libzmq version (PYZMQ_LIBZMQ_VERSION=4.3.5):
+https://github.com/zeromq/pyzmq/tree/v27.2.0
+https://github.com/zeromq/pyzmq/blob/v27.2.0/CMakeLists.txt
+https://github.com/zeromq/pyzmq/blob/v27.2.0/pyproject.toml
+
+KWAK Split does not modify PyZMQ or libzmq. The desktop _zmq extension is
+copied from the official Windows wheel. The MPL rights in libzmq remain
+unchanged by the MIT license of KWAK Split. Libsodium and Tornado notices
+are retained in licenses/ alongside the MPL text.
+
+Verified desktop extension SHA-256 (_zmq.cp311-win_amd64.pyd):
+1869d629bb18e0341258d04cd3ccc931a019d544d5c05980354d7cffc1fc9084
+
+Distribution source availability must be maintained for the exact version
+actually shipped. A future dependency update requires a new verification.

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "supplier": "BtbN/FFmpeg-Builds",
+  "version": "n8.1.3-18-g46d899d7a0-20261013",
+  "license": "GPL-3.0-or-later",
+  "candidate_only": false,
+  "source_local_verified": true,
+  "public_source_published": false,
+  "release": "https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-10-13-13-05",
+  "build_commit": "63ac3265b0789ea16c7b1f8351cd2ad195a28722",
+  "ffmpeg_commit": "46d899d7a02bc63237472cc4897258d5ddf274ac",
+  "workflow_run": "https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770",
+  "archive": {
+    "name": "ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1.zip",
+    "root_directory": "ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1",
+    "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-13-13-05/ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1.zip",
+    "bytes": 193039590,
+    "sha256": "f328d719f8805ea9ab76b8e99dc4a52537e92c6d6f5f8302f297988b9a928bb6"
+  },
+  "binaries": [
+    {
+      "name": "ffmpeg.exe",
+      "sha256": "2edd3240d6834ac341bcd8d3b51a73d0fd13dfaddbaf5b1c88bf228fe5558a35"
+    },
+    {
+      "name": "ffprobe.exe",
+      "sha256": "69eae874f41b4e18d7a8af2255f5b8f363fe58196d1cc96d5a079b75e93449d7"
+    },
+    {
+      "name": "ffplay.exe",
+      "sha256": "d1afbd81deb8c16e36554dba65108084a56e370e0f17e17958ae04f344db2334"
+    }
+  ],
+  "source_bundle": [
+    {
+      "path": "vendor-sources/ffmpeg/dependencies-part1.zip",
+      "sha256": "36efe805140b58e32c45d6338accc8fcacd65e2bf7f230b7ef80059c0bc39c05",
+      "bytes": 892416224,
+      "bundle_path": "source/ffmpeg/dependencies-part1.zip"
+    },
+    {
+      "path": "vendor-sources/ffmpeg/dependencies-part2.zip",
+      "sha256": "92526cceb11648ed2565a853b4f1478716f093f4c6516d3a59f7fc59ca233314",
+      "bytes": 885772436,
+      "bundle_path": "source/ffmpeg/dependencies-part2.zip"
+    },
+    {
+      "path": "vendor-sources/ffmpeg/dependencies-part3.zip",
+      "sha256": "81e9460162a97f58ea38d985e66505c2bed54fffdce30fff58d5eb9eed2e311e",
+      "bytes": 343989782,
+      "bundle_path": "source/ffmpeg/dependencies-part3.zip"
+    },
+    {
+      "path": "vendor-sources/ffmpeg/FFmpeg-Builds-63ac3265b0789ea16c7b1f8351cd2ad195a28722.tar.gz",
+      "sha256": "4fd8856d5b207fce5c870a690aefc9a72b9a1943cfc79df8d5d327ec4612c9d2",
+      "bytes": 116749,
+      "bundle_path": "source/ffmpeg/FFmpeg-Builds-63ac3265b0789ea16c7b1f8351cd2ad195a28722.tar.gz"
+    },
+    {
+      "path": "vendor-sources/ffmpeg/FFmpeg-46d899d7a02bc63237472cc4897258d5ddf274ac.tar.gz",
+      "sha256": "6626e1f622324597146a8cc90a89bb4c3529f7df55f0a8c998fde55ac5ae4161",
+      "bytes": 16923502,
+      "bundle_path": "source/ffmpeg/FFmpeg-46d899d7a02bc63237472cc4897258d5ddf274ac.tar.gz"
+    },
+    {
+      "path": "vendor-sources/ffmpeg/rav1e-cargo-sources.zip",
+      "sha256": "e66ca7951ada87cbd42f050f742f1f15f7871db5a170aade6a4396eba0400742",
+      "bytes": 47115482,
+      "bundle_path": "source/ffmpeg/rav1e-cargo-sources.zip"
+    },
+    {
+      "path": "vendor-sources/ffmpeg/source-metadata.zip",
+      "bytes": 1262155,
+      "sha256": "a23519ecd9cc3f34bf91e008302c0455c35f8aa1d10aba0a67d4a602adc3eace",
+      "bundle_path": "source/ffmpeg/source-metadata.zip"
+    }
+  ],
+  "source_verification": "Exact FFmpeg core and original build scripts, all 98 dependency source stages matched to the actual build log, selected GPL sources with unused AMF SDK material excluded, and 275 rav1e crate archives matched to the same built-library cache layer and package checksums; original component notices preserved. No byte-for-byte rebuild or public publication asserted.",
+  "source_inventory": "LICENSES/ffmpeg/source-inventory.json",
+  "rust_inventory": "LICENSES/ffmpeg/rav1e-cargo-inventory.json",
+  "build_provenance": "LICENSES/ffmpeg/build-provenance.json"
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "component": "more-itertools",
+  "version": "8.8.0 and 8.12.0",
+  "license_expression": "MIT",
+  "verified_on": "2026-10-14",
+  "files": [
+    {
+      "path": "LICENSES/more-itertools/LICENSE-8.8.0.txt",
+      "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46",
+      "bytes": 1053,
+      "role": "license",
+      "download": {
+        "url": "https://raw.githubusercontent.com/more-itertools/more-itertools/v8.8.0/LICENSE",
+        "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46",
+        "bytes": 1053
+      }
+    },
+    {
+      "path": "LICENSES/more-itertools/LICENSE-8.12.0.txt",
+      "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46",
+      "bytes": 1053,
+      "role": "license",
+      "download": {
+        "url": "https://raw.githubusercontent.com/more-itertools/more-itertools/v8.12.0/LICENSE",
+        "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46",
+        "bytes": 1053
+      }
+    }
+  ],
+  "bundled_binaries": []
+}

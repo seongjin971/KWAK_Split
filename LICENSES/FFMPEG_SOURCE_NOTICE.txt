@@ -1,29 +1,41 @@
-FFmpeg source notice for KWAK Split
-==================================
+FFmpeg source and license notice for KWAK Split
+==============================================
 
-Bundled binaries:
-- bin/ffmpeg.exe
-- bin/ffprobe.exe
-- bin/ffplay.exe
+This notice applies to bin/ffmpeg.exe, bin/ffprobe.exe and bin/ffplay.exe
+matching LICENSES/ffmpeg/manifest.json:
 
-Observed binary version:
-- ffmpeg version 8.1.1-essentials_build-www.gyan.dev
+BtbN FFmpeg n8.1.3-18-g46d899d7a0-20261013, win64-gpl-8.1.
+FFmpeg commit: 46d899d7a02bc63237472cc4897258d5ddf274ac
+Build recipes: 63ac3265b0789ea16c7b1f8351cd2ad195a28722
+License: GNU GPL version 3 or later; see GPL-3.0.txt.
+The configuration enables GPL/version3 and does not enable nonfree.
+Original third-party copyright and license notices are in ffmpeg/components/.
 
-Observed configure flags include:
-- --enable-gpl
-- --enable-version3
-- --enable-static
-- --enable-librubberband
+Exact source access
+-------------------
+The accompanying source/ffmpeg directory contains the exact FFmpeg source,
+original build scripts/patches, selected dependency sources, and original Rust
+crate sources recovered from the actual build cache. File hashes and release
+paths are recorded in ffmpeg/manifest.json. Instructions, source selection and
+provenance are in ffmpeg/SOURCE-README.txt, source-inventory.json,
+rav1e-cargo-inventory.json and build-provenance.json.
 
-These binaries are the gyan.dev FFmpeg essentials build and should be treated as
-GPLv3-covered for redistribution. The GPLv3 license text is included next to
-this file as GPL-3.0.txt.
+Keep the complete source sidecar available with the executable download and
+retain this notice and the component notices in the application. The source
+archives are intentionally excluded from the lightweight Git repository;
+their absence from Git does not remove the distribution requirement.
 
-Corresponding source reference noted by the build notice:
-- https://github.com/FFmpeg/FFmpeg/commit/239f2c733d
+Upstream release:
+https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-10-13-13-05
+Upstream build run:
+https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770
+FFmpeg legal information: https://www.ffmpeg.org/legal.html
+GPL terms: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-FFmpeg legal notes:
-- https://www.ffmpeg.org/legal.html
+Public executable distribution is subject to the project's separate release
+hold and verification checks. Locally acquiring source does not mean a public
+source download has been published.
 
-If KWAK Split is redistributed publicly, keep this notice and provide recipients
-access to the corresponding FFmpeg source for the exact binaries distributed.
+Older Gyan 8.1.1 builds are not covered by this source package. Their historical
+corresponding-source issue and an unsent supplier request are recorded in
+ffmpeg/LEGACY-GYAN.txt. Do not redistribute those old binaries under this notice.

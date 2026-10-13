@@ -9,6 +9,22 @@ Continuous EQ: docs/live-eq.md
 Playback spectrum: docs/realtime-spectrum.md
 Status: FINAL - compact-fix30
 
+License and distribution status (2026-10-14)
+------------------------------------------
+KWAK Split's original code is MIT licensed; see LICENSE. Third-party software,
+model weights and their notices keep their own terms in THIRD_PARTY_NOTICES.txt
+and LICENSES/. The MIT grant does not relicense those components.
+
+Public executable downloads are ON HOLD while Demucs model redistribution
+permission is unresolved. The accepted local model and split quality are kept.
+The former public v1.0.0 release is retained as a private draft, with its asset
+preserved. Do not redistribute a local package or imply that its model has been
+cleared for general or commercial use. See docs/license-compliance.md.
+
+build.ps1 checks this decision before packaging. Use -LocalOnly for an explicitly
+non-public development build. Removing cached model weights does not authorize
+publication: the current runner can also obtain the same weights at first use.
+
 Quick Start
 -----------
 1. Run "Run KWAK Split.cmd". It selects release/compact-fix30/KWAK Split/KWAK Split.exe,
@@ -236,6 +252,8 @@ files and exported audio are preserved. Open the input again to start another ed
 
 Running on Another PC
 --------------------
+Public distribution is on hold as described above. The following is the folder
+layout for the owner's local testing; it is not a redistribution authorization.
 Copy the entire release/compact-fix30/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;

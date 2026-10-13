@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "component": "demucs",
+  "version": "4.0.1",
+  "license_expression": "MIT",
+  "verified_on": "2026-10-14",
+  "files": [
+    {
+      "path": "LICENSES/demucs/LICENSE.txt",
+      "sha256": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
+      "bytes": 1087,
+      "role": "license",
+      "download": {
+        "url": "https://raw.githubusercontent.com/facebookresearch/demucs/v4.0.1/LICENSE",
+        "sha256": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
+        "bytes": 1087
+      }
+    }
+  ],
+  "bundled_binaries": [],
+  "scope": "Demucs program code only. This manifest does not grant or establish rights to pretrained model weights."
+}

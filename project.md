@@ -4,6 +4,13 @@ Date: 2026-10-13. Status: **FINAL - compact-fix30**, accepted as the final
 version by the user. `Run KWAK Split.cmd` selects that package. This cleanup does
 not change application behavior or pursue further split-speed tuning.
 
+Licensing update, 2026-10-14: the owner selected MIT for the project's original
+code and chose to preserve Demucs quality while holding public executable
+distribution pending model permission. The existing v1.0.0 GitHub release was
+changed to draft without deleting its asset. See [license remediation](docs/license-compliance.md)
+and [model evidence](LICENSES/demucs-model/PROVENANCE.md). The functional acceptance
+above does not imply that third-party model redistribution is cleared.
+
 ## Product
 
 A compact Windows audio/stem editor: open or drop audio, select a range,

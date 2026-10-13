@@ -1,0 +1,65 @@
+This is the redist.txt file mentioned in the associated Intel End User License 
+Agreement for Developer Tools (Version April 2023) (“Agreement”).  All 
+capitalized terms used but not defined in this file have the same meaning as 
+specified in the Agreement. The Redistributables are listed below, and are 
+subject to all of the terms and conditions of the Agreement.
+
+Please note that Third Party Programs, if any, may also be redistributable. See 
+the “third-party-programs.txt” or other similarly-named text file for more 
+details.”
+
+################################################################################
+###   Intel® Fortran Compiler & Intel® Fortran Compiler Classic 2024.2
+################################################################################
+
+<installdir>/bin32/ifdlg100.dll
+<installdir>/bin32/libicaf.dll
+<installdir>/bin32/libifcoremd.dll
+<installdir>/bin32/libifcoremdd.dll
+<installdir>/bin32/libifcorert.dll
+<installdir>/bin32/libifcorertd.dll
+<installdir>/bin32/libifportmd.dll
+<installdir>/bin/ifdlg100.dll
+<installdir>/bin/libifportmd.dll
+<installdir>/bin/libicaf.dll
+<installdir>/bin/libifcoremd.dll
+<installdir>/bin/libifcoremdd.dll
+<installdir>/bin/libifcorert.dll
+<installdir>/bin/libifcorertd.dll
+<installdir>/bin32/libiomp5md.dll
+<installdir>/bin32/libiompstubs5md.dll
+<installdir>/bin32/libirngmd.dll
+<installdir>/bin32/libmmd.dll
+<installdir>/bin32/libmmdd.dll
+<installdir>/bin32/svml_dispmd.dll
+<installdir>/bin/libirngmd.dll
+<installdir>/licensing/compiler/Intel Developer Tools EULA.rtf
+<installdir>/bin/omptarget.rtl.opencl.dll
+<installdir>/bin/omptarget.rtl.level0.dll
+<installdir>/bin/omptarget.dll
+<installdir>/bin/omptarget.sycl.wrap.dll
+<installdir>/opt/compiler/lib/libomptarget-opencl-required.bc
+<installdir>/opt/compiler/lib/libomptarget-opencl-optional.bc
+<installdir>/opt/compiler/bin/libomp-fallback-cassert.spv
+<installdir>/opt/compiler/bin/libomp-fallback-cmath-fp64.spv
+<installdir>/opt/compiler/bin/libomp-fallback-cmath.spv
+<installdir>/opt/compiler/bin/libomp-fallback-complex-fp64.spv
+<installdir>/opt/compiler/bin/libomp-fallback-complex.spv
+<installdir>/opt/compiler/bin/libomp-fallback-cstring.spv
+<installdir>/bin/omptarget.rtl.unified_runtime.dll
+<installdir>/bin/libiomp5md.dll
+<installdir>/bin/libiompstubs5md.dll
+<installdir>/bin/libiomp5md_db.dll
+<installdir>/lib/libiomp5md.lib
+<installdir>/lib/libiompstubs5md.lib
+<installdir>/bin/xptifw.dll
+<installdir>/bin/libmmd.dll
+<installdir>/bin/libmmdd.dll
+<installdir>/bin/svml_dispmd.dll
+<installdir>/bin/qkmalloc.dll
+<installdir>/bin/pi_level_zero.dll
+<installdir>/bin/pi_opencl.dll
+<installdir>/bin/ur_loader.dll
+<installdir>/bin/ur_adapter_level_zero.dll
+<installdir>/bin/pi_unified_runtime.dll
+<installdir>/bin/ur_adapter_opencl.dll

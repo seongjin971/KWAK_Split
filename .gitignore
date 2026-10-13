@@ -15,6 +15,7 @@ logs/*
 models/*
 bin/*
 backend/demucs_runtime/
+vendor-sources/
 *.spec
 settings.json
 *.kwaksplit

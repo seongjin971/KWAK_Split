@@ -1,0 +1,628 @@
+{
+  "build_recipe_commit": "63ac3265b0789ea16c7b1f8351cd2ad195a28722",
+  "ffmpeg_commit": "46d899d7a02bc63237472cc4897258d5ddf274ac",
+  "workflow_run": "https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770",
+  "dependency_build_job": "https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770/job/115294201809",
+  "build_log_sha256": "b8d5fde59a4f9083d8a8d9c3ef73b9001779515143dc9e1876b20aa09e14b28d",
+  "source_stage_count": 98,
+  "source_stage_log_names_match": true,
+  "base_image": "ghcr.io/btbn/ffmpeg-builds/base-win64@sha256:f27c68da9e353b5fcef0396fb5d5112b969eb6c9fb02e8df484c0fea130016e7",
+  "dependency_image": "ghcr.io/btbn/ffmpeg-builds/win64-gpl-8.1@sha256:79ffe8aa0a517bb5a4fbeb718c798b88033b1d853e82b0e936ee4edd95a0f2be",
+  "cache_image_manifest": "sha256:e946dce215b73608c6b13d9579d56bf6a2bf8a20527eb57556a50bb26821baf2",
+  "binaries": {
+    "ffmpeg": {
+      "sha256": "2edd3240d6834ac341bcd8d3b51a73d0fd13dfaddbaf5b1c88bf228fe5558a35",
+      "version_output": "ffmpeg version n8.1.3-18-g46d899d7a0-20261013 Copyright (c) 2000-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --enable-libdvdread --enable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20261013\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n\nExiting with exit code 0\n"
+    },
+    "ffprobe": {
+      "sha256": "69eae874f41b4e18d7a8af2255f5b8f363fe58196d1cc96d5a079b75e93449d7",
+      "version_output": "ffprobe version n8.1.3-18-g46d899d7a0-20261013 Copyright (c) 2007-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --enable-libdvdread --enable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20261013\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n"
+    },
+    "ffplay": {
+      "sha256": "d1afbd81deb8c16e36554dba65108084a56e370e0f17e17958ae04f344db2334",
+      "version_output": "ffplay version n8.1.3-18-g46d899d7a0-20261013 Copyright (c) 2003-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --enable-libdvdread --enable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20261013\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n"
+    }
+  },
+  "selected_recipe_downloads": [
+    {
+      "stage": "10-glib",
+      "script": "scripts.d/50-librsvg/10-glib.sh",
+      "file": "10-glib_5402d13c8cec3808b3aeedfebf49bf0062a14163059573ff9a30fe5add2b473a.tar.xz",
+      "download_command_sha256": "5402d13c8cec3808b3aeedfebf49bf0062a14163059573ff9a30fe5add2b473a"
+    },
+    {
+      "stage": "10-mingw-std-threads",
+      "script": "scripts.d/10-mingw-std-threads.sh",
+      "file": "10-mingw-std-threads_f6fe5dc5a067e90cd8b37a748b33962ac2eb09f3b486b287265803070dbf02d2.tar.xz",
+      "download_command_sha256": "f6fe5dc5a067e90cd8b37a748b33962ac2eb09f3b486b287265803070dbf02d2"
+    },
+    {
+      "stage": "10-mingw",
+      "script": "scripts.d/10-mingw.sh",
+      "file": "10-mingw_4a5947515b3202347fc7a8634b92a4da4c0981c56f574cc19d1b5ae025802126.tar.xz",
+      "download_command_sha256": "4a5947515b3202347fc7a8634b92a4da4c0981c56f574cc19d1b5ae025802126"
+    },
+    {
+      "stage": "20-cairo",
+      "script": "scripts.d/50-librsvg/20-cairo.sh",
+      "file": "20-cairo_b460be039dc49e1a252ad8a1ed08863785f51cdb1156ceb585ca590d4f98beea.tar.xz",
+      "download_command_sha256": "b460be039dc49e1a252ad8a1ed08863785f51cdb1156ceb585ca590d4f98beea"
+    },
+    {
+      "stage": "20-libiconv",
+      "script": "scripts.d/20-libiconv.sh",
+      "file": "20-libiconv_d305d67ced0587cd182ccb111e5b58aa20270faf665afb5444c0fbaed0762844.tar.xz",
+      "download_command_sha256": "d305d67ced0587cd182ccb111e5b58aa20270faf665afb5444c0fbaed0762844"
+    },
+    {
+      "stage": "20-zlib",
+      "script": "scripts.d/20-zlib.sh",
+      "file": "20-zlib_bf2e5201ff9a94837b6910b9c13a9cdd9d2d5934f12ac9f32eda1538d1fcde49.tar.xz",
+      "download_command_sha256": "bf2e5201ff9a94837b6910b9c13a9cdd9d2d5934f12ac9f32eda1538d1fcde49"
+    },
+    {
+      "stage": "25-fftw3",
+      "script": "scripts.d/25-fftw3.sh",
+      "file": "25-fftw3_f590d55efb2139d10bea09f7f3542f648290d35fc2ecb3122d6896bf2af049e3.tar.xz",
+      "download_command_sha256": "f590d55efb2139d10bea09f7f3542f648290d35fc2ecb3122d6896bf2af049e3"
+    },
+    {
+      "stage": "25-freetype",
+      "script": "scripts.d/45-fonts/25-freetype.sh",
+      "file": "25-freetype_839dfebde0a38da3f7515004bed2270140526899f2f9b5f77298b7daac9ba42b.tar.xz",
+      "download_command_sha256": "839dfebde0a38da3f7515004bed2270140526899f2f9b5f77298b7daac9ba42b"
+    },
+    {
+      "stage": "25-fribidi",
+      "script": "scripts.d/25-fribidi.sh",
+      "file": "25-fribidi_a9c156a32e2270c78ca34f8bfd98b17b8669e2d809cc9a9c5f6d1c063c644f1e.tar.xz",
+      "download_command_sha256": "a9c156a32e2270c78ca34f8bfd98b17b8669e2d809cc9a9c5f6d1c063c644f1e"
+    },
+    {
+      "stage": "25-gmp",
+      "script": "scripts.d/25-gmp.sh",
+      "file": "25-gmp_db2c1ce62ef8c1b88dcc4d27b07bfb6e847e740125923386ccf9967cd05dc93f.tar.xz",
+      "download_command_sha256": "db2c1ce62ef8c1b88dcc4d27b07bfb6e847e740125923386ccf9967cd05dc93f"
+    },
+    {
+      "stage": "25-libogg",
+      "script": "scripts.d/25-libogg.sh",
+      "file": "25-libogg_bdea5ee518d129340be457dcc11c2cef63053ac3c827e71311caff1dd3c43339.tar.xz",
+      "download_command_sha256": "bdea5ee518d129340be457dcc11c2cef63053ac3c827e71311caff1dd3c43339"
+    },
+    {
+      "stage": "25-libpng",
+      "script": "scripts.d/25-libpng.sh",
+      "file": "25-libpng_b948a48a853c9c7e1727e7244e4f21554dae18b83ce7f00e8a5421c0e907b73b.tar.xz",
+      "download_command_sha256": "b948a48a853c9c7e1727e7244e4f21554dae18b83ce7f00e8a5421c0e907b73b"
+    },
+    {
+      "stage": "25-libxml2",
+      "script": "scripts.d/25-libxml2.sh",
+      "file": "25-libxml2_dddeb5d5d186abb11e5f3a0c2d05938fcdb6348804e56c03a7f06263620cdc83.tar.xz",
+      "download_command_sha256": "dddeb5d5d186abb11e5f3a0c2d05938fcdb6348804e56c03a7f06263620cdc83"
+    },
+    {
+      "stage": "25-openssl",
+      "script": "scripts.d/25-openssl.sh",
+      "file": "25-openssl_6f695916f5dbd6cd60d7719032826032a028d9b83164ebea7a13c72254f690a5.tar.xz",
+      "download_command_sha256": "6f695916f5dbd6cd60d7719032826032a028d9b83164ebea7a13c72254f690a5"
+    },
+    {
+      "stage": "25-xz",
+      "script": "scripts.d/25-xz.sh",
+      "file": "25-xz_b47aea19d87bc74ee9a1ba179e240b0c2998eed272c980ba9065827d8cfb0276.tar.xz",
+      "download_command_sha256": "b47aea19d87bc74ee9a1ba179e240b0c2998eed272c980ba9065827d8cfb0276"
+    },
+    {
+      "stage": "30-libdvdcss",
+      "script": "scripts.d/50-dvd/30-libdvdcss.sh",
+      "file": "30-libdvdcss_8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c.tar.xz",
+      "download_command_sha256": "8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c"
+    },
+    {
+      "stage": "30-pango",
+      "script": "scripts.d/50-librsvg/30-pango.sh",
+      "file": "30-pango_fa28105e276f1fc77de3a3231765da71db0cf4b93c57adba61921bcb240e30d7.tar.xz",
+      "download_command_sha256": "fa28105e276f1fc77de3a3231765da71db0cf4b93c57adba61921bcb240e30d7"
+    },
+    {
+      "stage": "35-fontconfig",
+      "script": "scripts.d/45-fonts/35-fontconfig.sh",
+      "file": "35-fontconfig_ce2e0916ca408e9567ab57c27be06a7166a9f9a3da902c751fef1bbb969f6a1a.tar.xz",
+      "download_command_sha256": "ce2e0916ca408e9567ab57c27be06a7166a9f9a3da902c751fef1bbb969f6a1a"
+    },
+    {
+      "stage": "40-libdvdread",
+      "script": "scripts.d/50-dvd/40-libdvdread.sh",
+      "file": "40-libdvdread_05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0.tar.xz",
+      "download_command_sha256": "05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0"
+    },
+    {
+      "stage": "40-mbedtls",
+      "script": "scripts.d/50-librist/40-mbedtls.sh",
+      "file": "40-mbedtls_8dd146455b388b9a7236d83bb2904ff89bba41fa28da9af8a310fc01f4ff1b53.tar.xz",
+      "download_command_sha256": "8dd146455b388b9a7236d83bb2904ff89bba41fa28da9af8a310fc01f4ff1b53"
+    },
+    {
+      "stage": "40-vulkan-headers",
+      "script": "scripts.d/47-vulkan/40-vulkan-headers.sh",
+      "file": "40-vulkan-headers_3d08793cac3f0e3cac071b802aae1634fe925048f94a56d388c4c618a1ea8482.tar.xz",
+      "download_command_sha256": "3d08793cac3f0e3cac071b802aae1634fe925048f94a56d388c4c618a1ea8482"
+    },
+    {
+      "stage": "45-brotli",
+      "script": "scripts.d/45-brotli.sh",
+      "file": "45-brotli_5b1766c0a935049ea5bf0b54743ec092ee5bf45fd169a8e1bab2b0263b676105.tar.xz",
+      "download_command_sha256": "5b1766c0a935049ea5bf0b54743ec092ee5bf45fd169a8e1bab2b0263b676105"
+    },
+    {
+      "stage": "45-harfbuzz",
+      "script": "scripts.d/45-fonts/45-harfbuzz.sh",
+      "file": "45-harfbuzz_23f9e500f00621c247219aacc18850d66d1ac0e974cb33a1423055284aceb5e3.tar.xz",
+      "download_command_sha256": "23f9e500f00621c247219aacc18850d66d1ac0e974cb33a1423055284aceb5e3"
+    },
+    {
+      "stage": "45-lcms2",
+      "script": "scripts.d/45-lcms2.sh",
+      "file": "45-lcms2_b9d421bd54de499208c092b61240854de0e2d9f0c3080c61d533026fa237d379.tar.xz",
+      "download_command_sha256": "b9d421bd54de499208c092b61240854de0e2d9f0c3080c61d533026fa237d379"
+    },
+    {
+      "stage": "45-libffi",
+      "script": "scripts.d/45-libffi.sh",
+      "file": "45-libffi_4926a5ddb533e7af1ceb6847462394f09f68adb6ad0e7ec5408d79e5ab3fe73a.tar.xz",
+      "download_command_sha256": "4926a5ddb533e7af1ceb6847462394f09f68adb6ad0e7ec5408d79e5ab3fe73a"
+    },
+    {
+      "stage": "45-libsamplerate",
+      "script": "scripts.d/45-libsamplerate.sh",
+      "file": "45-libsamplerate_0810498d6a2fa7146ea7d224b33501c0e4ea37740e12902f1ffa9ab432f4213c.tar.xz",
+      "download_command_sha256": "0810498d6a2fa7146ea7d224b33501c0e4ea37740e12902f1ffa9ab432f4213c"
+    },
+    {
+      "stage": "45-libudfread",
+      "script": "scripts.d/45-libudfread.sh",
+      "file": "45-libudfread_fd3762aa44b177492e9294237da9af64f7c2a22b97658e6e2a5395d1ae3a13c0.tar.xz",
+      "download_command_sha256": "fd3762aa44b177492e9294237da9af64f7c2a22b97658e6e2a5395d1ae3a13c0"
+    },
+    {
+      "stage": "45-libunibreak",
+      "script": "scripts.d/45-libunibreak.sh",
+      "file": "45-libunibreak_e861a261ce25cfd0ba5db1e70cbdc0c0eb8ea42a4e1bb3443c928e9604315d37.tar.xz",
+      "download_command_sha256": "e861a261ce25cfd0ba5db1e70cbdc0c0eb8ea42a4e1bb3443c928e9604315d37"
+    },
+    {
+      "stage": "45-libvorbis",
+      "script": "scripts.d/45-libvorbis.sh",
+      "file": "45-libvorbis_0ab43e5711b2585b0c19dd71023f5852d755c633bda0215caad53dc63c62a644.tar.xz",
+      "download_command_sha256": "0ab43e5711b2585b0c19dd71023f5852d755c633bda0215caad53dc63c62a644"
+    },
+    {
+      "stage": "45-opencl",
+      "script": "scripts.d/45-opencl.sh",
+      "file": "45-opencl_060b32b588efb8a3dfd71f4ff90e2247d753cd22ecf2713cf7ad2814ef23c71a.tar.xz",
+      "download_command_sha256": "060b32b588efb8a3dfd71f4ff90e2247d753cd22ecf2713cf7ad2814ef23c71a"
+    },
+    {
+      "stage": "45-pcre2",
+      "script": "scripts.d/45-pcre2.sh",
+      "file": "45-pcre2_8f18f3d355cedfce208fb5a70fbe344e39dc7f54fc1825128dc862c6d97be0e7.tar.xz",
+      "download_command_sha256": "8f18f3d355cedfce208fb5a70fbe344e39dc7f54fc1825128dc862c6d97be0e7"
+    },
+    {
+      "stage": "45-pixman",
+      "script": "scripts.d/45-pixman.sh",
+      "file": "45-pixman_ffb8f7552f1012347d02eb8fe976cbc9c3bc79e42df005f8c7389b8379ce581c.tar.xz",
+      "download_command_sha256": "ffb8f7552f1012347d02eb8fe976cbc9c3bc79e42df005f8c7389b8379ce581c"
+    },
+    {
+      "stage": "45-vmaf",
+      "script": "scripts.d/45-vmaf.sh",
+      "file": "45-vmaf_aaf0bdf34f8f3d15cc4ef5b243507514c911ea8730cd37a98b2f8a3ecf123af7.tar.xz",
+      "download_command_sha256": "aaf0bdf34f8f3d15cc4ef5b243507514c911ea8730cd37a98b2f8a3ecf123af7"
+    },
+    {
+      "stage": "45-vulkan-loader",
+      "script": "scripts.d/47-vulkan/45-vulkan-loader.sh",
+      "file": "45-vulkan-loader_ab4a5b2a493729e8ea13712813acbf64e333ec5f23ab04320f11cadc2755079f.tar.xz",
+      "download_command_sha256": "ab4a5b2a493729e8ea13712813acbf64e333ec5f23ab04320f11cadc2755079f"
+    },
+    {
+      "stage": "45-xxhash",
+      "script": "scripts.d/45-xxhash.sh",
+      "file": "45-xxhash_90443f50c5c918c094cb124be955f12ad18dc2724f27908d13c1a37ac35a3a60.tar.xz",
+      "download_command_sha256": "90443f50c5c918c094cb124be955f12ad18dc2724f27908d13c1a37ac35a3a60"
+    },
+    {
+      "stage": "50-amf",
+      "script": "scripts.d/50-amf.sh",
+      "file": "50-amf_7c25b9629d2f3a45b07d6701c869180793da062cf1cedbda5d281768afdb6cf0.tar.xz",
+      "download_command_sha256": "7c25b9629d2f3a45b07d6701c869180793da062cf1cedbda5d281768afdb6cf0"
+    },
+    {
+      "stage": "50-aom",
+      "script": "scripts.d/50-aom.sh",
+      "file": "50-aom_354b34b41392cdc88ea61b139b54314d146a8b324ed77c148ece5418cffd761b.tar.xz",
+      "download_command_sha256": "354b34b41392cdc88ea61b139b54314d146a8b324ed77c148ece5418cffd761b"
+    },
+    {
+      "stage": "50-avisynth",
+      "script": "scripts.d/50-avisynth.sh",
+      "file": "50-avisynth_8ab1bb9093ff4aa59410b5463256de23838ef94867b7cc6a3a525892fddc9b85.tar.xz",
+      "download_command_sha256": "8ab1bb9093ff4aa59410b5463256de23838ef94867b7cc6a3a525892fddc9b85"
+    },
+    {
+      "stage": "50-chromaprint",
+      "script": "scripts.d/50-chromaprint.sh",
+      "file": "50-chromaprint_fd1913f99597fe11aa0a070aaaee173d271d06a2578bd240a1e6f9d7e5d9e344.tar.xz",
+      "download_command_sha256": "fd1913f99597fe11aa0a070aaaee173d271d06a2578bd240a1e6f9d7e5d9e344"
+    },
+    {
+      "stage": "50-dav1d",
+      "script": "scripts.d/50-dav1d.sh",
+      "file": "50-dav1d_289ebd1742c2ee56189cd4064c2a059c9289918f8a99c32140e72aa47d2ab690.tar.xz",
+      "download_command_sha256": "289ebd1742c2ee56189cd4064c2a059c9289918f8a99c32140e72aa47d2ab690"
+    },
+    {
+      "stage": "50-davs2",
+      "script": "scripts.d/50-davs2.sh",
+      "file": "50-davs2_a2d3a5d05dbd810e7a33f41ca77f70f1775ab8318ffe3e1b365105e8ad813d7e.tar.xz",
+      "download_command_sha256": "a2d3a5d05dbd810e7a33f41ca77f70f1775ab8318ffe3e1b365105e8ad813d7e"
+    },
+    {
+      "stage": "50-ffnvcodec",
+      "script": "scripts.d/50-ffnvcodec.sh",
+      "file": "50-ffnvcodec_ef2a38b483abf36f56dfe74a3ab3909ef01360a01619123b6a4cfac4eece7e28.tar.xz",
+      "download_command_sha256": "ef2a38b483abf36f56dfe74a3ab3909ef01360a01619123b6a4cfac4eece7e28"
+    },
+    {
+      "stage": "50-freetype",
+      "script": "scripts.d/45-fonts/50-freetype.sh",
+      "file": "50-freetype_839dfebde0a38da3f7515004bed2270140526899f2f9b5f77298b7daac9ba42b.tar.xz",
+      "download_command_sha256": "839dfebde0a38da3f7515004bed2270140526899f2f9b5f77298b7daac9ba42b"
+    },
+    {
+      "stage": "50-frei0r",
+      "script": "scripts.d/50-frei0r.sh",
+      "file": "50-frei0r_55b6f225efa82d03fca598c78033acf1831f46a37ae8f66567882818b520d1fc.tar.xz",
+      "download_command_sha256": "55b6f225efa82d03fca598c78033acf1831f46a37ae8f66567882818b520d1fc"
+    },
+    {
+      "stage": "50-gme",
+      "script": "scripts.d/50-gme.sh",
+      "file": "50-gme_a777e130690856e910357309c2a2ece4423a149328c5a5780012b7d4ad3641ff.tar.xz",
+      "download_command_sha256": "a777e130690856e910357309c2a2ece4423a149328c5a5780012b7d4ad3641ff"
+    },
+    {
+      "stage": "50-kvazaar",
+      "script": "scripts.d/50-kvazaar.sh",
+      "file": "50-kvazaar_da165ff1fadcc81a1f9d7a5f3d96e8a4e14f630022b723e710efe6bbe54d3d52.tar.xz",
+      "download_command_sha256": "da165ff1fadcc81a1f9d7a5f3d96e8a4e14f630022b723e710efe6bbe54d3d52"
+    },
+    {
+      "stage": "50-lcevcdec",
+      "script": "scripts.d/50-lcevcdec.sh",
+      "file": "50-lcevcdec_9610d27cbf57b4db022177a4e8df5b12077765c4e14519ffa2047d330c2b139e.tar.xz",
+      "download_command_sha256": "9610d27cbf57b4db022177a4e8df5b12077765c4e14519ffa2047d330c2b139e"
+    },
+    {
+      "stage": "50-libaribb24",
+      "script": "scripts.d/50-libaribb24.sh",
+      "file": "50-libaribb24_3dd74ffb861f7ef9133dab074b9845408d84ebc49db9aee5d91829efba6d52ce.tar.xz",
+      "download_command_sha256": "3dd74ffb861f7ef9133dab074b9845408d84ebc49db9aee5d91829efba6d52ce"
+    },
+    {
+      "stage": "50-libaribcaption",
+      "script": "scripts.d/50-libaribcaption.sh",
+      "file": "50-libaribcaption_8315a724d2e43047c02fb15f99a6decc2824fd4abd55c795ca1063dca443bf8e.tar.xz",
+      "download_command_sha256": "8315a724d2e43047c02fb15f99a6decc2824fd4abd55c795ca1063dca443bf8e"
+    },
+    {
+      "stage": "50-libass",
+      "script": "scripts.d/50-libass.sh",
+      "file": "50-libass_8d32f6ca9b508226966e8a676c7e47ed5a6ad66bd2caab05a6738c80d45feaab.tar.xz",
+      "download_command_sha256": "8d32f6ca9b508226966e8a676c7e47ed5a6ad66bd2caab05a6738c80d45feaab"
+    },
+    {
+      "stage": "50-libbluray",
+      "script": "scripts.d/50-libbluray.sh",
+      "file": "50-libbluray_cbdd227c469333ec53b78a1b5c8b26cb3db25c331d9052740a38136bd96b13b0.tar.xz",
+      "download_command_sha256": "cbdd227c469333ec53b78a1b5c8b26cb3db25c331d9052740a38136bd96b13b0"
+    },
+    {
+      "stage": "50-libdvdnav",
+      "script": "scripts.d/50-dvd/50-libdvdnav.sh",
+      "file": "50-libdvdnav_20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684.tar.xz",
+      "download_command_sha256": "20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684"
+    },
+    {
+      "stage": "50-libjxl",
+      "script": "scripts.d/50-libjxl/50-libjxl.sh",
+      "file": "50-libjxl_4e9888f992f7e59816f63ab6d0751f7d2c4c2ccd9f7b376158705b3c7b036b52.tar.xz",
+      "download_command_sha256": "4e9888f992f7e59816f63ab6d0751f7d2c4c2ccd9f7b376158705b3c7b036b52"
+    },
+    {
+      "stage": "50-libmp3lame",
+      "script": "scripts.d/50-libmp3lame.sh",
+      "file": "50-libmp3lame_53b8bea5c8c8e8f4284a83912b2208082e5f7e0abce7f205c02dfea85bc13dd3.tar.xz",
+      "download_command_sha256": "53b8bea5c8c8e8f4284a83912b2208082e5f7e0abce7f205c02dfea85bc13dd3"
+    },
+    {
+      "stage": "50-libopus",
+      "script": "scripts.d/50-libopus.sh",
+      "file": "50-libopus_a188c018d9bc2b808f76091aaf419e1c910d45c8e477f131ff5c25cd614b4252.tar.xz",
+      "download_command_sha256": "a188c018d9bc2b808f76091aaf419e1c910d45c8e477f131ff5c25cd614b4252"
+    },
+    {
+      "stage": "50-libplacebo",
+      "script": "scripts.d/50-libplacebo.sh",
+      "file": "50-libplacebo_b1173e45f6ca17988eb02814accda180095e8d85a5c1eab7391ec1c6c331f17a.tar.xz",
+      "download_command_sha256": "b1173e45f6ca17988eb02814accda180095e8d85a5c1eab7391ec1c6c331f17a"
+    },
+    {
+      "stage": "50-librist",
+      "script": "scripts.d/50-librist/50-librist.sh",
+      "file": "50-librist_c44a5e59d58d44b672c8df850ae76b4ad372ebab3a4a63a003ac35d45aa9d1a2.tar.xz",
+      "download_command_sha256": "c44a5e59d58d44b672c8df850ae76b4ad372ebab3a4a63a003ac35d45aa9d1a2"
+    },
+    {
+      "stage": "50-libssh",
+      "script": "scripts.d/50-libssh.sh",
+      "file": "50-libssh_ac0a192544cbf9bc9aaf242e5f5ad0fbb279e56d4acfca69960d626fa8f480c9.tar.xz",
+      "download_command_sha256": "ac0a192544cbf9bc9aaf242e5f5ad0fbb279e56d4acfca69960d626fa8f480c9"
+    },
+    {
+      "stage": "50-libtheora",
+      "script": "scripts.d/50-libtheora.sh",
+      "file": "50-libtheora_c5b1505081f2493a61c94a64ef8eef6de9b851447fab834bd5f9b6e35ee1d008.tar.xz",
+      "download_command_sha256": "c5b1505081f2493a61c94a64ef8eef6de9b851447fab834bd5f9b6e35ee1d008"
+    },
+    {
+      "stage": "50-libva",
+      "script": "scripts.d/50-vaapi/50-libva.sh",
+      "file": "50-libva_2bc55ab7571e4ab9d59dc473d3dfaebb2cbc6caca5da95e1e680eaae56e62d03.tar.xz",
+      "download_command_sha256": "2bc55ab7571e4ab9d59dc473d3dfaebb2cbc6caca5da95e1e680eaae56e62d03"
+    },
+    {
+      "stage": "50-libvpx",
+      "script": "scripts.d/50-libvpx.sh",
+      "file": "50-libvpx_66163f7ac0c48afe3d2318e764e53fcf97fff72e44b32a57727302baff6bd899.tar.xz",
+      "download_command_sha256": "66163f7ac0c48afe3d2318e764e53fcf97fff72e44b32a57727302baff6bd899"
+    },
+    {
+      "stage": "50-libwebp",
+      "script": "scripts.d/50-libwebp.sh",
+      "file": "50-libwebp_79c6c8cf003854f9dc6cd81c05a1439d21e2a45650669646d1aaa3837370dddf.tar.xz",
+      "download_command_sha256": "79c6c8cf003854f9dc6cd81c05a1439d21e2a45650669646d1aaa3837370dddf"
+    },
+    {
+      "stage": "50-libzmq",
+      "script": "scripts.d/50-libzmq.sh",
+      "file": "50-libzmq_e68f6ea67cc2e84e0b320f3a4b5538dc90d97142264dc310dd8bbcb5f989d9e2.tar.xz",
+      "download_command_sha256": "e68f6ea67cc2e84e0b320f3a4b5538dc90d97142264dc310dd8bbcb5f989d9e2"
+    },
+    {
+      "stage": "50-onevpl",
+      "script": "scripts.d/50-onevpl.sh",
+      "file": "50-onevpl_c67accd07bdf24795034753f097eec4331f1a1174ce643cf5bcf94cb26ddd5e4.tar.xz",
+      "download_command_sha256": "c67accd07bdf24795034753f097eec4331f1a1174ce643cf5bcf94cb26ddd5e4"
+    },
+    {
+      "stage": "50-openal",
+      "script": "scripts.d/50-openal.sh",
+      "file": "50-openal_0700515d0775bd9b112b23ea3a1d34d3c041a100f4ab32be289061310616a628.tar.xz",
+      "download_command_sha256": "0700515d0775bd9b112b23ea3a1d34d3c041a100f4ab32be289061310616a628"
+    },
+    {
+      "stage": "50-openapv",
+      "script": "scripts.d/50-openapv.sh",
+      "file": "50-openapv_f9089a3b6e8982ec62ef7be45a6b23c21641728fbfdd52aa94a39ffc294800aa.tar.xz",
+      "download_command_sha256": "f9089a3b6e8982ec62ef7be45a6b23c21641728fbfdd52aa94a39ffc294800aa"
+    },
+    {
+      "stage": "50-opencore-amr",
+      "script": "scripts.d/50-opencore-amr.sh",
+      "file": "50-opencore-amr_5d7ec3b8ffdd0f32309a659256916e3286724f08acf0f625a4b4f1f9c17ebf7c.tar.xz",
+      "download_command_sha256": "5d7ec3b8ffdd0f32309a659256916e3286724f08acf0f625a4b4f1f9c17ebf7c"
+    },
+    {
+      "stage": "50-openh264",
+      "script": "scripts.d/50-openh264.sh",
+      "file": "50-openh264_df57c5a2e7a2f7a6becacd28a386ff00892c36cf873d6ea9a758a95e626a3cee.tar.xz",
+      "download_command_sha256": "df57c5a2e7a2f7a6becacd28a386ff00892c36cf873d6ea9a758a95e626a3cee"
+    },
+    {
+      "stage": "50-openjpeg",
+      "script": "scripts.d/50-openjpeg.sh",
+      "file": "50-openjpeg_b35ab3ef10d52ce49eb8146e05af61e7560bf3b18aa2dd750cb5b083079caac4.tar.xz",
+      "download_command_sha256": "b35ab3ef10d52ce49eb8146e05af61e7560bf3b18aa2dd750cb5b083079caac4"
+    },
+    {
+      "stage": "50-openmpt",
+      "script": "scripts.d/50-openmpt.sh",
+      "file": "50-openmpt_fa065e57891ed593a40690197f5c027d148bb241a74dbfb31cef5bce63a9887e.tar.xz",
+      "download_command_sha256": "fa065e57891ed593a40690197f5c027d148bb241a74dbfb31cef5bce63a9887e"
+    },
+    {
+      "stage": "50-rav1e",
+      "script": "scripts.d/50-rav1e.sh",
+      "file": "50-rav1e_b2d3a4caec12576416c156eb16b4f83433caf3dc3a8270ed0bfe4fb74098dd54.tar.xz",
+      "download_command_sha256": "b2d3a4caec12576416c156eb16b4f83433caf3dc3a8270ed0bfe4fb74098dd54"
+    },
+    {
+      "stage": "50-rubberband",
+      "script": "scripts.d/50-rubberband.sh",
+      "file": "50-rubberband_5d3ca7b4a1f4c07ead3f23ba9c7a3736384a9394a34e41bf70a78075e0ed9593.tar.xz",
+      "download_command_sha256": "5d3ca7b4a1f4c07ead3f23ba9c7a3736384a9394a34e41bf70a78075e0ed9593"
+    },
+    {
+      "stage": "50-sdl",
+      "script": "scripts.d/50-sdl.sh",
+      "file": "50-sdl_eee5ab03d781d41488d330d6a245a878eb37f50acea8ea99d6bcc807af794507.tar.xz",
+      "download_command_sha256": "eee5ab03d781d41488d330d6a245a878eb37f50acea8ea99d6bcc807af794507"
+    },
+    {
+      "stage": "50-shaderc",
+      "script": "scripts.d/47-vulkan/50-shaderc.sh",
+      "file": "50-shaderc_9ff3096908159ae870c6a5086e7e01e4e0de535fb9c6d52de76ce7d4cf73b600.tar.xz",
+      "download_command_sha256": "9ff3096908159ae870c6a5086e7e01e4e0de535fb9c6d52de76ce7d4cf73b600"
+    },
+    {
+      "stage": "50-snappy",
+      "script": "scripts.d/50-snappy.sh",
+      "file": "50-snappy_8e53b9981df8ab90cbd88fd1dd2e976bf99f9b13e069ada011d6fcb5fd4a1dec.tar.xz",
+      "download_command_sha256": "8e53b9981df8ab90cbd88fd1dd2e976bf99f9b13e069ada011d6fcb5fd4a1dec"
+    },
+    {
+      "stage": "50-soxr",
+      "script": "scripts.d/50-soxr.sh",
+      "file": "50-soxr_d24c000584012b62b406f09325af85575932219b972b87ab3e2b1037bdc97c6a.tar.xz",
+      "download_command_sha256": "d24c000584012b62b406f09325af85575932219b972b87ab3e2b1037bdc97c6a"
+    },
+    {
+      "stage": "50-srt",
+      "script": "scripts.d/50-srt.sh",
+      "file": "50-srt_b47647b4bf2fd74999325f793b3c0968d3513719af9b3008922131e8c465e179.tar.xz",
+      "download_command_sha256": "b47647b4bf2fd74999325f793b3c0968d3513719af9b3008922131e8c465e179"
+    },
+    {
+      "stage": "50-svtav1",
+      "script": "scripts.d/50-svtav1.sh",
+      "file": "50-svtav1_46a954dc6763b77684fc6cc76317f9eb478ab707091181bb8bf3ccc6f245296f.tar.xz",
+      "download_command_sha256": "46a954dc6763b77684fc6cc76317f9eb478ab707091181bb8bf3ccc6f245296f"
+    },
+    {
+      "stage": "50-twolame",
+      "script": "scripts.d/50-twolame.sh",
+      "file": "50-twolame_b034b56f3c8caa730922980b6e8aca15c6f3b46e3fa98d3229c337aeb7858f71.tar.xz",
+      "download_command_sha256": "b034b56f3c8caa730922980b6e8aca15c6f3b46e3fa98d3229c337aeb7858f71"
+    },
+    {
+      "stage": "50-uavs3d",
+      "script": "scripts.d/50-uavs3d.sh",
+      "file": "50-uavs3d_f5c1983f0fc2360d5846298e08a8f89f2f345caa3beb83100ca9b48eff5ded6b.tar.xz",
+      "download_command_sha256": "f5c1983f0fc2360d5846298e08a8f89f2f345caa3beb83100ca9b48eff5ded6b"
+    },
+    {
+      "stage": "50-vapoursynth",
+      "script": "scripts.d/50-vapoursynth.sh",
+      "file": "50-vapoursynth_6754f770821a8db36a57df5e8600263caf20ad3466ea18862102b7b954c25157.tar.xz",
+      "download_command_sha256": "6754f770821a8db36a57df5e8600263caf20ad3466ea18862102b7b954c25157"
+    },
+    {
+      "stage": "50-vidstab",
+      "script": "scripts.d/50-vidstab.sh",
+      "file": "50-vidstab_4775a069821691e584b2eb878047d58081f140d98fc8d3c759766f099723179e.tar.xz",
+      "download_command_sha256": "4775a069821691e584b2eb878047d58081f140d98fc8d3c759766f099723179e"
+    },
+    {
+      "stage": "50-vvenc",
+      "script": "scripts.d/50-vvenc.sh",
+      "file": "50-vvenc_7f1746781e3f2a5a225448e524e8f8ee11540497871a44a82fa21768f1c82442.tar.xz",
+      "download_command_sha256": "7f1746781e3f2a5a225448e524e8f8ee11540497871a44a82fa21768f1c82442"
+    },
+    {
+      "stage": "50-x264",
+      "script": "scripts.d/50-x264.sh",
+      "file": "50-x264_7aee4cf46b7c0eff1a5ad3d23ae43a29562065ef2866a4a883d7ad2db0fb755d.tar.xz",
+      "download_command_sha256": "7aee4cf46b7c0eff1a5ad3d23ae43a29562065ef2866a4a883d7ad2db0fb755d"
+    },
+    {
+      "stage": "50-x265",
+      "script": "scripts.d/50-x265.sh",
+      "file": "50-x265_b37b40782670703ea27b2ac7c6b8a4d89f6753cc82f1a6fea29fa60d9fa6b435.tar.xz",
+      "download_command_sha256": "b37b40782670703ea27b2ac7c6b8a4d89f6753cc82f1a6fea29fa60d9fa6b435"
+    },
+    {
+      "stage": "50-xavs2",
+      "script": "scripts.d/50-xavs2.sh",
+      "file": "50-xavs2_983aacbab6d33318bf9c4742b41a1ed9d42afc12a0493ba97d07404a99734009.tar.xz",
+      "download_command_sha256": "983aacbab6d33318bf9c4742b41a1ed9d42afc12a0493ba97d07404a99734009"
+    },
+    {
+      "stage": "50-xvid",
+      "script": "scripts.d/50-xvid.sh",
+      "file": "50-xvid_03619a39e7e15a372b56fc954435c35668ed47258d7e7d3f2e47ba521e3b884f.tar.xz",
+      "download_command_sha256": "03619a39e7e15a372b56fc954435c35668ed47258d7e7d3f2e47ba521e3b884f"
+    },
+    {
+      "stage": "50-zimg",
+      "script": "scripts.d/50-zimg.sh",
+      "file": "50-zimg_7ac9b5905a13db62bae8b61a2a7b3806f25a5f3e173cc0c6c79edf9f38d8b437.tar.xz",
+      "download_command_sha256": "7ac9b5905a13db62bae8b61a2a7b3806f25a5f3e173cc0c6c79edf9f38d8b437"
+    },
+    {
+      "stage": "50-zvbi",
+      "script": "scripts.d/50-zvbi.sh",
+      "file": "50-zvbi_7369ec5938a995eb4283992070b303e140fc8a3b5f53d80e2a5df0b84794a75b.tar.xz",
+      "download_command_sha256": "7369ec5938a995eb4283992070b303e140fc8a3b5f53d80e2a5df0b84794a75b"
+    },
+    {
+      "stage": "55-spirv-cross",
+      "script": "scripts.d/47-vulkan/55-spirv-cross.sh",
+      "file": "55-spirv-cross_7ee82163958c020ff8f9cfd2a6eff8aefdfc6391d36898ec54a24f09f58479d4.tar.xz",
+      "download_command_sha256": "7ee82163958c020ff8f9cfd2a6eff8aefdfc6391d36898ec54a24f09f58479d4"
+    },
+    {
+      "stage": "60-spirv-headers",
+      "script": "scripts.d/47-vulkan/60-spirv-headers.sh",
+      "file": "60-spirv-headers_23fe5e903430db492bfbae8fb0b6124c0169bcc550874b85f068cfe8d8adfffb.tar.xz",
+      "download_command_sha256": "23fe5e903430db492bfbae8fb0b6124c0169bcc550874b85f068cfe8d8adfffb"
+    },
+    {
+      "stage": "96-lv2",
+      "script": "scripts.d/50-lilv/96-lv2.sh",
+      "file": "96-lv2_1833e554a5a1760aa41062569225bbb9856f09f3c23d37301074d82a17b0624e.tar.xz",
+      "download_command_sha256": "1833e554a5a1760aa41062569225bbb9856f09f3c23d37301074d82a17b0624e"
+    },
+    {
+      "stage": "96-serd",
+      "script": "scripts.d/50-lilv/96-serd.sh",
+      "file": "96-serd_257c27b8651c05a3b7179f2477bd69ed036feac4eb253312569096821e69a8e7.tar.xz",
+      "download_command_sha256": "257c27b8651c05a3b7179f2477bd69ed036feac4eb253312569096821e69a8e7"
+    },
+    {
+      "stage": "96-zix",
+      "script": "scripts.d/50-lilv/96-zix.sh",
+      "file": "96-zix_21e780c9ab8c0f8067c36bb53b76fcabc2dd828153b3f1ab082ed44281f62d13.tar.xz",
+      "download_command_sha256": "21e780c9ab8c0f8067c36bb53b76fcabc2dd828153b3f1ab082ed44281f62d13"
+    },
+    {
+      "stage": "97-sord",
+      "script": "scripts.d/50-lilv/97-sord.sh",
+      "file": "97-sord_6ef433b3c59e64a645002e31f929dfec02cbd979f0d70b5373173e1ca217125d.tar.xz",
+      "download_command_sha256": "6ef433b3c59e64a645002e31f929dfec02cbd979f0d70b5373173e1ca217125d"
+    },
+    {
+      "stage": "98-sratom",
+      "script": "scripts.d/50-lilv/98-sratom.sh",
+      "file": "98-sratom_a7e01a157b247bfecbce4a5c63016fa503ddd5703ffc208af3f81805a7d30535.tar.xz",
+      "download_command_sha256": "a7e01a157b247bfecbce4a5c63016fa503ddd5703ffc208af3f81805a7d30535"
+    },
+    {
+      "stage": "99-librsvg",
+      "script": "scripts.d/50-librsvg/99-librsvg.sh",
+      "file": "99-librsvg_20412ad6b5a08e06a6b2f15951458980805d4c0f40b762745e4c2575169a8c3c.tar.xz",
+      "download_command_sha256": "20412ad6b5a08e06a6b2f15951458980805d4c0f40b762745e4c2575169a8c3c"
+    },
+    {
+      "stage": "99-lilv",
+      "script": "scripts.d/50-lilv/99-lilv.sh",
+      "file": "99-lilv_0543a3c15e7971c2371260e51aad5ead6ffbc7a539de39540a906ebf944d829d.tar.xz",
+      "download_command_sha256": "0543a3c15e7971c2371260e51aad5ead6ffbc7a539de39540a906ebf944d829d"
+    }
+  ],
+  "verified_required_features": [
+    "azmq",
+    "rubberband",
+    "libmp3lame",
+    "ffmpeg",
+    "ffprobe",
+    "ffplay"
+  ],
+  "byte_for_byte_rebuild_performed": false,
+  "source_cache_excludes_unused_nonfree_variants": true,
+  "amf_source_filter": "amf/public/include plus original LICENSE.txt only; no unused DeckLink SDK-generated sources",
+  "public_source_published": false
+}

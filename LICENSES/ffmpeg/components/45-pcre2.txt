@@ -1,0 +1,370 @@
+Original notices from 45-pcre2_8f18f3d355cedfce208fb5a70fbe344e39dc7f54fc1825128dc862c6d97be0e7.tar.xz
+SHA-256: 35ca4d9c80a13e1b9ec5e4689d7e95deaabbe2feb1bdf843c448cfafc282d31d
+
+==============================================================================
+./AUTHORS.md
+==============================================================================
+PCRE2 Authorship and Contributors
+=================================
+
+Copyright
+---------
+
+Please see the file [LICENCE](./LICENCE.md) in the PCRE2 distribution for
+copyright details.
+
+
+Maintainers
+-----------
+
+The PCRE and PCRE2 libraries were authored and maintained by Philip Hazel.
+
+Since 2024, the contributors with administrator access to the project are now
+Nicholas Wilson and Zoltán Herczeg. See the file [SECURITY](./SECURITY.md) for
+GPG keys.
+
+Both administrators are volunteers acting in a personal capacity.
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Role</th>
+<tr>
+</thead>
+<tbody>
+<tr>
+  <td>
+
+  Nicholas Wilson<br/>
+  `nicholas@nicholaswilson.me.uk`<br/>
+  Currently of Microsoft Research Cambridge, UK
+
+  </td>
+  <td>
+
+  * General project administration & maintenance
+  * Release management
+  * Code maintenance
+
+  </td>
+</tr>
+<tr>
+  <td>
+
+  Zoltán Herczeg<br/>
+  `hzmester@freemail.hu`<br/>
+  Currently of the University of Szeged, Hungary
+
+  </td>
+  <td>
+
+  * Code maintenance
+  * Ownership of `sljit` and PCRE2's JIT
+
+  </td>
+</tr>
+</tbody>
+</table>
+
+
+Contributors
+------------
+
+Many others have participated and contributed to PCRE2 over its history.
+
+The maintainers are grateful for all contributions and participation over the
+years. We apologise for any names we have forgotten.
+
+We are especially grateful to Philip Hazel, creator of PCRE and PCRE2, and
+maintainer from 1997 to 2024.
+
+All names listed alphabetically.
+
+### Contributors to PCRE2
+
+This list includes names up until the PCRE2 10.48 release. New names will be
+added from the Git history on each release.
+
+    Ilia Alshanetsky
+    Bernard Assan
+    Scott Bell
+    Carlo Marcelo Arenas Belón
+    Edward Betts
+    Jan-Willem Blokland
+    Ross Burton
+    Dmitry Cherniachenko
+    Alexey Chupahin
+    Jessica Clarke
+    Alejandro Colomar
+    Jeremie Courreges-Anglas
+    Addison Crump
+    Weixie Cui
+    Alex Dowad
+    Daniel Engberg
+    Marco Feuerstein
+    Daniel Richard G
+    Isaac Oscar Gariano
+    David Gaussmann
+    Andrey Gorbachev
+    Nikolay Govorov
+    Jordan Griege
+    Rudi Heitbaum
+    Jason Hood
+    Bumsu Hyeon
+    Roy Ivy
+    Nobuhiro Iwamatsu
+    Martin Joerg
+    Guillem Jover
+    Ralf Junker
+    Anton Karpov
+    Ayesh Karunaratne
+    Michael Kaufmann
+    Srijan Keshri
+    Yunho Kim
+    Joshua Kinard
+    David Korczynski
+    Uwe Korn
+    Jonas Kvinge
+    Kristian Larsson
+    Lin Runze
+    Kai Lu
+    Behzod Mansurov
+    Brian McKenna
+    B. Scott Michel
+    Greg Minshall
+    Nathan Moinvaziri
+    Alexandre Moyer
+    Mike Munday
+    Marc Mutz
+    Kartik Naik
+    NaN
+    Fabio Pagani
+    Christian Persch
+    Alex Reinking
+    Joshua Rogers
+    Tristan Ross
+    William A Rowe Jr
+    Rocco Ruscitti
+    David Seifert
+    Yaakov Selkowitz
+    Rich Siegel
+    Karl Skomski
+    Maciej Sroczyński
+    Wolfgang Stöggl
+    Thomas Tempelmann
+    Greg Thain
+    Lucas Trzesniewski
+    Theodore Tsirpanis
+    Matt Turner
+    Aaron M. Ucko
+    Matthew Vernon
+    Rémi Verschelde
+    Thomas Voss
+    Ezekiel Warren
+    Carl Weaver
+    Chris Wilson
+    Amin Yahyaabadi
+    Joe Zhang
+
+### Contributors to PCRE1
+
+These people contributed either by sending patches or reporting serious issues.
+
+    Irfan Adilovic
+    Alexander Barkov
+    Daniel Bergström
+    David Burgess
+    Ross Burton
+    David Byron
+    Fred Cox
+    Christian Ehrlicher
+    Tom Fortmann
+    Lionel Fourquaux
+    Mike Frysinger
+    Daniel Richard G
+    Dair Gran
+    "Graycode" (Red Hat Product Security)
+    Viktor Griph
+    Wen Guanxing
+    Robin Houston
+    Martin Jerabek
+    Peter Kankowski
+    Stephen Kelly
+    Yunho Kim
+    Joshua Kinard
+    Carsten Klein
+    Evgeny Kotkov
+    Ronald Landheer-Cieslak
+    Alan Lehotsky
+    Dmitry V. Levin
+    Nuno Lopes
+    Kai Lu
+    Giuseppe Maxia
+    Dan Mooney
+    Marc Mutz
+    Markus Oberhumer
+    Sheri Pierce
+    Petr Pisar
+    Ari Pollak
+    Bob Rossi
+    Ruiger Rill
+    Michael Shigorin
+    Rich Siegel
+    Craig Silverstein (C++ wrapper)
+    Karl Skomski
+    Paul Sokolovsky
+    Stan Switzer
+    Ian Taylor
+    Mark Tetrode
+    Jeff Trawick
+    Steven Van Ingelgem
+    Lawrence Velazquez
+    Jiong Wang
+    Stefan Weber
+    Chris Wilson
+
+Thanks go to Jeffrey Friedl for testing and debugging assistance.
+
+==============================================================================
+./COPYING
+==============================================================================
+PCRE2 LICENCE
+
+Please see the file LICENCE in the PCRE2 distribution for licensing details.
+
+End
+
+==============================================================================
+./cmake/COPYING-CMAKE-SCRIPTS
+==============================================================================
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==============================================================================
+./LICENCE.md
+==============================================================================
+PCRE2 Licence
+=============
+
+| SPDX-License-Identifier: | BSD-3-Clause WITH PCRE2-exception |
+|---------|-------|
+
+PCRE2 is a library of functions to support regular expressions whose syntax
+and semantics are as close as possible to those of the Perl 5 language.
+
+Releases 10.00 and above of PCRE2 are distributed under the terms of the "BSD"
+licence, as specified below, with one exemption for certain binary
+redistributions. The documentation for PCRE2, supplied in the "doc" directory,
+is distributed under the same terms as the software itself. The data in the
+testdata directory is not copyrighted and is in the public domain.
+
+The basic library functions are written in C and are freestanding. Also
+included in the distribution is a just-in-time compiler that can be used to
+optimize pattern matching. This is an optional feature that can be omitted when
+the library is built. The just-in-time compiler is separately licensed under the
+"2-clause BSD" licence.
+
+
+COPYRIGHT
+---------
+
+### The basic library functions
+
+    Written by:       Philip Hazel
+    Email local part: Philip.Hazel
+    Email domain:     gmail.com
+
+    Retired from University of Cambridge Computing Service,
+    Cambridge, England.
+
+    Copyright (c) 1997-2007 University of Cambridge
+    Copyright (c) 2007-2024 Philip Hazel
+    All rights reserved.
+
+### PCRE2 Just-In-Time compilation support
+
+    Written by:       Zoltan Herczeg
+    Email local part: hzmester
+    Email domain:     freemail.hu
+
+    Copyright (c) 2010-2024 Zoltan Herczeg
+    All rights reserved.
+
+### Stack-less Just-In-Time compiler
+
+    Written by:       Zoltan Herczeg
+    Email local part: hzmester
+    Email domain:     freemail.hu
+
+    Copyright (c) 2009-2024 Zoltan Herczeg
+    All rights reserved.
+
+The code in the `deps/sljit` directory has its own LICENSE file.
+
+### All other contributions
+
+Many other contributors have participated in the authorship of PCRE2. As PCRE2
+has never required a Contributor Licensing Agreement, or other copyright
+assignment agreement, all contributions have copyright retained by each
+original contributor or their employer.
+
+
+THE "BSD" LICENCE
+-----------------
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notices,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright
+  notices, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+
+* Neither the name of the University of Cambridge nor the names of any
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+
+EXEMPTION FOR BINARY LIBRARY-LIKE PACKAGES
+------------------------------------------
+
+The second condition in the BSD licence (covering binary redistributions) does
+not apply all the way down a chain of software. If binary package A includes
+PCRE2, it must respect the condition, but if package B is software that
+includes package A, the condition is not imposed on package B unless it uses
+PCRE2 independently.

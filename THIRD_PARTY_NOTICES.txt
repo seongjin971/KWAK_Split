@@ -3,16 +3,23 @@ KWAK Split third-party notices
 
 This file is a practical notice for bundled third-party components. It is not legal advice.
 
+KWAK Split's original code is MIT licensed (see LICENSE). That grant does not
+relicense the components below or the Demucs model weights. Public executable
+distribution is ON HOLD; see LICENSES/distribution-status.json and
+LICENSES/demucs-model/PROVENANCE.md. The accepted local model is preserved.
+
 Bundled executable tools
 ------------------------
 
-FFmpeg 8.1.1 essentials build from gyan.dev
+FFmpeg 8.1 branch, BtbN/FFmpeg-Builds pinned 2026-10-13 win64 GPL build
 - Bundled files: bin/ffmpeg.exe, bin/ffprobe.exe, bin/ffplay.exe
-- Local version string: 8.1.1-essentials_build-www.gyan.dev
-- Local configure flags include --enable-gpl, --enable-version3, and --enable-static.
-- gyan.dev describes these Windows builds as static and GPLv3 licensed.
-- FFmpeg source for this release is linked by gyan.dev at:
-  https://github.com/FFmpeg/FFmpeg/commit/239f2c733d
+- Version: n8.1.3-18-g46d899d7a0-20261013
+- License: GPL-3.0-or-later; GPL and version3 enabled, nonfree disabled.
+- Exact binary/source/build identities: LICENSES/ffmpeg/manifest.json.
+- FFmpeg source commit: 46d899d7a02bc63237472cc4897258d5ddf274ac.
+- Build recipes commit: 63ac3265b0789ea16c7b1f8351cd2ad195a28722.
+- Supplier release:
+  https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-10-13-13-05
 - FFmpeg legal notes:
   https://www.ffmpeg.org/legal.html
 - GPLv3 license text:
@@ -21,9 +28,13 @@ FFmpeg 8.1.1 essentials build from gyan.dev
   LICENSES/GPL-3.0.txt
   LICENSES/FFMPEG_SOURCE_NOTICE.txt
 
-If this app is redistributed with the FFmpeg executables, provide the GPLv3 license text and make
-the corresponding FFmpeg source for the exact distributed binaries available to recipients.
-If a public download page is used, place the FFmpeg notice and source link next to the app download.
+Corresponding source includes FFmpeg, required dependency source and the exact
+build recipes. The prepared source/ directory beside the application folder
+contains these materials, with a SHA256.json index. A future authorized public
+download must include that directory or supply its archives beside the executable
+download, clearly linked and without extra access restrictions. Expiring upstream
+Actions artifacts are acquisition provenance, not our public source-delivery route.
+See LICENSES/FFMPEG_SOURCE_NOTICE.txt and docs/license-compliance.md.
 
 Live EQ command client
 ----------------------
@@ -33,6 +44,8 @@ PyZMQ 27.2.0 is bundled with the desktop app for local FFmpeg EQ commands.
 - The wheel also contains libzmq 4.3.5 and libsodium; its upstream license
   notices are preserved under
   LICENSES/pyzmq/. All EQ traffic is restricted to 127.0.0.1.
+- libzmq 4.3.5 is MPL-2.0; its exact Source Code Form and wheel build
+  configuration are linked in LICENSES/pyzmq/SOURCE_NOTICE.txt.
 
 Resize preview images
 ---------------------
@@ -80,8 +93,36 @@ LGPLv3 license text is included as LICENSES/LGPL-3.0.txt. Package-specific
 license metadata and license files remain in their installed *.dist-info
 directories.
 
-The models folder may contain cached Demucs model weights, for example:
+Additional retained notices and source materials:
+- ANTLR 4.9.3: BSD-3-Clause; LICENSES/antlr4/LICENSE.txt.
+- more-itertools 8.8.0 and 8.12.0 (vendored by setuptools/pkg_resources):
+  MIT; LICENSES/more-itertools/ contains both original notices.
+- Demucs code and the upstream code used by our WAV-output patch:
+  MIT; LICENSES/demucs/LICENSE.txt. scripts/patch_demucs_audio.py replaces
+  upstream WAV writing with our portable float writer; model weights are separate.
+- lameenc 1.8.4 and its statically included LAME 3.100:
+  LICENSES/lameenc/ contains license texts, exact provenance, and source/build/
+  replacement instructions. The corresponding archives are in the release's
+  source/lameenc/ directory. No application term prohibits modifying/replacing
+  this LGPL component or reverse engineering to debug those modifications.
+- Intel OpenMP 2024.2.1, libiomp5md.dll and libiompstubs5md.dll in torch/lib:
+  LICENSES/intel-openmp/ contains the exact supplier EULA, redistribution
+  designation, third-party notices, and component-specific end-user terms in
+  REDISTRIBUTION.txt. Those terms apply to the identified Intel components;
+  they do not restrict KWAK Split's MIT source or override separate open-source
+  license rights. KWAK Split is not certified or supported by Intel.
+
+requirements-demucs.txt pins the reviewed runtime packages. The provenance
+records preserve archive URLs and hashes. scripts/prepare_license_materials.py
+verifies these materials and the actual runtime before packaging.
+
+The retained local models folder contains this Demucs model checkpoint:
 - models/torch/hub/checkpoints/955717e8-8726e21a.th
 
-Demucs source code is MIT licensed, but pretrained model weight licensing should be checked before
-public or commercial redistribution if model files are bundled with the app.
+SHA-256: 8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4
+The model's general redistribution permission is unresolved. The author has
+described it as research-purpose, while an official later model card temporarily
+declared MIT. The conflict is documented in LICENSES/demucs-model/PROVENANCE.md.
+Public binary distribution remains on hold by the project owner's decision.
+Neither omitting the cache and downloading on first use nor applying MIT to the
+app's own code resolves this model permission question.

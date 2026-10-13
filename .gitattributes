@@ -1,0 +1,3 @@
+# Preserve upstream license/provenance bytes, including original whitespace,
+# for the SHA-256 verification gates.
+LICENSES/** -text -whitespace
