@@ -11,7 +11,7 @@ from backend.compact_model import (EQ_GAIN_LIMIT, TIME_QUANTUM, initial_window,
 from backend.numeric_gestures import NumericGestures
 from backend.compact_widgets import (BG, PANEL, INSET, TEXT, MUTED, LINE, BLUE,
     CompactButton, CompactKnob, CompactFader, CompactEq, EditorViewport, display_metrics, icon)
-from backend.project_store import EDIT_DEFAULTS, EditHistory
+from backend.edit_state import EDIT_DEFAULTS, EditHistory
 from backend.workspace_features import StemRangeError
 from backend.header_status import HeaderStatus
 from backend.resize_preview import ResizePreview
@@ -359,7 +359,7 @@ class CompactInterface:
 
     def _band_is_pass(self,band):
         return band!="mid" and getattr(self,"eq_"+band+"_shape_var").get() in ("High Pass","Low Pass")
-    def _band_frequency_limits(self,band): return {"low":(20,2000),"mid":(250,8000),"high":(1000,20000)}[band]
+    def _band_frequency_limits(self,band): return (20,20000)
     def _band_value_var(self,band):
         return getattr(self,("high_pass_slope_var" if band=="low" else "low_pass_slope_var") if self._band_is_pass(band) else "eq_"+band+"_var")
     def _band_value(self,band): return self._band_value_var(band).get()
@@ -392,8 +392,7 @@ class CompactInterface:
         for button in (1,3):
             self.bind_all(f"<ButtonRelease-{button}>",self._end_edit_drag,add="+")
         for chord,action in (("<Control-z>",self.undo_edit),("<Control-y>",self.redo_edit),("<Control-Shift-Z>",self.redo_edit),
-                              ("<Control-o>",self.open_audio),("<Control-s>",self.save_current_project),
-                              ("<Control-Shift-O>",self.open_project),("<Control-Shift-R>",self.restore_last_session)):
+                              ("<Control-o>",self.open_audio)):
             self.bind(chord,lambda e,a=action:self._shortcut(a),add="+")
         for key,endpoint in (("bracketleft","start"),("bracketright","end")):
             self.bind("<KeyPress-"+key+">",lambda e,p=endpoint:self._shortcut(lambda:self._wave_selection.mark(p)) if not e.state&CONTROL_ALT_MASK else None,add="+")
@@ -615,7 +614,7 @@ class CompactInterface:
         # Play/pause changes only transport. Effect values, enabled controls and
         # waveform geometry are already current and need no redraw here.
         if transport_only:return
-        for widget,enabled in ((self.load_button,idle),(self.settings_button,idle),(self.advanced_button,idle),
+        for widget,enabled in ((self.load_button,not self.closing),(self.settings_button,idle),(self.advanced_button,idle),
                                (self.separate_button,idle and source),
                                (self.render_button,idle and source),(self.render_mp3_button,idle and source),
                                (self.export_stems_button,idle and bool(self._ready_stem_paths())),
@@ -816,7 +815,6 @@ class CompactInterface:
         self._check(group,"Delete working audio after export",self.delete_temp_var,4)
         group=self._group(content,"Playback & editing",2)
         self._check(group,"Loop playback",self.loop_var,1)
-        self._check(group,"Keep adjustments when opening new audio",self.keep_adjustments_var,2)
         scope=tk.Frame(group,bg=PANEL);scope.grid(row=3,column=0,sticky="w",pady=self.px(6))
         self._label(scope,"Split Stems",kind="small",color=MUTED).pack(side="left",padx=(0,self.px(8)))
         ttk.Combobox(scope,values=("Selection","Full track"),textvariable=self.split_scope_var,
@@ -850,7 +848,7 @@ class CompactInterface:
     def _save_output_preferences(self):
         for name,variable in (("loop",self.loop_var),("sample_rate",self.sample_rate_var),("bit_depth",self.bit_depth_var),
                                ("mp3_bitrate",self.mp3_bitrate_var),("peak_normalize",self.peak_normalize_var),
-                               ("keep_adjustments",self.keep_adjustments_var),("delete_temp_after_render",self.delete_temp_var),
+                               ("delete_temp_after_render",self.delete_temp_var),
                                ("split_scope",self.split_scope_var),("stem_export_format",self.stem_export_format_var)):
             self.settings[name]=variable.get()
     def open_advanced(self):

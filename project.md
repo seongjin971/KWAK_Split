@@ -2,7 +2,69 @@
 
 Baseline: main / 4babbf0 · Started: 2026-09-13
 
-## Current delivery — Ctrl+click reset for numeric inputs (2026-10-03)
+## Current delivery — preserve separated-stem volume (2026-10-13)
+
+**Status: `USER_REVIEW_READY` — compact-fix29.** The root launcher selects fix29.
+The bundled
+Demucs path saves raw IEEE float32 stems without per-stem peak rescaling or
+integer clipping. Model, shifts, overlap, jobs, selection timing and downstream
+effects are unchanged. Selection context, optimization and broader stabilization
+are deferred by the user. See [verification](docs/qa/stem-volume/verification.md).
+
+All 18 added regressions pass in the full suite. Actual-model amplitude checks
+retain peaks above unity and preserve proportional levels. The original problem
+track's fitted drum gain improved from 1.441 to 1.004, with the sum residual
+improving from -14.80 to -32.47 dB. These are diagnostics, not a listening score.
+Packaged runtime separation, EXE startup, source Tk integration with bundled
+engines, mixed/individual WAV/MP3 export and silent playback passed. All 30 frozen
+modules and the standalone runner match source. Output preferences were retained;
+old releases, original audio and historical stems are unchanged.
+
+The full suite records 412 passes, eight previously documented failures, two
+skips, one intermittent Tk setup error and 22 subtest passes. That setup case
+passed in isolation; the suite is not fully green. Subjective listening remains
+a user check. No commit or push was made.
+
+## Previous delivery — lightweight single-file workflow (2026-10-13)
+
+**Status at delivery: `USER_REVIEW_READY` — compact-fix28.**
+Open/drop replaces audio without a save prompt after successful loading. Each file
+starts with fresh adjustments, stems, selection and Undo/Redo history; launch starts
+empty. Project save/open/recovery and adjustment retention are removed. Output and
+playback preferences, per-file Undo/Redo and audio exports remain available.
+
+Failed loads preserve current audio and edits. Replacement while busy cancels the
+current job and loads the latest request after it ends. Mixed exports are staged
+until success, so cancelling for a file switch leaves no partial final output.
+Only scratch audio owned by this invocation is cleaned; historical projects,
+recovery data, source audio and exported files remain intact. New releases carry
+output preferences only, not the previous session. See
+[verification](docs/qa/lightweight-workflow/verification.md).
+
+Six focused workflow cases passed across the batch and isolated rerun. Source and
+frozen real-Tk checks passed file replacement, empty restart, WAV export, retained
+preferences and preservation of old recovery data. WAV/MP3 export regression and
+the isolated playback-marking check passed. The full suite recorded 392 passes,
+two skips and ten failures; the obsolete crossed-filter expectation was updated
+and passed, and the focus-dependent marking failure passed in isolation. Eight
+older status/waveform expectations remain, as detailed in the verification log;
+the full suite is not reported green.
+
+## Previous delivery — full-range EQ bands (2026-10-13)
+
+**Status at delivery: `USER_REVIEW_READY` — compact-fix27.** Superseded by fix28.
+
+All three EQ bands now span 20–20,000 Hz in numeric inputs, graph dragging and
+keyboard adjustment. High Pass and Low Pass can cross without rejecting playback
+or export; this can strongly attenuate the signal. Gain remains ±24 dB, with the
+existing Q, slope and reset defaults. See [verification](docs/qa/full-range-eq/verification.md).
+Focused range controls/project restoration and 35 live-EQ audio tests passed.
+Packaged startup/exit, seven numeric reset checks and 26 source/module comparisons
+passed. The fix26 session was copied and verified without changing its originals.
+Broader UI checks retain six failures reproduced with the pre-change production
+methods, plus intermittent Tk setup/text-focus failures; the full suite is not green.
+
+## Previous delivery — Ctrl+click reset for numeric inputs (2026-10-03)
 
 **Status: `USER_REVIEW_READY` — compact-fix26.** Ctrl+click resets the three EQ
 frequency inputs to 120/1000/8000 Hz, Speed to 100%, Pitch to 0 st and each Fade

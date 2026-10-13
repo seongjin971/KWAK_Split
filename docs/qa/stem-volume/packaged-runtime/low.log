@@ -1,0 +1,3 @@
+Separating D:\Dev\achive\Kwaksplit\.build\stem-volume\packaged-runtime\low.wav (float32 stems, original levels)
+  0%|                                                                                   | 0.0/5.85 [00:00<?, ?seconds/s]100%|##########################################################################| 5.85/5.85 [00:04<00:00,  1.25seconds/s]100%|##########################################################################| 5.85/5.85 [00:04<00:00,  1.25seconds/s]
+Float32 stems saved without clipping or per-stem rescaling.

@@ -19,7 +19,9 @@ MODULES=("StemSamplePrep","backend.compact_ui","backend.compact_widgets","backen
          "backend.prepared_preview","backend.header_status","backend.qa_header_status",
          "backend.window_snapshot","backend.resize_preview","backend.qa_resize",
          "backend.wave_selection","backend.qa_wave_selection",
-         "backend.numeric_gestures","backend.qa_numeric_reset")
+         "backend.numeric_gestures","backend.qa_numeric_reset",
+         "backend.app_paths","backend.edit_state","backend.qa_lightweight",
+         "backend.audio_processing.separation")
 
 
 def normalize(code):
@@ -44,6 +46,12 @@ def main():
         assert matches,name
         result["modules"].append({"module":name,"source_sha256":hashlib.sha256(source).hexdigest(),
                                   "frozen_code_matches":matches})
+    runner=Path("backend/demucs_runner.py")
+    source_hash=hashlib.sha256((ROOT/runner).read_bytes()).hexdigest()
+    shipped_hash=hashlib.sha256((args.release/runner).read_bytes()).hexdigest()
+    assert source_hash==shipped_hash,str(runner)
+    result["runner"]={"path":runner.as_posix(),"source_sha256":source_hash,
+                      "shipped_sha256":shipped_hash,"matches":True}
     args.evidence_dir.mkdir(parents=True,exist_ok=True)
     (args.evidence_dir/"frozen-source-verification.json").write_text(json.dumps(result,indent=2),encoding="utf-8")
     print(json.dumps(result,indent=2))

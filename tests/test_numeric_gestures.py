@@ -3,6 +3,7 @@ import itertools
 import re
 import tkinter as tk
 from tkinter import ttk
+from types import SimpleNamespace
 
 import pytest
 
@@ -193,6 +194,47 @@ def test_normal_click_typing_and_double_click_remain_text_editing(session):
     assert entry.get() == "0.04"
     assert entry.selection_present()
     assert not app._history_dragging
+
+
+def test_eq_full_frequency_range_controls_and_crossed_pass_effects(session):
+    app = session.app
+    app.focus_force()
+    for band in ("low", "mid", "high"):
+        variable = getattr(app, "eq_" + band + "_freq_var")
+        entry = entry_for(app, variable)
+        for frequency in (20, 20000):
+            entry.focus_set()
+            entry.delete(0, "end")
+            entry.insert(0, str(frequency))
+            entry.event_generate("<Return>")
+            app.update()
+            assert variable.get() == frequency
+        editor = app.eq_editor
+        editor.drag_band = band
+        editor.origin = (0, app._band_value(band))
+        left, top, right, bottom = editor.bounds()
+        for x, frequency in ((left, 20), (right, 20000)):
+            editor.drag(SimpleNamespace(x=x, y=(top + bottom) / 2))
+            app.update()
+            assert variable.get() == frequency
+        editor.drag_band = None
+        editor.selected_band = band
+        variable.set(20)
+        editor.key("Left")
+        assert variable.get() == 20
+        variable.set(20000)
+        editor.key("Right")
+        assert variable.get() == 20000
+
+    app.eq_low_shape_var.set("High Pass")
+    app.eq_high_shape_var.set("Low Pass")
+    expected = {"low": 18000, "mid": 20, "high": 40}
+    for band, frequency in expected.items():
+        getattr(app, "eq_" + band + "_freq_var").set(frequency)
+    effects = app._build_audio_effects()
+    assert effects.high_pass_hz == 18000
+    assert effects.low_pass_hz == 40
+    assert effects.mid_freq == 20
 
 
 def test_disabled_numeric_and_readout_controls_do_not_change_before_load(session):
@@ -391,7 +433,7 @@ def test_ctrl_reset_pass_slope_defaults_and_disabled_controls(session):
 
 
 def numeric_reset_controls(app):
-    from backend.project_store import EDIT_DEFAULTS
+    from backend.edit_state import EDIT_DEFAULTS
     for key, changed in (("eq_low_freq",1150),("eq_mid_freq",2400),("eq_high_freq",6000),
                          ("tempo_percent",162),("pitch_semitones",-4),("fade_in",.8),("fade_out",1.2)):
         variable=getattr(app,key+"_var")

@@ -76,14 +76,15 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
 - The October 2 seek request keeps the output player open. A background worker prepares another decoder at the requested source position, then a 10 ms PCM crossfade hands over without restarting the output device. A held drag completes in-flight preparation and retains only the latest pending position. Source cursor and spectrum follow the output clock; EQ, mixer, partial-stem offsets and selection fades survive the handoff. See `qa/live-seek/verification.md`.
 - The October 1 waveform request removes L/R text and its reserved left space. Keep the upper/lower stereo channels and draw samples from the visible left edge, including the beginning of zoomed and panned views. Preserve source-time mapping, selection, cursor and fades.
 - Equalizer left, Stem Mixer right; Split Stems at the right of the mixer heading. The October 1 request supersedes narrow-window stacking: keep these panels side by side and uniformly shrink fonts, controls, spacing and graphs to fit. Speed, Pitch, Fade in, Fade out are one row under EQ.
-- No extra transport bar, selection panel, Project/preset/Loop/Undo/Redo buttons or duplicate persistent status. Loop and output preferences are in Settings. History uses Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z. Existing project data and recovery remain compatible without restoring rejected main-screen controls.
+- No extra transport bar, selection panel, Project/preset/Loop/Undo/Redo buttons or duplicate persistent status. Loop and output preferences are in Settings. History uses Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z. Project save/open/recovery and their shortcuts were removed on October 13; only per-file Undo/Redo remains.
 - Low Shelf/High Pass, Mid Bell, High Shelf/Low Pass. Shelf/Bell gain spans ±24 dB in the controls, graph and audio engine. Pass knobs select 12/24/36/48 dB/oct. Q controls resonance separately in Advanced; the response curve and audio filters use the same filter model.
+- All three bands use the full 20–20,000 Hz frequency range for numeric edits, graph dragging and arrow keys. Low/Mid/High names no longer impose separate frequency bounds. Crossed pass filters are allowed and can strongly attenuate the signal.
 - The September 30 addition overlays a live post-effects output spectrum behind the EQ curve. Left dB labels describe EQ gain; the right fixed -90–0 dBFS axis describes actual stereo output. It follows the player's audio clock and clears on stop/restart. See `realtime-spectrum.md`.
-- Production starts with flat shelves and a zero-gain bell, so loading a file does not automatically remove low/high frequencies. The accepted demonstration's 120 Hz / 8000 Hz, 24 dB/oct state remains available by selecting Pass. New audio resets adjustments unless Keep adjustments is enabled. Fades default to 0.02 seconds with 0.01-second steps.
+- Production starts with flat shelves and a zero-gain bell, so loading a file does not automatically remove low/high frequencies. The accepted demonstration's 120 Hz / 8000 Hz, 24 dB/oct state remains available by selecting Pass. New audio always resets adjustments. Fades default to 0.02 seconds with 0.01-second steps.
 - Stem faders span silence through +12 dB, with 0 dB at 33% from the top and the accepted scale labels. The later October 1 request replaces their double-click reset with Ctrl+click, following the Cubase Windows control default. EQ knobs/value labels and stem faders/value labels reset with Ctrl+click: 0 dB for gain/volume, 24 dB/oct for Pass slope. Reset once per Undo step without starting a drag or jumping the fader track; disabled controls remain inactive. Mute is yellow and Solo red. Mute takes precedence over Solo, matching the accepted preview. Playback and mixed export use the same stem selection.
 - Before splitting, play/export use the loaded audio and the stem controls are disabled. Split Stems defaults to the selected source-time range (initially the entire file). Settings offers Full track for one longer split followed by unrestricted selection edits. As of 2026-09-26, complete stems constrain all selection editing and restored history to their available range; choose Full track and explicitly split to expand coverage. Incomplete/unavailable stem audio retains the safety guard and is never silently substituted. No automatic separation.
 - Time inputs retain two decimal places by the user's explicit choice. Numeric values support vertical dragging and wheel adjustment; Start/End increments follow the visible timeline span down to 0.01 seconds. Preserve typing, supported-value limits, disabled states and one Undo per drag.
-- The October 3 numeric reset request adds Ctrl+click to EQ frequency (120/1000/8000 Hz), Speed (100%), Pitch (0 st), Fade in and Fade out (0.02 s each). Reset only the clicked field, using shared project defaults and one Undo step. Consume the held gesture even when Ctrl is released first, including clicks over spin arrows. Keep normal text selection, typing, arrows, wheel, vertical scrubbing and disabled-state guards. Verify Num Lock and the current display only. See `qa/numeric-reset/verification.md`.
+- The October 3 numeric reset request adds Ctrl+click to EQ frequency (120/1000/8000 Hz), Speed (100%), Pitch (0 st), Fade in and Fade out (0.02 s each). Reset only the clicked field, using shared edit defaults and one Undo step. Consume the held gesture even when Ctrl is released first, including clicks over spin arrows. Keep normal text selection, typing, arrows, wheel, vertical scrubbing and disabled-state guards. Verify Num Lock and the current display only. See `qa/numeric-reset/verification.md`.
 - Show fades by attenuating the waveform and drawing amber envelope lines. A small endpoint marker keeps subpixel fades discoverable without exaggerating their duration. Preview and export fades stay anchored to the selected source range, including after seeking and at different speeds.
 - WAV/MP3 export the current selection and mix directly to the shared Save folder with the selected encoding options. Browse opens the real Windows folder chooser. Cancel retains the old folder. Preserve existing files using numbered names. Show completion/path or errors beside the logo; hide the text when idle without moving the header buttons.
 - The later four-track-export request adds Export beside Split Stems and Settings > Stem format (WAV/MP3). Save all four stems individually using the selection, faders and shared effects, ignoring Mute/Solo. A silent fader still produces a file. Peak Normalize is independent per stem. Require complete, in-range stems; publish only after all four renders succeed. Keep the accepted HTML references unchanged as historical design sources.
@@ -103,7 +104,7 @@ The fragment must occur unchanged in both inner documents; decoded srcdoc and in
 
 1. U01: inspect baseline; synchronize/check the accepted design; commit existing work and this document.
 2. U02: implement shared EQ response/filter coefficients, slope parameters, fader mapping and validation/history support, and real stereo peak extraction. Validate generated audio with objective response/channel/gain checks.
-3. U03: implement the approved Tkinter surface, reflow/DPI behavior and functional dialogs; wire real open/selection/play/split/export, settings persistence and context states. Retain earlier backend capabilities and project compatibility.
+3. U03: implement the approved Tkinter surface, reflow/DPI behavior and functional dialogs; wire real open/selection/play/split/export, settings persistence and context states. Retain audio processing capabilities; project compatibility was superseded by the October 13 single-file request.
 4. U04: run meaningful existing and new regressions, real generated-audio split/export/playback workflows, inspect actual app captures at viewport/scaling variants, create a separate release, smoke-test it, update launcher/README/project and record evidence.
 
 Automated tests, actual window captures, silent playback-process checks and direct human listening are distinct. Report observed results and any remaining device-specific limits accurately. Final aesthetic acceptance remains the user's judgment; the implementation must already match the accepted design before delivery.
@@ -111,9 +112,9 @@ Automated tests, actual window captures, silent playback-process checks and dire
 ## Implementation record
 
 - U01 checkpoint: `388e2db`, including all earlier dirty/untracked application work, documentation, tests and three accepted previews. No reset, stash or push.
-- Native surface: `backend/compact_ui.py` and `backend/compact_widgets.py`; existing processing and project services remain in use through the main app.
+- Native surface: `backend/compact_ui.py` and `backend/compact_widgets.py`; audio processing and in-memory edit state remain in use through the main app.
 - Slopes are cascaded two-pole filters with independently adjustable Q. The response model matches FFmpeg's actual bass/treble coefficient convention as well as Bell and Pass; generated audio validates the curves. Limiter now honors its ceiling without automatic makeup gain or an added output tail.
-- Version-1 project input remains supported; omitted slope fields retain the earlier 12 dB/oct behavior. Version 2 stores new slopes and the wider fader range. Existing project assets are preserved.
+- Legacy project-file utilities remain available for historical QA but are not imported by the application. Existing saved project assets are preserved; current releases open audio files only.
 - Startup and minimum sizes share the same work-area bounds; this avoids a 1080p/200% minimum-height clamp expanding the window beyond the screen.
 - The new release bundles a separate interpreter and standard library with isolated import paths, removing the development venv's absolute Python dependency. The original runtime and earlier release remain untouched.
 - Detailed results and remaining physical-device checks are in `docs/qa/compact/verification.md`.
@@ -121,3 +122,19 @@ Automated tests, actual window captures, silent playback-process checks and dire
 ## Loading and close correction
 
 The user's subsequent report supersedes the earlier close guard: closing the window immediately cancels active work and closes, retaining a temporary recovery snapshot when possible. It does not require waiting for a job, pressing Cancel first, or responding to an unsaved-project prompt. Permanent projects still use Ctrl+S. A fractional-duration validation error that stranded loading after worker completion is fixed; worker result handling also remains alive after an unexpected UI exception. See `docs/qa/loading-fix/verification.md`.
+
+## October 13 lightweight workflow
+
+The approved current workflow is Open Audio -> edit/split -> export. New audio
+replaces the previous file without save prompts after successful decoding. It
+resets adjustments, stems, selection, results and Undo/Redo history. Failed loads
+preserve the current state. A new request while busy cancels the worker, waits for
+its completion, then loads the latest requested file; a subsequent Cancel clears
+that request. Open Audio stays available while busy.
+
+Project save/open, recent projects, recovery writes/restore, their shortcuts and
+Keep adjustments were removed. Launch always starts empty. Output and playback
+preferences persist, while only working audio owned by the current process is
+cleaned after replacement/exit. Original inputs, exports and historical project
+files remain intact. This supersedes the historical recovery behavior above.
+Verification: `qa/lightweight-workflow/verification.md`.

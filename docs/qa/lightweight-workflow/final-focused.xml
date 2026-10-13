@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="13.089" timestamp="2026-10-13T17:14:01.275753+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_lightweight_workflow" name="test_drop_replaces_edited_audio_without_prompt_and_resets_history" time="2.054" /><testcase classname="tests.test_lightweight_workflow" name="test_corrupt_replacement_keeps_edits_stems_and_removes_partial_audio" time="1.864" /><testcase classname="tests.test_lightweight_workflow" name="test_latest_file_waits_for_cancelled_worker_and_ignores_old_result" time="1.989" /><testcase classname="tests.test_lightweight_workflow" name="test_cancel_pending_replacement_keeps_current_file" time="1.741" /><testcase classname="tests.test_lightweight_workflow" name="test_open_during_export_removes_partial_output_and_preserves_existing_files" time="2.198" /><testcase classname="tests.test_lightweight_workflow" name="test_restart_is_empty_keeps_preferences_and_ignores_old_recovery" time="1.263"><failure message="_tkinter.TclError: Can't find a usable tk.tcl in the following directories: &#10;    C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tcl8.6/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/library&#10;&#10;C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/tk.tcl: couldn't read file &quot;C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/scale.tcl&quot;: no such file or directory&#10;couldn't read file &quot;C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/scale.tcl&quot;: no such file or directory&#10;    while executing&#10;&quot;source -encoding utf-8 C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/scale.tcl&quot;&#10;    (in namespace eval &quot;::&quot; script line 1)&#10;    invoked from within&#10;&quot;namespace eval :: [list source -encoding utf-8 [file join $::tk_library $file.tcl]]&quot;&#10;    (procedure &quot;SourceLibFile&quot; line 2)&#10;    invoked from within&#10;&quot;SourceLibFile scale&quot;&#10;    (in namespace eval &quot;::tk&quot; script line 8)&#10;    invoked from within&#10;&quot;namespace eval ::tk {&#10;&#09;SourceLibFile icons&#10;&#09;SourceLibFile button&#10;&#09;SourceLibFile entry&#10;&#09;SourceLibFile listbox&#10;&#09;SourceLibFile menu&#10;&#09;SourceLibFile panedw...&quot;&#10;    (file &quot;C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/tk.tcl&quot; line 501)&#10;    invoked from within&#10;&quot;source C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/tk.tcl&quot;&#10;    (&quot;uplevel&quot; body line 1)&#10;    invoked from within&#10;&quot;uplevel #0 [list source $file]&quot;&#10;&#10;&#10;This probably means that tk wasn't installed properly.">tests\test_lightweight_workflow.py:170: in test_restart_is_empty_keeps_preferences_and_ignores_old_recovery
+    session.app = reopened = StemSamplePrepApp(ui_scale=1)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StemSamplePrep.py:1267: in __init__
+    super().__init__()
+C:\Users\brian\AppData\Local\Programs\Python\Python311\Lib\tkinter\__init__.py:2345: in __init__
+    self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   _tkinter.TclError: Can't find a usable tk.tcl in the following directories: 
+E       C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tcl8.6/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/lib/tk8.6 C:/Users/brian/AppData/Local/Programs/Python/library
+E   
+E   C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/tk.tcl: couldn't read file "C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/scale.tcl": no such file or directory
+E   couldn't read file "C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/scale.tcl": no such file or directory
+E       while executing
+E   "source -encoding utf-8 C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/scale.tcl"
+E       (in namespace eval "::" script line 1)
+E       invoked from within
+E   "namespace eval :: [list source -encoding utf-8 [file join $::tk_library $file.tcl]]"
+E       (procedure "SourceLibFile" line 2)
+E       invoked from within
+E   "SourceLibFile scale"
+E       (in namespace eval "::tk" script line 8)
+E       invoked from within
+E   "namespace eval ::tk {
+E   	SourceLibFile icons
+E   	SourceLibFile button
+E   	SourceLibFile entry
+E   	SourceLibFile listbox
+E   	SourceLibFile menu
+E   	SourceLibFile panedw..."
+E       (file "C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/tk.tcl" line 501)
+E       invoked from within
+E   "source C:/Users/brian/AppData/Local/Programs/Python/Python311/tcl/tk8.6/tk.tcl"
+E       ("uplevel" body line 1)
+E       invoked from within
+E   "uplevel #0 [list source $file]"
+E   
+E   
+E   This probably means that tk wasn't installed properly.</failure></testcase><testcase classname="tests.test_audit_edits" name="test_crossed_pass_filters_are_accepted_and_can_be_changed" time="1.415" /></testsuite></testsuites>

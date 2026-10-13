@@ -1,0 +1,122 @@
+{
+  "status": "applied",
+  "source_release": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split",
+  "destination_release": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split",
+  "old_workspace": "D:\\Dev\\achive\\Kwaksplit",
+  "new_workspace": "D:\\Dev\\achive\\Kwaksplit",
+  "backups": [
+    {
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\settings.json",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\docs\\qa\\full-range-eq\\session-migration\\source\\settings.json",
+      "size": 318,
+      "sha256": "e80de8bf56c0ffad5c4921fddad4a2447a25548002a5ba46d8b931d228f4708c"
+    },
+    {
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\recovery.json",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\docs\\qa\\full-range-eq\\session-migration\\source\\recovery.json",
+      "size": 2593,
+      "sha256": "0bcfcbf89f8a9e70a4e9f83779ea0bc83d5c6f32eeadbf0357ed5bfd713bbe2b"
+    },
+    {
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\settings.json",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\docs\\qa\\full-range-eq\\session-migration\\destination\\settings.json",
+      "size": 363,
+      "sha256": "cb0b89756a5881887691dc371c31add5102cd4fcf0ab6375925c7a332ecd0ea4"
+    }
+  ],
+  "audio_copies": [
+    {
+      "name": "source",
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\sessions\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\source.wav",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\temp\\restored-session\\source.wav",
+      "size": 79663272,
+      "sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef",
+      "verified_sha256": "a24b31f388bf3a364ee436c6dc9f34f1794f1f80e07074208e4ab9cbc1cf12ef"
+    },
+    {
+      "name": "vocals",
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\vocals.wav",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\temp\\restored-session\\vocals.wav",
+      "size": 36595280,
+      "sha256": "1c787f3c143990281c5c64b1899a80647693ddeefd5307938dab017a534c4174",
+      "verified_sha256": "1c787f3c143990281c5c64b1899a80647693ddeefd5307938dab017a534c4174"
+    },
+    {
+      "name": "drums",
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\drums.wav",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\temp\\restored-session\\drums.wav",
+      "size": 36595280,
+      "sha256": "5f1174c30a6db860ab74d2b887f11ce91ac724060fb1b8dc1f4de73d3a87d939",
+      "verified_sha256": "5f1174c30a6db860ab74d2b887f11ce91ac724060fb1b8dc1f4de73d3a87d939"
+    },
+    {
+      "name": "bass",
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\bass.wav",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\temp\\restored-session\\bass.wav",
+      "size": 36595280,
+      "sha256": "a7a27fb72aeabe03267463605b4c7dec984bac367db521e9b7697fa758bf98b1",
+      "verified_sha256": "a7a27fb72aeabe03267463605b4c7dec984bac367db521e9b7697fa758bf98b1"
+    },
+    {
+      "name": "other",
+      "source": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\other.wav",
+      "destination": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\temp\\restored-session\\other.wav",
+      "size": 36595280,
+      "sha256": "6ac795341fd75742675a49a23f5a8e29db223b6bafbfbd41797e839f02a6b3a6",
+      "verified_sha256": "6ac795341fd75742675a49a23f5a8e29db223b6bafbfbd41797e839f02a6b3a6"
+    }
+  ],
+  "json_writes": [
+    {
+      "path": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\settings.json",
+      "sha256": "703e71131dfce601d50e9e292e4c2980af4d1cd3a279411b924b00cec92f4a05",
+      "previous_sha256": "cb0b89756a5881887691dc371c31add5102cd4fcf0ab6375925c7a332ecd0ea4",
+      "verified_sha256": "703e71131dfce601d50e9e292e4c2980af4d1cd3a279411b924b00cec92f4a05"
+    },
+    {
+      "path": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix27\\KWAK Split\\temp\\recovery.json",
+      "sha256": "d1b1c376cc9baf4016fc8dec8ccfbf3f957133d833040e549dfdd1da9785ee27",
+      "previous_sha256": null,
+      "verified_sha256": "d1b1c376cc9baf4016fc8dec8ccfbf3f957133d833040e549dfdd1da9785ee27"
+    }
+  ],
+  "manifest": "D:\\Dev\\achive\\Kwaksplit\\docs\\qa\\full-range-eq\\session-migration\\manifest.json",
+  "preserved_references": [
+    {
+      "field": "original_input",
+      "path": "C:\\Users\\brian\\Desktop\\That's What I Like- Bruno Mars (Audio Oficial) - Andrea Rojo.mp3",
+      "exists": true,
+      "action": "preserve"
+    },
+    {
+      "field": "output_dir",
+      "path": "C:\\Users\\brian\\Desktop",
+      "exists": true,
+      "action": "preserve"
+    }
+  ],
+  "changes": {
+    "settings.output_dir": {
+      "before": "C:\\Users\\brian\\Desktop",
+      "after": "C:\\Users\\brian\\Desktop"
+    },
+    "recovery.source": {
+      "before": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\sessions\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\source.wav",
+      "after": "restored-session/source.wav"
+    },
+    "recovery.stems": {
+      "before": {
+        "vocals": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\vocals.wav",
+        "drums": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\drums.wav",
+        "bass": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\bass.wav",
+        "other": "D:\\Dev\\achive\\Kwaksplit\\release\\compact-fix26\\KWAK Split\\temp\\stems\\20261013_162657_8ecbe218_That_s_What_I_Like-_Bruno_Mars_Audio_Oficial_-_Andrea_Rojo\\8b7550fe1607\\htdemucs\\source\\other.wav"
+      },
+      "after": {
+        "vocals": "restored-session/vocals.wav",
+        "drums": "restored-session/drums.wav",
+        "bass": "restored-session/bass.wav",
+        "other": "restored-session/other.wav"
+      }
+    }
+  }
+}

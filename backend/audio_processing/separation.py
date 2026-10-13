@@ -36,13 +36,14 @@ class StemSeparator:
         self.paths = paths
 
     def available_command(self) -> list[str] | None:
+        runner = str(self.paths.backend / "demucs_runner.py")
         embedded_python = self.paths.backend / "demucs_runtime" / "python.exe"
         if embedded_python.exists():
-            return [str(embedded_python), "-m", "demucs"]
+            return [str(embedded_python), "-I", "-B", runner]
 
         venv_python = self.paths.backend / "demucs_runtime" / "Scripts" / "python.exe"
         if venv_python.exists() and self._venv_home_exists(venv_python):
-            return [str(venv_python), "-m", "demucs"]
+            return [str(venv_python), "-I", "-B", runner]
 
         local_demucs = self.paths.bin / "demucs.exe"
         if local_demucs.exists():
@@ -52,8 +53,20 @@ class StemSeparator:
         if path_demucs:
             return [path_demucs]
 
-        if importlib.util.find_spec("demucs"):
-            return [sys.executable, "-m", "demucs"]
+        if not getattr(sys, "frozen", False) and importlib.util.find_spec("demucs"):
+            # A user-site/PYTHONPATH installation visible here may be hidden by
+            # the runner's isolated mode. Do not advertise an unusable runtime.
+            try:
+                check = subprocess.run(
+                    [sys.executable, "-I", "-B", "-c",
+                     "import importlib.util; raise SystemExit(0 if importlib.util.find_spec('demucs') else 1)"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                    timeout=5, **_no_window_kwargs(),
+                )
+                if check.returncode == 0:
+                    return [sys.executable, "-I", "-B", runner]
+            except (OSError, subprocess.SubprocessError):
+                pass
 
         return None
 
@@ -104,10 +117,17 @@ class StemSeparator:
         ]
         if jobs > 0:
             command.extend(["--jobs", str(jobs)])
+        uses_runner = command_prefix[-1] == str(self.paths.backend / "demucs_runner.py")
+        if uses_runner:
+            command.extend(["--shifts", "1", "--overlap", "0.25"])
         command.append(str(source_wav))
         if log and jobs > 0:
             log(f"Demucs CPU jobs: {jobs}")
         if log:
+            if uses_runner:
+                log("Saving float32 stems with original levels (no per-stem rescaling).")
+            else:
+                log("External Demucs CLI fallback: its default stem level handling still applies.")
             log("Starting Demucs 4-stem separation. Large files can take a while.")
 
         started_at = time.monotonic()

@@ -1,0 +1,16 @@
+{
+  "frozen": false,
+  "method": "real Tk and generated audio; current display only",
+  "status": "passed",
+  "replace_without_prompt": true,
+  "edits_reset": true,
+  "fresh_start": true,
+  "output_preferences_retained": true,
+  "exported_audio_preserved": true,
+  "legacy_recovery_untouched": true,
+  "temporary_audio_removed": true,
+  "client": [
+    2000,
+    1400
+  ]
+}

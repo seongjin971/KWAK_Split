@@ -19,6 +19,8 @@ def session():
         except tk.TclError:alive=False
         if alive:case.tearDown()
         else:
+            if case.app._close_cleanup_thread:
+                case.app._close_cleanup_thread.join(timeout=15)
             case.app._warm_transport.close()
             for mock in reversed(case.patches):mock.stop()
             case.folder.cleanup()
@@ -51,7 +53,7 @@ def test_worker_completion_survives_ui_result_handler_error(session):
     assert "error" in app.status_var.get().lower()
 
 
-def test_close_during_work_is_immediate_cancels_child_and_keeps_recovery(session):
+def test_close_during_work_is_immediate_cancels_child_without_recovery(session):
     app=session.app
     child=subprocess.Popen([sys.executable,"-c","import time;time.sleep(60)"],
         creationflags=subprocess.CREATE_NO_WINDOW)
@@ -61,13 +63,13 @@ def test_close_during_work_is_immediate_cancels_child_and_keeps_recovery(session
         finished.set()
     try:
         app._run_worker("Test work",worker);app._register_process(child)
-        with patch("tkinter.messagebox.showinfo") as message,patch.object(app,"_guard_project") as guard:
+        with patch("tkinter.messagebox.showinfo") as message:
             started=time.monotonic();app.on_close();elapsed=time.monotonic()-started
         assert elapsed<1,elapsed
-        message.assert_not_called();guard.assert_not_called()
+        message.assert_not_called()
         assert app.closing and finished.wait(2)
         child.wait(timeout=5)
-        assert session.paths.root.joinpath("temp/recovery.json").is_file()
+        assert not session.paths.root.joinpath("temp/recovery.json").exists()
         assert session.source.exists()
     finally:
         if child.poll() is None:child.kill();child.wait()

@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="1.919" timestamp="2026-10-13T19:07:00.979057+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_compact_workflow" name="test_initial_window_and_minimum_fit_1080p_work_area[1.5]" time="1.727" /></testsuite></testsuites>

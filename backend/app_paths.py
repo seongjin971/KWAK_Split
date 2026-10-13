@@ -11,10 +11,8 @@ from typing import Any
 DEFAULT_SETTINGS: dict[str, Any] = {
     "delete_temp_after_render": False,
     "output_dir": "",
-    "keep_adjustments": False,
     "split_scope": "Selection",
     "stem_export_format": "WAV",
-    "recent_project": "",
     "loop": True,
     "sample_rate": 48000,
     "bit_depth": 24,
@@ -88,7 +86,7 @@ class AppPaths:
 
     def write_settings(self, settings: dict[str, Any]) -> None:
         data = dict(DEFAULT_SETTINGS)
-        data.update(settings)
+        data.update({key: value for key, value in settings.items() if key in DEFAULT_SETTINGS})
         with self.settings_file.open("w", encoding="utf-8") as handle:
             json.dump(data, handle, indent=2, ensure_ascii=False)
 

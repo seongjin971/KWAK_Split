@@ -58,6 +58,12 @@ def expect_level(playback, expected, timeout=2):
     AudioEffects(high_pass_hz=800, high_pass_q=1.1, high_pass_slope=48,
                  low_pass_hz=4000, low_pass_q=.5, low_pass_slope=36),
     AudioEffects(mid_db=6, pitch_semitones=3, tempo_ratio=1.5),
+    AudioEffects(low_freq=20000, low_db=12, mid_freq=20, mid_db=-12,
+                 high_freq=20, high_db=6),
+    AudioEffects(low_freq=20, low_db=-12, mid_freq=20000, mid_db=12,
+                 high_freq=20000, high_db=-6),
+    AudioEffects(high_pass_hz=20000, low_pass_hz=20,
+                 high_pass_slope=48, low_pass_slope=48),
 ])
 def test_live_graph_matches_export_filter_pcm(audio, effects):
     live, exported = array("h"), array("h")
@@ -113,6 +119,8 @@ def test_gain_updates_without_restarts_gaps_or_large_transients(audio):
     (AudioEffects(low_pass_hz=9000,low_pass_slope=36,sample_rate=48000),
      AudioEffects(low_pass_hz=950,low_pass_q=.9,low_pass_slope=36,sample_rate=48000)),
     (AudioEffects(tempo_ratio=.5), AudioEffects(tempo_ratio=.5,mid_db=9)),
+    (AudioEffects(low_db=6), AudioEffects(low_db=6,low_freq=20000)),
+    (AudioEffects(high_db=-6), AudioEffects(high_db=-6,high_freq=20)),
     (AudioEffects(tempo_ratio=2,pitch_semitones=3),
      AudioEffects(tempo_ratio=2,pitch_semitones=3,mid_db=-9)),
 ])

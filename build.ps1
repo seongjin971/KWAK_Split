@@ -78,6 +78,10 @@ foreach ($folder in @("temp", "output", "logs")) {
     }
 }
 
+$backendDest = Join-Path $AppOut "backend"
+New-Item -ItemType Directory -Force -Path $backendDest | Out-Null
+Copy-Item -LiteralPath (Join-Path $Root "backend\demucs_runner.py") -Destination $backendDest
+
 $runtimeSource = Join-Path $Root "backend\demucs_runtime"
 if (Test-Path $runtimeSource) {
     $runtimeDest = Join-Path $AppOut "backend\demucs_runtime"

@@ -305,19 +305,9 @@ def test_split_completion_and_history_keep_redo_across_older_wider_selections(se
     session.separator.assert_not_called()
 
 
-def test_recovery_clamps_older_saved_selection_and_source_reopen_removes_limits(session):
+def test_new_audio_removes_previous_stem_selection_limits(session):
     app = session.app
     attach_selected_stems(session)
-    app._write_recovery()
-    recovery = session.paths.temp / "recovery.json"
-    saved = json.loads(recovery.read_text(encoding="utf-8"))
-    saved["edits"]["selection_start"] = 0
-    saved["edits"]["selection_end"] = 6
-    recovery.write_text(json.dumps(saved), encoding="utf-8")
-    app.restore_last_session()
-    session.wait_idle()
-    assert app._selection_bounds() == (2, 4)
-    assert app._stem_selection_limits() == (2, 4)
     app.load_audio_path(session.source)
     session.wait_idle()
     assert not app.stem_paths

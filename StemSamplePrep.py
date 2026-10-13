@@ -1562,7 +1562,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
 
         utility_actions = ttk.Frame(toolbar, style="Root.TFrame")
         utility_actions.grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
-        self.cleanup_button = PillButton(utility_actions, "New Project", self.cleanup_current_temp, variant="ghost", width=112, bg="#090d14")
+        self.cleanup_button = PillButton(utility_actions, "Clear Audio", self.cleanup_current_temp, variant="ghost", width=112, bg="#090d14")
         self.cleanup_button.grid(row=0, column=0, padx=6)
         self.cancel_button = PillButton(utility_actions, "Cancel", self.cancel_current_operation, variant="danger", width=82, bg="#090d14")
         self.cancel_button.grid(row=0, column=1, padx=6)
@@ -2652,7 +2652,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
             self.playback_progress_after_id = self.after(100, self._process_playback_progress)
 
     def load_file(self) -> None:
-        if self.busy:
+        if self.closing:
             return
         file_path = filedialog.askopenfilename(
             title="Open Audio",
@@ -2670,9 +2670,8 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         self.load_audio_path(Path(file_path))
 
     def load_audio_path(self, input_path: Path) -> bool:
-        """Return whether a load started, so rejected project relinks cannot linger."""
-        if self.busy:
-            self.status_var.set("Wait for the current task to finish.")
+        """Load or queue the latest audio without discarding a usable file first."""
+        if self.closing:
             return False
         input_path = input_path.resolve()
         if not input_path.exists() or not input_path.is_file():
@@ -2681,12 +2680,23 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         if input_path.suffix.lower() not in AUDIO_EXTENSIONS:
             messagebox.showwarning("Open Audio", "Only WAV, MP3, FLAC, and M4A files are supported.")
             return False
-        if not self._opening_project and not self._guard_project(lambda: self.load_audio_path(input_path)):
-            return False
+        if self.busy:
+            self._pending_audio = input_path
+            self.cancel_current_operation(keep_pending_audio=True)
+            self._set_busy_status("Switching audio")
+            return True
         self.stop_preview(show_status=False)
         session_name = f"{time.strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}_{safe_name(input_path.stem)}"
+        self._owned_sessions.add(session_name)
 
         def worker() -> None:
+            try:
+                prepare_audio()
+            except Exception:
+                self._discard_owned_session(session_name)
+                raise
+
+        def prepare_audio() -> None:
             self._queue_status("Converting working audio")
             source_dir = self.paths.temp / "sessions" / session_name
             source_wav = source_dir / "source.wav"
@@ -2706,6 +2716,9 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
                 cancel_event=self.cancel_event,
                 process_callback=self._register_process,
             )
+            channels = audio_channels(self.paths, input_path, self.cancel_event, self._register_process)
+            if self.closing or self.cancel_event.is_set():
+                raise OperationCancelled("Audio loading cancelled.")
             self.worker_queue.put(
                 (
                     "source_ready",
@@ -2715,7 +2728,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
                         "session": session_name,
                         "duration": duration,
                         "peaks": peaks,
-                        "channels": audio_channels(self.paths, input_path, self.cancel_event, self._register_process),
+                        "channels": channels,
                     },
                 )
             )
@@ -2935,22 +2948,36 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
 
         def worker() -> None:
             self._queue_status(f"Rendering {label}")
-            render_mix(
-                self.paths,
-                stems,
-                output_path,
-                start_seconds=start,
-                duration_seconds=duration,
-                fade_in=fade_in,
-                fade_out=fade_out,
-                log=self._queue_log,
-                cancel_event=self.cancel_event,
-                process_callback=self._register_process,
-                effects=effects,
-            )
+            staged = output_path.with_name(f".{output_path.stem}.{uuid.uuid4().hex}.tmp{output_path.suffix}")
+            try:
+                render_mix(
+                    self.paths,
+                    stems,
+                    staged,
+                    start_seconds=start,
+                    duration_seconds=duration,
+                    fade_in=fade_in,
+                    fade_out=fade_out,
+                    log=self._queue_log,
+                    cancel_event=self.cancel_event,
+                    process_callback=self._register_process,
+                    effects=effects,
+                )
+                if self.cancel_event.is_set() or self.closing:
+                    raise OperationCancelled("Export cancelled.")
+                destination = self._unique_output_path(output_path)
+                # On Windows rename refuses an existing target; never replace user output.
+                while True:
+                    try:
+                        staged.rename(destination)
+                        break
+                    except FileExistsError:
+                        destination = self._unique_output_path(output_path)
+            finally:
+                staged.unlink(missing_ok=True)
             if delete_temp:
                 self._cleanup_session_files(clear_state=False)
-            self.worker_queue.put(("render_ready", str(output_path)))
+            self.worker_queue.put(("render_ready", str(destination)))
             if delete_temp:
                 self.worker_queue.put(("temp_cleaned", None))
 
@@ -3438,8 +3465,6 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
             low_db, high_pass_hz = 0.0, low_freq
         if self.eq_high_shape_var.get() == "Low Pass":
             high_db, low_pass_hz = 0.0, high_freq
-        if high_pass_hz > 0 and low_pass_hz > 0 and high_pass_hz >= low_pass_hz:
-            raise AudioProcessingError("High-pass Hz must be lower than Low-pass Hz.")
         return AudioEffects(
             low_db=low_db,
             mid_db=mid_db,
@@ -3582,7 +3607,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
 
         delete_temp_check = ttk.Checkbutton(
             frame,
-            text="Delete working audio after export (save your project first)",
+            text="Delete working audio after export",
             variable=self.delete_temp_var,
             style="TCheckbutton",
         )
@@ -3614,27 +3639,15 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
     def cleanup_current_temp(self) -> None:
         if self.busy:
             return
-        if not self.session_name:
-            messagebox.showinfo("New Project", "There is no current project.")
-            return
-        if not self._guard_project(self.cleanup_current_temp):
-            return
         self.stop_preview(show_status=False)
         self._cleanup_session_files(clear_state=True)
-        if not self.keep_adjustments_var.get():
-            self._reset_edits()
-        self.project_file = None
-        self._saved_edits = None
-        self.project_dirty = False
-        from backend.project_store import EditHistory
-        self.history = EditHistory(self._edit_snapshot())
-        self._update_project_label()
-        self._update_workspace_summary()
-        self.status_var.set("New project ready" + (" · Adjustments kept" if self.keep_adjustments_var.get() else " · Adjustments reset"))
-        self.append_log("New project started.")
+        self._source_workspace_ready()
+        self.status_var.set("Open audio to start.")
         self._refresh_action_states()
 
-    def cancel_current_operation(self) -> None:
+    def cancel_current_operation(self, *, keep_pending_audio: bool = False) -> None:
+        if not keep_pending_audio:
+            self._pending_audio = None
         if not self.busy:
             return
         if self.cancel_event:
@@ -3649,12 +3662,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
     def _cleanup_session_files(self, clear_state: bool) -> None:
         if getattr(self, "_warm_transport", None) is not None:
             self._warm_transport.cancel(wait=True)
-        targets = [
-            self.paths.temp / "sessions" / self.session_name,
-            self.paths.temp / "stems" / self.session_name,
-        ]
-        for target in targets:
-            self._safe_remove_tree(target)
+        self._discard_owned_session(self.session_name)
         self._delete_old_previews()
         if clear_state:
             self.current_input = None
@@ -3693,6 +3701,36 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
             raise AudioProcessingError("Unsafe temp cleanup path detected.")
         shutil.rmtree(resolved_target)
 
+    def _discard_owned_session(self, name: str) -> None:
+        """Remove only scratch audio created by this invocation, never old saves."""
+        if not name or name not in self._owned_sessions:
+            return
+        try:
+            for folder in ("sessions", "stems"):
+                self._safe_remove_tree(self.paths.temp / folder / name)
+        except OSError:
+            logging.exception("Could not remove working audio: %s", name)
+        else:
+            self._owned_sessions.discard(name)
+
+    def _cleanup_closed_audio(self, processes) -> None:
+        """Finish cleanup off the UI thread after audio writers have stopped."""
+        worker = self._worker_thread
+        if worker:
+            worker.join(timeout=10)
+            if worker.is_alive():
+                logging.warning("Audio worker still exiting; leaving its scratch files intact")
+                return
+        if getattr(self, "_warm_transport", None) is not None:
+            self._warm_transport.close()
+        for process in processes:
+            try:
+                process.wait(timeout=5)
+            except (subprocess.TimeoutExpired, OSError):
+                return
+        for name in tuple(self._owned_sessions):
+            self._discard_owned_session(name)
+
     def _run_worker(self, title: str, worker: Callable[[], None]) -> None:
         self.cancel_event = threading.Event()
         self.current_process = None
@@ -3713,7 +3751,8 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
             finally:
                 self.worker_queue.put(("done", title))
 
-        threading.Thread(target=wrapped, daemon=True).start()
+        self._worker_thread = threading.Thread(target=wrapped, daemon=True)
+        self._worker_thread.start()
 
     def _register_process(self, process: subprocess.Popen | None) -> None:
         # Publish first: Cancel/Close either sees this child, or its signal is
@@ -3843,7 +3882,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         stems_ready = bool(self.stem_paths)
         idle = not self.busy
 
-        self._set_state(self.load_button, idle)
+        self._set_state(self.load_button, not self.closing)
         self._set_state(self.separate_button, idle and source_ready)
         self._set_state(self.play_button, (idle and source_ready) or self.preview_playing)
         self._set_state(self.stem_bypass_button, idle and source_ready)
@@ -4091,7 +4130,6 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
                 except Exception:
                     # A bad UI result must never strand the queued "done" event.
                     logging.exception("Could not apply worker result: %s", kind)
-                    self._pending_project = None
                     if self.cancel_event:
                         self.cancel_event.set()
                     self.status_var.set("Error updating the screen. Details are in the log.")
@@ -4100,6 +4138,13 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
                 self.worker_queue_after_id = self.after(100, self._process_worker_queue)
 
     def _handle_worker_message(self, kind, payload) -> None:
+        cancelled = self.cancel_event is not None and self.cancel_event.is_set()
+        if cancelled and kind in ("source_ready", "stems_ready", "preview_ready"):
+            if kind == "source_ready":
+                self._discard_owned_session(str(payload["session"]))
+            return
+        if self._pending_audio is not None and kind not in ("done", "log", "temp_cleaned"):
+            return
         if kind == "log":
             self.append_log(str(payload))
         elif kind == "status":
@@ -4116,27 +4161,29 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
             self._handle_render_ready(Path(str(payload)))
         elif kind == "stems_exported":
             self._handle_stems_exported(payload)  # type: ignore[arg-type]
-        elif kind == "project_saved":
-            self._handle_project_saved(payload)
         elif kind == "preview_ready":
             self._handle_preview_ready(payload)  # type: ignore[arg-type]
         elif kind == "temp_cleaned":
             self._clear_after_temp_delete()
             self.append_log("Deleted current temp after render.")
         elif kind == "cancelled":
-            self._pending_project = None
             self.status_var.set("Task cancelled.")
             self.append_log(str(payload))
         elif kind == "error":
-            self._pending_project = None
             self._stop_busy_animation()
             self.status_var.set(f"Error: {payload}")
             self.set_log_visible(True)
             messagebox.showerror("Error", str(payload))
         elif kind == "done":
             self._set_busy(False)
+            pending, self._pending_audio = self._pending_audio, None
+            if pending is not None and not self.closing:
+                self.load_audio_path(pending)
 
     def _handle_source_ready(self, payload: dict[str, object]) -> None:
+        previous_session = self.session_name
+        if getattr(self, "_warm_transport", None) is not None:
+            self._warm_transport.cancel(wait=True)
         self.current_input = Path(str(payload["input"]))
         self.source_wav = Path(str(payload["source_wav"]))
         self.session_name = str(payload["session"])
@@ -4155,6 +4202,8 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         self.status_var.set(f"Loaded: {self.current_input.name}")
         self.append_log(f"Loaded: {self.current_input}")
         self._source_workspace_ready()
+        if previous_session != self.session_name:
+            self._discard_owned_session(previous_session)
         self._refresh_action_states()
 
     def _handle_stems_ready(self, payload: dict) -> None:
@@ -4168,7 +4217,6 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         self.status_var.set("Stem Split complete.")
         self.append_log("Stem Split complete.")
         self._selection_changed()
-        self._saved_edits = None
         self._commit_edit()
         self._refresh_action_states()
 
@@ -4564,6 +4612,7 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         if self.closing:
             return
         self.closing = True
+        self._pending_audio = None
         self.withdraw()
         if self.cancel_event:
             self.cancel_event.set()
@@ -4593,9 +4642,15 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         finally:
             self._cancel_main_after_callbacks()
             self.destroy()
+            self._close_cleanup_thread = threading.Thread(
+                target=self._cleanup_closed_audio, args=(processes,), daemon=False)
+            self._close_cleanup_thread.start()
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == "--qa-lightweight-current":
+        from backend.qa_lightweight import check
+        raise SystemExit(check(StemSamplePrepApp, sys.argv[2]))
     if len(sys.argv) == 3 and sys.argv[1] == "--qa-numeric-reset-current":
         from backend.qa_numeric_reset import check
         raise SystemExit(check(StemSamplePrepApp, sys.argv[2]))

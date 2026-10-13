@@ -10,7 +10,7 @@ import time
 from unittest.mock import patch
 
 from backend.app_paths import AppPaths
-from backend.project_store import EDIT_DEFAULTS
+from backend.edit_state import EDIT_DEFAULTS
 
 
 def check(app_type, output):

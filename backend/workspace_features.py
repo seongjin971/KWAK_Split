@@ -1,14 +1,13 @@
-"""Project workflow and user-facing workspace features for KWAK Split."""
+"""Single-file audio editing and user-facing workspace features."""
 from __future__ import annotations
 
-import json
 import math
 import os
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from backend.project_store import EDIT_DEFAULTS, FORMAT, VERSION, EditHistory, atomic_json, read_project, save_project, validate_edits
+from backend.edit_state import EDIT_DEFAULTS, EditHistory, validate_edits
 from backend.ui_helpers import ScrollableFrame
 from backend.audio_processing.ffmpeg_tools import AudioProcessingError, find_executable
 from backend.audio_processing.separation import StemSeparator
@@ -25,29 +24,24 @@ class WorkspaceFeatures:
         self.bit_depth_var = tk.IntVar(value=self.settings.get("bit_depth", 24))
         self.mp3_bitrate_var = tk.IntVar(value=self.settings.get("mp3_bitrate", 320))
         self.peak_normalize_var.set(bool(self.settings.get("peak_normalize", False)))
-        self.keep_adjustments_var = tk.BooleanVar(value=bool(self.settings.get("keep_adjustments", False)))
         scope=self.settings.get("split_scope","Selection")
         self.split_scope_var = tk.StringVar(value=scope if scope in ("Selection","Full track") else "Selection")
         stem_format = self.settings.get("stem_export_format", "WAV")
         self.stem_export_format_var = tk.StringVar(value=stem_format if stem_format in ("WAV", "MP3") else "WAV")
         self.mix_summary_var = tk.StringVar(value="Open audio to see the monitor source and export settings.")
-        self.project_label_var = tk.StringVar(value="Unsaved project")
         self.view_start = 0.0
         self.view_end = 0.0
         self.stem_range = (0.0, 0.0)
-        self.project_file = None
-        self.project_dirty = False
-        self._pending_project = None
-        self._opening_project = False
         self._history_suspended = True
         self._history_dragging = False
         self._history_after = None
-        self._recovery_after = None
         self._loop_after = None
         self._selection_ui_after = None
-        self._saved_edits = None
-        self._on_project_saved = None
         self.result_files = []
+        self._pending_audio = None
+        self._owned_sessions = set()
+        self._worker_thread = None
+        self._close_cleanup_thread = None
 
     def _finish_workspace(self):
         self.workspace_scroll.canvas.bind("<Configure>", self._layout_eq_details, add="+")
@@ -62,21 +56,14 @@ class WorkspaceFeatures:
         self.bind_all("<ButtonRelease-1>", self._end_edit_drag, add="+")
         self.bind_all("<ButtonRelease-3>", self._end_edit_drag, add="+")
         for chord, action in (("<Control-z>", self.undo_edit), ("<Control-y>", self.redo_edit),
-                              ("<Control-s>", self.save_current_project), ("<Control-o>", self.open_project)):
+                              ("<Control-o>", self.open_audio)):
             self.bind(chord, lambda _event, action=action: (action(), "break")[1])
         self._update_workspace_summary()
         self.after(0, self._check_environment_status)
 
     def _build_workspace_toolbar(self, actions, toolbar):
-        for column, (label, command) in enumerate((
-            ("Open Project", self.open_project), ("Save Project", self.save_current_project),
-            ("Undo", self.undo_edit), ("Redo", self.redo_edit)), start=2):
+        for column, (label, command) in enumerate((("Undo", self.undo_edit), ("Redo", self.redo_edit)), start=2):
             ttk.Button(actions, text=label, command=command).grid(row=0, column=column, padx=3)
-        info = ttk.Frame(toolbar)
-        info.grid(row=4, column=0, columnspan=2, sticky="ew", pady=4)
-        ttk.Label(info, textvariable=self.project_label_var).grid(row=0, column=0, sticky="w")
-        ttk.Button(info, text="Restore Session", command=self.restore_last_session).grid(row=0, column=1, padx=8)
-        ttk.Button(info, text="Recent Project", command=self.open_recent_project).grid(row=0, column=2)
         ttk.Label(toolbar, textvariable=self.mix_summary_var, wraplength=680, style="Muted.TLabel").grid(
             row=5, column=0, columnspan=2, sticky="w", pady=4)
 
@@ -123,10 +110,8 @@ class WorkspaceFeatures:
         presets.grid(row=7, column=0, columnspan=3, sticky="w", pady=8)
         ttk.Button(presets, text="Standard WAV · 44.1k / 16bit", command=lambda: self._set_output_profile(44100, 16)).pack(side="left", padx=4)
         ttk.Button(presets, text="DAW WAV · 48k / 24bit", command=lambda: self._set_output_profile(48000, 24)).pack(side="left", padx=4)
-        ttk.Checkbutton(frame, text="Keep adjustments for new audio/projects (default: reset)",
-                        variable=self.keep_adjustments_var).grid(row=8, column=0, columnspan=3, sticky="w", pady=8)
         ttk.Button(frame, text="Environment Check / Setup", command=self.environment_details).grid(row=9, column=0, columnspan=3, sticky="w", pady=8)
-        ttk.Label(frame, text="Normalize is skipped during live monitoring and applied on export.\nKeep the .kwaksplit project and its matching .assets folder together.",
+        ttk.Label(frame, text="Normalize is skipped during live monitoring and applied on export.",
                   wraplength=540, style="Muted.TLabel").grid(row=10, column=0, columnspan=3, sticky="w")
 
     def _set_output_profile(self, rate, depth):
@@ -210,9 +195,6 @@ class WorkspaceFeatures:
         except (tk.TclError, ValueError):
             return
         self.history.push(snapshot)
-        self.project_dirty = bool(self.source_wav) and snapshot != self._saved_edits
-        self._update_project_label()
-        self._schedule_recovery()
 
     def undo_edit(self):
         if self.busy:
@@ -222,9 +204,6 @@ class WorkspaceFeatures:
         self._apply_edits(self.history.undo())
         # Normalize older, wider ranges without pushing and discarding Redo.
         self.history.states[self.history.index] = self._edit_snapshot()
-        self.project_dirty = bool(self.source_wav) and self._edit_snapshot() != self._saved_edits
-        self._update_project_label()
-        self._schedule_recovery()
 
     def redo_edit(self):
         if self.busy:
@@ -233,166 +212,25 @@ class WorkspaceFeatures:
         self._commit_edit()
         self._apply_edits(self.history.redo())
         self.history.states[self.history.index] = self._edit_snapshot()
-        self.project_dirty = bool(self.source_wav) and self._edit_snapshot() != self._saved_edits
-        self._update_project_label()
-        self._schedule_recovery()
-
-    def _update_project_label(self):
-        label = self.project_file.name if self.project_file else "Unsaved project"
-        self.project_label_var.set(label + (" · Modified" if self.project_dirty else ""))
-
-    def _project_document(self):
-        return {"format": FORMAT, "version": VERSION, "edits": self._edit_snapshot(),
-                "original_input": str(self.current_input or "audio.wav"), "stem_range": list(self.stem_range)}
-
-    def save_current_project(self, after_save=None):
-        if self.busy or not self.source_wav:
-            self.status_var.set("Open an audio file first.")
-            return
-        self._commit_edit()
-        try:
-            document = self._project_document()
-        except (tk.TclError, ValueError) as exc:
-            messagebox.showerror("Project Settings", str(exc))
-            return
-        target = filedialog.asksaveasfilename(title="Save Project", defaultextension=".kwaksplit",
-            initialdir=str(self.project_file.parent if self.project_file else self.paths.root),
-            initialfile=self.project_file.name if self.project_file else self.current_input.stem + ".kwaksplit",
-            filetypes=[("KWAK Split Project", "*.kwaksplit")])
-        if not target:
-            return
-        self.stop_preview(show_status=False)
-        path, source, stems = Path(target), self.source_wav, dict(self.stem_paths)
-        if path.suffix.lower() != ".kwaksplit":
-            path = path.with_suffix(".kwaksplit")
-            if path.exists() and not messagebox.askyesno("Overwrite Project", f"Overwrite {path.name}?"):
-                return
-        self._on_project_saved = after_save
-
-        def worker():
-            self._queue_status("Saving project audio and settings")
-            save_project(path, document, source, stems, self.cancel_event)
-            self.worker_queue.put(("project_saved", {"path": str(path), "edits": document["edits"]}))
-        self._run_worker("Save Project", worker)
-
-    def _handle_project_saved(self, payload):
-        self.project_file = Path(payload["path"])
-        self._saved_edits = payload["edits"]
-        self.project_dirty = self._edit_snapshot() != self._saved_edits
-        self.settings["recent_project"] = str(self.project_file)
-        self.paths.write_settings(self.settings)
-        self._update_project_label()
-        self.status_var.set(f"Project saved: {self.project_file.name}")
-        continuation, self._on_project_saved = self._on_project_saved, None
-        if continuation:
-            self.after(0, continuation)
-
-    def _guard_project(self, continuation):
-        if self.busy:
-            return False
-        self._commit_edit()
-        if not self.project_dirty:
-            return True
-        answer = messagebox.askyesnocancel("Unsaved Changes", "Save your changes?\nYes: save and continue / No: discard changes / Cancel: go back")
-        if answer is None:
-            return False
-        if answer:
-            self.save_current_project(continuation)
-            return False
-        return True
-
-    def open_project(self):
-        if self.busy:
-            return
-        path = filedialog.askopenfilename(title="Open Project", filetypes=[("KWAK Split Project", "*.kwaksplit")])
-        if path:
-            self._open_project_path(Path(path))
-
-    def open_recent_project(self):
-        path = self.settings.get("recent_project")
-        if path:
-            self._open_project_path(Path(path))
-        else:
-            self.status_var.set("No recently saved project.")
-
-    def restore_last_session(self):
-        path = self.paths.temp / "recovery.json"
-        if path.exists():
-            self._open_project_path(path, recovery=True)
-        else:
-            self.status_var.set("No session is available to restore.")
-
-    def _open_project_path(self, path, recovery=False):
-        if not self._guard_project(lambda: self._open_project_path(path, recovery)):
-            return
-        try:
-            document = read_project(path, allow_external=recovery and path == self.paths.temp / "recovery.json")
-            source = document["source_path"]
-            if not source.is_file():
-                messagebox.showwarning("Relink Audio", "Project audio is missing. Select the original audio to relink it.")
-                relink = filedialog.askopenfilename(title="Relink Original Audio", filetypes=[("Audio", "*.wav *.mp3 *.flac *.m4a")])
-                if not relink:
-                    return
-                source = Path(relink)
-                document["stem_paths"] = {}
-                document["relinked"] = True
-            missing = [name for name, audio in document["stem_paths"].items() if not audio.is_file()]
-            if missing:
-                document["stem_paths"] = {}
-                document["relinked"] = True
-                messagebox.showwarning("Separate Stems Again", "Some saved stems are missing. You can reopen the original audio and separate it again.")
-            self._pending_project = (None if recovery else path, document)
-            self._opening_project = True
-            if not self.load_audio_path(source):
-                self._pending_project = None
-        except (OSError, ValueError, json.JSONDecodeError) as exc:
-            self._pending_project = None
-            messagebox.showerror("Open Project", str(exc))
-        finally:
-            self._opening_project = False
 
     def _source_workspace_ready(self):
+        for name in ("_history_after", "_selection_ui_after"):
+            pending = getattr(self, name, None)
+            if pending:
+                self.after_cancel(pending)
+                setattr(self, name, None)
+        self._history_dragging = False
         self.view_start, self.view_end = 0.0, self.duration_seconds
-        if self._pending_project:
-            self.project_file, document = self._pending_project
-            self._pending_project = None
-            self.stem_paths = document["stem_paths"]
-            self.stem_range = tuple(document.get("stem_range", [0.0, self.duration_seconds]))
-            self.current_input = Path(document.get("original_input", str(self.current_input)))
-            self.file_label_var.set(self.current_input.name)
-            self._apply_edits(document["edits"])
-            self._saved_edits = self._edit_snapshot() if self.project_file and not document.get("relinked") else None
-        else:
-            self.project_file = None
-            self.stem_range = (0.0, self.duration_seconds)
-            if not self.keep_adjustments_var.get():
-                self._reset_edits()
-            self._saved_edits = None
+        self.stem_range = (0.0, self.duration_seconds)
+        self._reset_edits()
         self.history = EditHistory(self._edit_snapshot())
-        self.project_dirty = self._edit_snapshot() != self._saved_edits
-        self._update_project_label()
+        self.result_files = []
+        if hasattr(self, "result_list"):
+            self.result_list.delete(0, "end")
         self._update_workspace_summary()
-        self._schedule_recovery()
         self.draw_waveform()
 
-    def _schedule_recovery(self):
-        if self._recovery_after:
-            self.after_cancel(self._recovery_after)
-        self._recovery_after = self.after(1200, self._write_recovery)
 
-    def _write_recovery(self, allow_busy=False):
-        if self._recovery_after:
-            self.after_cancel(self._recovery_after)
-        self._recovery_after = None
-        if (self.busy and not allow_busy) or not self.source_wav or not self.source_wav.exists():
-            return
-        try:
-            document = self._project_document()
-            document["source"] = str(self.source_wav.resolve())
-            document["stems"] = {name: str(path.resolve()) for name, path in self.stem_paths.items()}
-            atomic_json(self.paths.temp / "recovery.json", document)
-        except (OSError, ValueError, tk.TclError) as exc:
-            self.append_log(f"Could not save session recovery data: {exc}")
 
     def _update_workspace_summary(self):
         if not self.source_wav:
@@ -575,10 +413,8 @@ class WorkspaceFeatures:
             self.status_var.set(f"Could not open README: {exc}")
 
     def _workspace_close(self):
-        self._write_recovery(allow_busy=self.closing)
         self._save_output_preferences()
-        self.settings["keep_adjustments"] = bool(self.keep_adjustments_var.get())
-        for name in ("_history_after", "_recovery_after", "_loop_after", "_selection_ui_after"):
+        for name in ("_history_after", "_loop_after", "_selection_ui_after"):
             value = getattr(self, name, None)
             if value:
                 self.after_cancel(value)

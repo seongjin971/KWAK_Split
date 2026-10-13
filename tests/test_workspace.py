@@ -13,7 +13,6 @@ from unittest.mock import patch
 
 from StemSamplePrep import StemSamplePrepApp
 from backend.app_paths import AppPaths
-from backend.project_store import read_project
 from backend.audio_processing.ffmpeg_tools import AudioEffects, MixStem, extract_audio_range, render_mix
 
 
@@ -95,7 +94,7 @@ class WorkspaceTests(unittest.TestCase):
                     self.assertLessEqual(widget.winfo_rooty()+widget.winfo_height(),self.app.winfo_rooty()+height+1)
         self.assertEqual(self.app.ui_scale,1)
 
-    def test_new_project_resets_and_keep_option_preserves_adjustments(self):
+    def test_clear_audio_resets_adjustments(self):
         self.app.eq_low_var.set(7)
         self.app.tempo_percent_var.set(150)
         self.app.stem_vars["vocals"]["mute"].set(True)
@@ -103,12 +102,7 @@ class WorkspaceTests(unittest.TestCase):
         self.assertEqual(self.app.eq_low_var.get(), 0)
         self.assertEqual(self.app.tempo_percent_var.get(), 100)
         self.assertFalse(self.app.stem_vars["vocals"]["mute"].get())
-        self.app.load_audio_path(self.source)
-        self.wait_idle()
-        self.app.keep_adjustments_var.set(True)
-        self.app.eq_low_var.set(4)
-        self.app.cleanup_current_temp()
-        self.assertEqual(self.app.eq_low_var.get(), 4)
+        self.assertIsNone(self.app.source_wav)
 
     def test_drag_is_one_undo_step_and_redo_restores_it(self):
         self.app._begin_edit_drag()
@@ -120,30 +114,6 @@ class WorkspaceTests(unittest.TestCase):
         self.assertEqual(self.app.eq_low_var.get(), 0)
         self.app.redo_edit()
         self.assertEqual(self.app.eq_low_var.get(), 4)
-
-    def test_project_roundtrip_and_recovery(self):
-        self.app.eq_low_var.set(3)
-        self.app.tempo_percent_var.set(75)
-        self.app.selection_start_var.set(2)
-        self.app.selection_end_var.set(4)
-        project = self.paths.root / "test.kwaksplit"
-        with patch("tkinter.filedialog.asksaveasfilename", return_value=str(project)):
-            self.app.save_current_project()
-        self.wait_idle()
-        self.assertFalse(self.app.project_dirty)
-        self.assertTrue(read_project(project)["source_path"].exists())
-        self.app.cleanup_current_temp()
-        self.app._open_project_path(project)
-        self.wait_idle()
-        self.assertEqual(self.app.eq_low_var.get(), 3)
-        self.assertEqual(self.app.tempo_percent_var.get(), 75)
-        self.assertEqual(self.app._selection_bounds(), (2, 4))
-        self.app.eq_low_var.set(5)
-        self.app._write_recovery()
-        self.app.eq_low_var.set(1)
-        self.app.restore_last_session()
-        self.wait_idle()
-        self.assertEqual(self.app.eq_low_var.get(), 5)
 
     def test_zoom_seek_and_selection_only_preview(self):
         self.app.selection_start_var.set(2)

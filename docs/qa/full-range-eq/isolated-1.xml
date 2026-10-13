@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.272" timestamp="2026-10-13T16:38:41.545519+09:00" hostname="Seongjin-Laptop"><testcase classname="tests.test_numeric_gestures" name="test_normal_click_typing_and_double_click_remain_text_editing" time="1.047"><failure message="AssertionError: assert '0.04.00' == '0.04'&#10;  &#10;  - 0.04&#10;  + 0.04.00">tests\test_numeric_gestures.py:192: in test_normal_click_typing_and_double_click_remain_text_editing
+    assert entry.get() == "0.04"
+E   AssertionError: assert '0.04.00' == '0.04'
+E     
+E     - 0.04
+E     + 0.04.00</failure></testcase></testsuite></testsuites>

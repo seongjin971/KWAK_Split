@@ -112,28 +112,24 @@ def test_resizing_after_undo_preserves_edit_and_scroll_access(session):
     assert not session.callback_errors
 
 
-def test_crossed_pass_filters_report_validation_and_recover(session):
+def test_crossed_pass_filters_are_accepted_and_can_be_changed(session):
     app = session.app
     app.eq_low_shape_var.set("High Pass")
     app.eq_high_shape_var.set("Low Pass")
     app.eq_low_freq_var.set(2000)
     app.eq_high_freq_var.set(1000)
     app.update()
-    error = app.status_var.get()
-    error_visible = app.status_label.winfo_ismapped()
-    was_busy = app.busy
+    crossed = app._build_audio_effects()
+    assert crossed.high_pass_hz == 2000
+    assert crossed.low_pass_hz == 1000
+    assert not app.busy
+    assert "high-pass" not in app.status_var.get().lower()
 
-    # Restore a usable range before assertions so failed audit runs still close
-    # their isolated fixture cleanly.
     app.eq_high_freq_var.set(8000)
     app.update()
     effects = app._build_audio_effects()
     assert not session.callback_errors, session.callback_errors
-    assert "high-pass" in error.lower() and "lower" in error.lower()
-    assert error_visible
-    assert not was_busy
     assert effects.high_pass_hz == 2000
     assert effects.low_pass_hz == 8000
-    assert app.status_var.get() != error
     assert app.eq_editor.handles
     assert not session.callback_errors
