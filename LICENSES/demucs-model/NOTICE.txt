@@ -1,0 +1,37 @@
+HTDemucs 955717e8 - historical MIT declaration and model attribution
+=================================================================
+
+KWAK Split uses the htdemucs / 955717e8 model from Demucs, developed by
+Alexandre Defossez and the Demucs contributors. The upstream Demucs copyright
+notice and complete MIT text are preserved unchanged in MIT-LICENSE.txt.
+That text was obtained from the upstream Demucs code distribution; the specific
+evidence for the model weights is the historical official model card below.
+
+The included model's weights and declared model configuration were verified to
+match the official artifact at:
+https://huggingface.co/adefossez/HTDemucs/tree/bf35a81b663819a8255c8fefee17f9d812b786b5
+
+That revision's model card expressly identifies the htdemucs weights and
+955717e8.safetensors, and declares "license: mit". A verbatim copy is retained
+as evidence/historical-model-card.md. All 533 tensors (41,984,456 elements),
+their shapes and dtypes, and the model constructor configuration were compared.
+The tensor payloads are byte-identical despite the different file formats.
+
+Included original checkpoint:
+  models/torch/hub/checkpoints/955717e8-8726e21a.th
+  SHA-256: 8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4
+Official historical safetensors artifact:
+  SHA-256: d9fa14133cfcc034a6758923bb3a8ca9f8dfd0b582134643bbf83f72c17576dd
+
+The owner states that this model was obtained and used while it was MIT
+licensed. This is the owner's account; a specific historical download date
+has not been independently established, and no such date is asserted.
+
+The author later removed the MIT metadata without changing those weights.
+The project relies on that historical official MIT declaration as the license
+basis for this exact model. Retain this attribution, MIT-LICENSE.txt and the
+historical declaration with copies of the model. This records the project's
+reliance on an existing declaration, not a new permission by KWAK Split or
+a new approval by the rights holder. See PROVENANCE.md for the full history,
+and evidence.json for preserved-file hashes and exhaustive comparison results.
+The project distribution decision is recorded in ../distribution-status.json.

@@ -1,7 +1,7 @@
 {
   "review_date": "2026-10-14",
-  "status": "PUBLIC_BINARY_RELEASE_ON_HOLD",
-  "scope": "Evidence record; no license grant or legal opinion.",
+  "status": "HISTORICAL_MIT_BASIS_ADOPTED",
+  "scope": "Historical official MIT declaration and verified model identity retained as the project distribution basis; not a new rights-holder approval or legal guarantee.",
   "legacy_model": {
     "relative_path": "models/torch/hub/checkpoints/955717e8-8726e21a.th",
     "size_bytes": 84141911,
@@ -39,6 +39,93 @@
       "author": "adefossez",
       "created_at": "2023-08-02T22:01:51Z",
       "body": "Weights are provided for research purpose!"
+    }
+  ],
+  "historical_license": {
+    "spdx": "MIT",
+    "repository": "adefossez/HTDemucs",
+    "revision": "bf35a81b663819a8255c8fefee17f9d812b786b5",
+    "declared_at_utc": "2026-07-11T13:51:42Z",
+    "removed_at_utc": "2026-08-31T20:18:44Z",
+    "declaration_applies_to_card": "Model weights expressly named as htdemucs / 955717e8.safetensors"
+  },
+  "identity_verification": {
+    "status": "verified",
+    "tensor_count": 533,
+    "element_count": 41984456,
+    "shape_dtype_and_payload": "byte-identical",
+    "constructor_configuration": "identical",
+    "report": "LICENSES/demucs-model/evidence/model-identity.json",
+    "official_safetensors_sha256": "d9fa14133cfcc034a6758923bb3a8ca9f8dfd0b582134643bbf83f72c17576dd"
+  },
+  "owner_account": {
+    "recorded_on": "2026-10-14",
+    "statement": "The owner states that the model was obtained and used while it was MIT licensed.",
+    "exact_original_acquisition_date": null,
+    "independently_verified_acquisition_date": false,
+    "verification_artifact_acquired_on": "2026-10-14"
+  },
+  "project_decision": {
+    "date": "2026-10-14",
+    "basis": "Rely on the historical official MIT declaration for the verified-identical checkpoint; do not require a fresh permission or an explanation of later metadata removal.",
+    "scope": "Current reviewed package with retained notices and corresponding source; not the old v1.0.0 ZIP."
+  },
+  "preserved_files": [
+    {
+      "path": "LICENSES/demucs-model/evidence/historical-model-card.md",
+      "bytes": 660,
+      "sha256": "369d146638e76979e9cfbe5e359ef44e77fa13cfd2da2eb4753c9022572ee7b9"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/model-card-after-removal.md",
+      "bytes": 647,
+      "sha256": "b34c13f1b6c3473bf44978f70b5c62666ee309514d6d50b34cf44827f9a38104"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/hf-commits.json",
+      "bytes": 785,
+      "sha256": "6f66791aca24d980cf3a2e28dae5d9cfbcd6090197ff41086e81a160fc22eebd"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/hf-tree-mit.json",
+      "bytes": 699,
+      "sha256": "f75d2bea0cdea7a43d5a098f987aa47c256b92cbf05ac2622e897d910a6d9bf0"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/hf-tree-after-removal.json",
+      "bytes": 699,
+      "sha256": "160b309d0ec9972f3ab6bc1a14cc694a40cb4d388bc5087c0ccfbcd2f3f0838e"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/official-conversion.py.txt",
+      "bytes": 9738,
+      "sha256": "6407eed34d14311b099e952ebe85de650e0436ed7616ef8351d45f90e22e4e00"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/model-identity.json",
+      "bytes": 258048,
+      "sha256": "70b96fbfd0d733120558a2ec9fdf8b5249f66b1d3481da0d29b073731d13bc1b"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/comparison-method.py.txt",
+      "bytes": 5606,
+      "sha256": "995a1f63d5762e117fc7c4b450c3909d83d43e913161590d3822b13ebe14ac6f"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/history-verification.json",
+      "bytes": 2019,
+      "sha256": "a129ce7a7f8d18a5742a59ae3dde966ba93651287a083a92725c488df03180ba"
+    },
+    {
+      "path": "LICENSES/demucs-model/evidence/hf-discussion-1.json",
+      "bytes": 7245,
+      "sha256": "cf61a34c861bde58e028abad47827bbd3cc15cf58965e7dafa1e14d0d838ec0b"
+    },
+    {
+      "path": "LICENSES/demucs-model/MIT-LICENSE.txt",
+      "bytes": 1087,
+      "sha256": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
+      "source": "Upstream Demucs LICENSE, preserved without changing its copyright attribution"
     }
   ]
 }

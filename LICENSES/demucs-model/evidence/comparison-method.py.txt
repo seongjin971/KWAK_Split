@@ -1,0 +1,117 @@
+"""Read-only model comparison; downloads evidence outside active model directories."""
+from pathlib import Path
+from datetime import datetime, timezone
+from fractions import Fraction
+import hashlib
+import json
+import struct
+import urllib.request
+
+import torch
+
+ROOT = Path(__file__).resolve().parents[3]
+OUT = Path(__file__).resolve().parent
+REVISION = 'bf35a81b663819a8255c8fefee17f9d812b786b5'
+BASE = f'https://huggingface.co/adefossez/HTDemucs/resolve/{REVISION}/'
+LOCAL = ROOT / 'models/torch/hub/checkpoints/955717e8-8726e21a.th'
+LOCAL_SHA = '8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4'
+SAFE_SHA = 'd9fa14133cfcc034a6758923bb3a8ca9f8dfd0b582134643bbf83f72c17576dd'
+
+
+def sha(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def normalize(value):
+    if isinstance(value, Fraction):
+        return {'_type': 'fraction', 'numerator': value.numerator, 'denominator': value.denominator}
+    if isinstance(value, (tuple, list)):
+        return [normalize(v) for v in value]
+    if isinstance(value, dict):
+        return {k: normalize(v) for k, v in value.items()}
+    return value
+
+
+assert sha(LOCAL) == LOCAL_SHA, 'Unexpected local checkpoint'
+acquisition = []
+for name in ['README.md', 'htdemucs.yaml', '955717e8.json', '955717e8.safetensors']:
+    dest = OUT / name
+    url = BASE + name
+    if not dest.exists():
+        print(f'Fetching pinned official artifact: {name}', flush=True)
+        with urllib.request.urlopen(url, timeout=60) as response, dest.open('xb') as stream:
+            while chunk := response.read(1024 * 1024):
+                stream.write(chunk)
+    acquisition.append({'url': url, 'file': name, 'size': dest.stat().st_size, 'sha256': sha(dest)})
+
+safe_path = OUT / '955717e8.safetensors'
+assert sha(safe_path) == SAFE_SHA, 'Hugging Face LFS digest mismatch'
+assert safe_path.stat().st_size == 84025440
+print('Official artifact digest verified; comparing tensor payloads', flush=True)
+
+# Only deserialize the already-installed, full-hash-verified original checkpoint.
+# The downloaded artifact is a non-executable safetensors file, parsed as data.
+legacy = torch.load(LOCAL, map_location='cpu', weights_only=False)
+with safe_path.open('rb') as stream:
+    header_size = struct.unpack('<Q', stream.read(8))[0]
+    assert header_size < 1024 * 1024
+    header = json.loads(stream.read(header_size))
+    metadata = header.pop('__metadata__', {})
+    payload = stream.read()
+state = legacy['state']
+records = []
+dtype_names = {torch.float16: 'F16', torch.float32: 'F32', torch.float64: 'F64',
+               torch.int64: 'I64', torch.int32: 'I32', torch.int16: 'I16',
+               torch.int8: 'I8', torch.uint8: 'U8', torch.bool: 'BOOL'}
+for key in sorted(set(state) | set(header)):
+    record = {'name': key, 'present_in_both': key in state and key in header}
+    if record['present_in_both']:
+        tensor = state[key].detach().cpu().contiguous()
+        descriptor = header[key]
+        start, end = descriptor['data_offsets']
+        local_bytes = tensor.numpy().tobytes(order='C')
+        remote_bytes = payload[start:end]
+        record.update(shape=list(tensor.shape), dtype=str(tensor.dtype), elements=tensor.numel(),
+                      same_shape=list(tensor.shape) == descriptor['shape'],
+                      same_dtype=dtype_names[tensor.dtype] == descriptor['dtype'],
+                      byte_identical=local_bytes == remote_bytes,
+                      local_sha256=hashlib.sha256(local_bytes).hexdigest(),
+                      official_sha256=hashlib.sha256(remote_bytes).hexdigest())
+    records.append(record)
+
+parsed_meta = {}
+for key, value in metadata.items():
+    try:
+        parsed_meta[key] = json.loads(value)
+    except (TypeError, ValueError):
+        parsed_meta[key] = value
+package_model = ROOT / 'release/compact-fix30/KWAK Split/models/torch/hub/checkpoints/955717e8-8726e21a.th'
+config_checks = {
+    'same_model_class': f"{legacy['klass'].__module__}.{legacy['klass'].__name__}" == parsed_meta['klass'],
+    'same_constructor_args': normalize(legacy['args']) == parsed_meta['args'],
+    'same_constructor_kwargs': normalize(legacy['kwargs']) == parsed_meta['kwargs'],
+}
+report = {
+    'verified_at_utc': datetime.now(timezone.utc).isoformat(),
+    'scope': 'Technical artifact identity only; no legal clearance or runtime replacement',
+    'official_revision': REVISION,
+    'local_checkpoint_sha256': sha(LOCAL),
+    'packaged_checkpoint_sha256': sha(package_model),
+    'artifacts': acquisition,
+    'local_tensor_count': len(state),
+    'official_tensor_count': len(header),
+    'compared_elements': sum(v.get('elements', 0) for v in records),
+    'all_tensor_shapes_dtypes_and_bytes_identical': all(v['present_in_both'] and v['same_shape'] and v['same_dtype'] and v['byte_identical'] for v in records),
+    'configuration_checks': config_checks,
+    'local_class': f"{legacy['klass'].__module__}.{legacy['klass'].__name__}",
+    'local_args_normalized': normalize(legacy['args']),
+    'local_kwargs_normalized': normalize(legacy['kwargs']),
+    'official_metadata': parsed_meta,
+    'tensors': records,
+}
+(OUT / 'comparison.json').write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+assert report['all_tensor_shapes_dtypes_and_bytes_identical']
+assert all(config_checks.values())
+assert report['local_checkpoint_sha256'] == report['packaged_checkpoint_sha256'] == LOCAL_SHA
+print(json.dumps({k:v for k,v in report.items() if k not in ['tensors','local_kwargs_normalized','official_metadata','artifacts']}, indent=2))

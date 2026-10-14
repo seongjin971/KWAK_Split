@@ -5,11 +5,21 @@ version by the user. `Run KWAK Split.cmd` selects that package. This cleanup doe
 not change application behavior or pursue further split-speed tuning.
 
 Licensing update, 2026-10-14: the owner selected MIT for the project's original
-code and chose to preserve Demucs quality while holding public executable
-distribution pending model permission. The existing v1.0.0 GitHub release was
-changed to draft without deleting its asset. See [license remediation](docs/license-compliance.md)
-and [model evidence](LICENSES/demucs-model/PROVENANCE.md). The functional acceptance
-above does not imply that third-party model redistribution is cleared.
+code and retained Demucs quality. After reviewing the historical official MIT
+declaration and identical weights, the owner adopted that basis for the exact
+checkpoint and removed the model-specific distribution hold. The old v1.0.0
+GitHub ZIP remains a draft because its legacy FFmpeg source is a separate matter.
+See [license remediation](docs/license-compliance.md) and
+[model evidence](LICENSES/demucs-model/PROVENANCE.md).
+
+Historical-model evidence update, 2026-10-14: the current htdemucs checkpoint's
+533 tensors (41,984,456 values) and declared configuration were verified against
+the official MIT-marked revision. The original declaration, exact comparison,
+MIT text and attribution are now preserved under `LICENSES/demucs-model/` and
+included in the local package. The owner's account of MIT-era acquisition is
+recorded without inventing a date. The reviewed package must retain all component
+notices and corresponding-source materials. No GitHub publication was performed
+by this documentation update.
 
 ## Product
 

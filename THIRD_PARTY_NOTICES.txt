@@ -4,9 +4,11 @@ KWAK Split third-party notices
 This file is a practical notice for bundled third-party components. It is not legal advice.
 
 KWAK Split's original code is MIT licensed (see LICENSE). That grant does not
-relicense the components below or the Demucs model weights. Public executable
-distribution is ON HOLD; see LICENSES/distribution-status.json and
-LICENSES/demucs-model/PROVENANCE.md. The accepted local model is preserved.
+relicense the components below or the Demucs model weights. For the exact Demucs
+checkpoint below, the project relies on the historical official MIT declaration
+and verified model identity recorded in LICENSES/demucs-model/PROVENANCE.md.
+Current package distribution requires the notices and corresponding-source
+materials described here; see LICENSES/distribution-status.json.
 
 Bundled executable tools
 ------------------------
@@ -120,9 +122,16 @@ The retained local models folder contains this Demucs model checkpoint:
 - models/torch/hub/checkpoints/955717e8-8726e21a.th
 
 SHA-256: 8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4
-The model's general redistribution permission is unresolved. The author has
-described it as research-purpose, while an official later model card temporarily
-declared MIT. The conflict is documented in LICENSES/demucs-model/PROVENANCE.md.
-Public binary distribution remains on hold by the project owner's decision.
-Neither omitting the cache and downloading on first use nor applying MIT to the
-app's own code resolves this model permission question.
+Historical model MIT declaration and attribution:
+LICENSES/demucs-model/NOTICE.txt and MIT-LICENSE.txt.
+The current model's 533 tensors (41,984,456 elements), shapes, dtypes and declared
+configuration match the official MIT-marked July 11, 2026 revision exactly.
+The original card, full comparison and hashed provenance are preserved under
+LICENSES/demucs-model/. This is evidence for a historical MIT grant, distinct
+from the MIT license of KWAK Split's own code. No model download date or new
+rights-holder permission is fabricated. The validity and scope of the historical
+grant are not a new legal guarantee; see LICENSES/demucs-model/PROVENANCE.md.
+The owner adopted this historical MIT basis after the direct comparison, and
+the model-specific public-release hold has been removed. Preserve these model
+notices, the historical declaration and its evidence when distributing this
+checkpoint, including when obtaining it through the runtime's first-use download.

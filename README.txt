@@ -9,21 +9,26 @@ Continuous EQ: docs/live-eq.md
 Playback spectrum: docs/realtime-spectrum.md
 Status: FINAL - compact-fix30
 
-License and distribution status (2026-10-14)
-------------------------------------------
-KWAK Split's original code is MIT licensed; see LICENSE. Third-party software,
-model weights and their notices keep their own terms in THIRD_PARTY_NOTICES.txt
-and LICENSES/. The MIT grant does not relicense those components.
+Licenses and distribution
+-------------------------
+KWAK Split's original code is MIT licensed; see LICENSE.
+Included libraries, tools and model weights have their own license records:
+  - Component notices: THIRD_PARTY_NOTICES.txt
+  - Demucs model: LICENSES/demucs-model/NOTICE.txt
+  - Distribution and source materials: docs/license-compliance.md
 
-Public executable downloads are ON HOLD while Demucs model redistribution
-permission is unresolved. The accepted local model and split quality are kept.
-The former public v1.0.0 release is retained as a private draft, with its asset
-preserved. Do not redistribute a local package or imply that its model has been
-cleared for general or commercial use. See docs/license-compliance.md.
+For the included HTDemucs checkpoint, the project relies on the author's
+historical official MIT declaration. All 533 tensors and the declared model
+configuration match that historical artifact. The declaration, attribution,
+MIT text and verification evidence are preserved in LICENSES/demucs-model/.
 
-build.ps1 checks this decision before packaging. Use -LocalOnly for an explicitly
-non-public development build. Removing cached model weights does not authorize
-publication: the current runner can also obtain the same weights at first use.
+Distribute the reviewed package with its notices and the prepared source/
+materials for FFmpeg/LAME. The original v1.0.0 ZIP remains a draft because its
+legacy FFmpeg source materials are a separate unresolved matter; use the current
+reviewed package. Available published downloads are listed in GitHub Releases.
+
+build.ps1 verifies the recorded license basis, model identity and retained
+evidence before packaging. -LocalOnly marks a non-public development build.
 
 Quick Start
 -----------
@@ -252,8 +257,8 @@ files and exported audio are preserved. Open the input again to start another ed
 
 Running on Another PC
 --------------------
-Public distribution is on hold as described above. The following is the folder
-layout for the owner's local testing; it is not a redistribution authorization.
+Distribute the reviewed application folder together with the verified source/
+materials beside it. Retain all notices and LICENSES/ evidence in the package.
 Copy the entire release/compact-fix30/KWAK Split folder, not just the EXE, to a writable
 folder on a Windows x64 PC. It includes FFmpeg tools, local model weights and an
 app-local Python/Demucs runtime. Python imports are confined to that runtime;

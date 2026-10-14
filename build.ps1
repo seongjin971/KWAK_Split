@@ -172,7 +172,7 @@ $LauncherPath = Join-Path $AppOut $LauncherName
 Write-Host "Build complete with app-local Python (verify on each target PC):"
 Write-Host "  $AppOut\$AppExe"
 if ($LocalOnly) {
-    "LOCAL BUILD ONLY - public distribution is on hold. See LICENSES/distribution-status.json." |
+    "LOCAL DEVELOPMENT BUILD ONLY - this output was built with -LocalOnly. See LICENSES/distribution-status.json for the project distribution decision." |
         Set-Content -LiteralPath (Join-Path $AppOut "DO_NOT_DISTRIBUTE.txt") -Encoding ASCII
     Write-Warning "LOCAL BUILD ONLY: public distribution is not authorized."
 } else {

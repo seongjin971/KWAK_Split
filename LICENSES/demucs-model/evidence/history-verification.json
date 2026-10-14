@@ -1,0 +1,48 @@
+{
+  "verified_at_utc": "2026-10-14T02:13:39.546662+00:00",
+  "sources": [
+    {
+      "file": "official-hf-commits.json",
+      "url": "https://huggingface.co/api/models/adefossez/HTDemucs/commits/main",
+      "sha256": "6f66791aca24d980cf3a2e28dae5d9cfbcd6090197ff41086e81a160fc22eebd",
+      "size_bytes": 785
+    },
+    {
+      "file": "official-hf-tree-mit.json",
+      "url": "https://huggingface.co/api/models/adefossez/HTDemucs/tree/bf35a81b663819a8255c8fefee17f9d812b786b5?recursive=true",
+      "sha256": "f75d2bea0cdea7a43d5a098f987aa47c256b92cbf05ac2622e897d910a6d9bf0",
+      "size_bytes": 699
+    },
+    {
+      "file": "official-hf-tree-after-removal.json",
+      "url": "https://huggingface.co/api/models/adefossez/HTDemucs/tree/cbc8a9b1a87023b7fd74e7b3412e6321c0eab003?recursive=true",
+      "sha256": "160b309d0ec9972f3ab6bc1a14cc694a40cb4d388bc5087c0ccfbcd2f3f0838e",
+      "size_bytes": 699
+    },
+    {
+      "file": "official-hf-discussion-1.json",
+      "url": "https://huggingface.co/api/models/adefossez/HTDemucs/discussions/1",
+      "sha256": "cf61a34c861bde58e028abad47827bbd3cc15cf58965e7dafa1e14d0d838ec0b",
+      "size_bytes": 7245
+    },
+    {
+      "file": "official-export_hf.py.txt",
+      "url": "https://raw.githubusercontent.com/adefossez/demucs/ab872e10daf3316d3ee2f21fcd6f90a3cbd6216a/tools/export_hf.py",
+      "sha256": "6407eed34d14311b099e952ebe85de650e0436ed7616ef8351d45f90e22e4e00",
+      "size_bytes": 9738
+    },
+    {
+      "file": "official-hf-card-after-removal.md",
+      "url": "https://huggingface.co/adefossez/HTDemucs/raw/cbc8a9b1a87023b7fd74e7b3412e6321c0eab003/README.md",
+      "sha256": "b34c13f1b6c3473bf44978f70b5c62666ee309514d6d50b34cf44827f9a38104",
+      "size_bytes": 647
+    }
+  ],
+  "unchanged_files_across_license_removal": {
+    ".gitattributes": true,
+    "955717e8.json": true,
+    "955717e8.safetensors": true,
+    "htdemucs.yaml": true
+  },
+  "readme_change_is_only_license_line_removal": true
+}
