@@ -1,0 +1,46 @@
+name: FFmpeg without DVD support
+
+# Builds the bundled FFmpeg tools; see LICENSES/ffmpeg/build/build-nodvd.sh.
+on:
+  workflow_dispatch:
+  push:
+    branches: [ffmpeg-nodvd]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - name: Build
+        run: bash LICENSES/ffmpeg/build/build-nodvd.sh "$RUNNER_TEMP/ffmpeg" 2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      - name: Collect outputs
+        run: |
+          mkdir out
+          cp "$RUNNER_TEMP"/ffmpeg/recipes/artifacts/*.zip out/
+          cp "$RUNNER_TEMP/build.log" out/build.log
+          docker image inspect --format '{{json .RepoDigests}}' \
+            ghcr.io/btbn/ffmpeg-builds/win64-gpl-8.1@sha256:79ffe8aa0a517bb5a4fbeb718c798b88033b1d853e82b0e936ee4edd95a0f2be > out/image.json
+          (cd out && sha256sum * > SHA256SUMS)
+          cat out/SHA256SUMS
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-nodvd-win64-gpl-8.1
+          path: out/
+          compression-level: 0
+          if-no-files-found: error

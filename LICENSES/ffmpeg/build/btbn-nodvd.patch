@@ -1,0 +1,47 @@
+--- a/build.sh
++++ b/build.sh
+@@ -10,6 +10,15 @@
+     source "addins/${addin}.sh"
+ done
+ 
++# KWAK Split: rebuild BtbN's 2026-10-13 win64 GPL 8.1 release from its exact
++# dependency image and FFmpeg commit, without DVD support.
++if [[ "${TARGET}-${VARIANT}-${ADDINS_STR}" != "win64-gpl-8.1" ]]; then
++    echo "Only win64 gpl 8.1 is pinned for this build."
++    exit 1
++fi
++IMAGE="ghcr.io/btbn/ffmpeg-builds/win64-gpl-8.1@sha256:79ffe8aa0a517bb5a4fbeb718c798b88033b1d853e82b0e936ee4edd95a0f2be"
++FFMPEG_COMMIT="46d899d7a02bc63237472cc4897258d5ddf274ac"
++
+ if docker info -f "{{println .SecurityOptions}}" | grep rootless >/dev/null 2>&1; then
+     UIDARGS=()
+ else
+@@ -39,12 +48,18 @@
+ 
+     git clone --filter=blob:none --branch='$GIT_BRANCH' '$FFMPEG_REPO' ffmpeg
+     cd ffmpeg
++    git checkout --detach '$FFMPEG_COMMIT'
++
++    # No DVD support: libdvdcss, libdvdread and libdvdnav are not linked.
++    FF_CONFIGURE="\${FF_CONFIGURE//--enable-libdvdread/--disable-libdvdread}"
++    FF_CONFIGURE="\${FF_CONFIGURE//--enable-libdvdnav/--disable-libdvdnav}"
++    case "\$FF_CONFIGURE" in *--enable-libdvd*) echo "DVD support is still enabled"; exit 1;; esac
+ 
+     ./configure --prefix=/ffbuild/prefix --pkg-config-flags="--static" \$FFBUILD_TARGET_FLAGS \$FF_CONFIGURE \
+         --extra-cflags="\$FF_CFLAGS" --extra-cxxflags="\$FF_CXXFLAGS" --extra-libs="\$FF_LIBS" \
+         --extra-ldflags="\$FF_LDFLAGS" --extra-ldexeflags="\$FF_LDEXEFLAGS"'$RPATH_LDEXEFLAGS' \
+         --cc="\$CC" --cxx="\$CXX" --ar="\$AR" --ranlib="\$RANLIB" --nm="\$NM" \
+-        --extra-version="\$(date +%Y%m%d)" || { cat ffbuild/config.log; exit 1; }
++        --extra-version="kwak-nodvd" || { cat ffbuild/config.log; exit 1; }
+     make -j\$(nproc) V=1
+     make install install-doc
+ EOF
+@@ -63,7 +78,7 @@
+ 
+ mkdir -p artifacts
+ ARTIFACTS_PATH="$PWD/artifacts"
+-BUILD_NAME="ffmpeg-$(./ffbuild/ffmpeg/ffbuild/version.sh ffbuild/ffmpeg)-${TARGET}-${VARIANT}${ADDINS_STR:+-}${ADDINS_STR}"
++BUILD_NAME="ffmpeg-$(./ffbuild/ffmpeg/ffbuild/version.sh ffbuild/ffmpeg)-${TARGET}-${VARIANT}${ADDINS_STR:+-}${ADDINS_STR}-nodvd"
+ 
+ mkdir -p "ffbuild/pkgroot/$BUILD_NAME"
+ package_variant ffbuild/prefix "ffbuild/pkgroot/$BUILD_NAME"
