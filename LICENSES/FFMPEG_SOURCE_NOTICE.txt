@@ -4,38 +4,37 @@ FFmpeg source and license notice for KWAK Split
 This notice applies to bin/ffmpeg.exe, bin/ffprobe.exe and bin/ffplay.exe
 matching LICENSES/ffmpeg/manifest.json:
 
-BtbN FFmpeg n8.1.3-18-g46d899d7a0-20261013, win64-gpl-8.1.
+FFmpeg n8.1.3-18-g46d899d7a0-kwak-nodvd, win64-gpl-8.1, built without DVD
+support: libdvdcss, libdvdread and libdvdnav are not linked.
 FFmpeg commit: 46d899d7a02bc63237472cc4897258d5ddf274ac
-Build recipes: 63ac3265b0789ea16c7b1f8351cd2ad195a28722
+Build recipes: BtbN/FFmpeg-Builds 63ac3265b0789ea16c7b1f8351cd2ad195a28722
+with ffmpeg/build/btbn-nodvd.patch
 License: GNU GPL version 3 or later; see GPL-3.0.txt.
 The configuration enables GPL/version3 and does not enable nonfree.
 Original third-party copyright and license notices are in ffmpeg/components/.
 
 Exact source access
 -------------------
-The accompanying source/ffmpeg directory contains the exact FFmpeg source,
-original build scripts/patches, selected dependency sources, and original Rust
-crate sources recovered from the actual build cache. File hashes and release
-paths are recorded in ffmpeg/manifest.json. Instructions, source selection and
-provenance are in ffmpeg/SOURCE-README.txt, source-inventory.json,
-rav1e-cargo-inventory.json and build-provenance.json.
+The accompanying source/ffmpeg directory contains the exact FFmpeg source, the
+original and modified build scripts, the dependency sources linked into these
+executables, and original Rust crate sources recovered from the actual build
+cache. File hashes and release paths are recorded in ffmpeg/manifest.json.
+Instructions, source selection and provenance are in ffmpeg/SOURCE-README.txt,
+source-inventory.json, rav1e-cargo-inventory.json and build-provenance.json.
 
 Keep the complete source sidecar available with the executable download and
 retain this notice and the component notices in the application. The source
 archives are intentionally excluded from the lightweight Git repository;
 their absence from Git does not remove the distribution requirement.
 
-Upstream release:
+Build run:
+https://github.com/seongjin971/KWAK_Split/actions/runs/38508865689
+BtbN release whose FFmpeg commit and dependency image are reused:
 https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-10-13-13-05
-Upstream build run:
-https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770
 FFmpeg legal information: https://www.ffmpeg.org/legal.html
 GPL terms: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-Public executable distribution is subject to the project's separate release
-hold and verification checks. Locally acquiring source does not mean a public
-source download has been published.
-
-Older Gyan 8.1.1 builds are not covered by this source package. Their historical
+Older binaries are not covered by this source package: BtbN's original
+2026-10-13 build and the Gyan 8.1.1 build. The Gyan build's historical
 corresponding-source issue and an unsent supplier request are recorded in
 ffmpeg/LEGACY-GYAN.txt. Do not redistribute those old binaries under this notice.

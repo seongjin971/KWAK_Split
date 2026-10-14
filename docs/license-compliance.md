@@ -14,7 +14,9 @@ Updated 2026-10-14. This is a technical release record, not a legal opinion.
   replaces the earlier reliance on a Hugging Face `license: mit` line that the
   author removed; that superseded record remains in Git history (`6fdced2`).
 - FFmpeg (GPL-3.0-or-later) and LAME through lameenc (LGPL) are bundled. Every
-  public download must provide their verified corresponding source.
+  public download must provide their verified corresponding source. FFmpeg is
+  rebuilt without DVD support, so the DVD decryption library libdvdcss is not
+  included ([source notes](../LICENSES/ffmpeg/SOURCE-README.txt)).
 
 `LICENSES/distribution-status.json` records the decision.
 `scripts/check_distribution.py` checks it; with `--package` it also fails if a
@@ -63,13 +65,22 @@ and any corresponding-source archives. `vendor-sources/` is ignored by Git so
 large source materials do not inflate the repository; preserve it and each
 release's `source/` sidecar for as long as the matching binaries are offered.
 
-The root and `release/compact-fix30/KWAK Split` copies use BtbN FFmpeg
-`n8.1.3-18-g46d899d7a0-20261013`; all six executable copies match the pinned
-hashes and version. Nine source archives (seven FFmpeg/build/dependency archives
-and two LAME archives), totaling 2,189,133,958 bytes, were verified and staged
-at `release/compact-fix30/source/` with `SHA256.json`. The FFmpeg materials
-cover the 98 dependency source stages matched to the actual build log and 275
-rav1e crates recovered from the same cache layer as the built library. No
+The root and `release/compact-fix30/KWAK Split` copies use FFmpeg
+`n8.1.3-18-g46d899d7a0-kwak-nodvd`, rebuilt on 2026-10-14 by
+`.github/workflows/ffmpeg-nodvd.yml` from BtbN's recipes, FFmpeg commit and
+dependency image with DVD support disabled. Apart from that and the version
+suffix, its configure command is identical to BtbN's 2026-10-13 build; the
+three executables contain no libdvdcss code. All six copies match the pinned
+hashes and version. The previous BtbN binaries and their source sidecar are
+kept locally under `backups/`.
+
+Nine source archives (seven FFmpeg/build/dependency archives and two LAME
+archives), totaling 2,188,531,774 bytes, are verified by
+`scripts/prepare_distribution_sources.py`. The FFmpeg materials cover the 95
+dependency source stages linked into the executables, matched to the
+dependency build log, and 275 rav1e crates recovered from the same cache layer
+as the built library. `release/compact-fix30` no longer carries a source
+sidecar because it must not be published; a public build stages its own. No
 public source or executable release has been published.
 
 Verify acquired notices and runtime identities with:
@@ -88,17 +99,22 @@ it must not silently replace a file whose hash does not match.
 - Model exclusion, 2026-10-14: the packaged runtime downloaded the official
   checkpoint into an empty model folder (matching SHA-256) and wrote four stems.
   The package check rejects `release/compact-fix30` for its checkpoint and
-  reports nothing else there. The full suite then reported 459 passed and two
+  reports nothing else there.
+- No-DVD FFmpeg, 2026-10-14: all three executables report
+  `n8.1.3-18-g46d899d7a0-kwak-nodvd`, contain no libdvdcss strings and lack the
+  dvdvideo demuxer; the azmq, rubberband, equalizer, alimiter and showspectrum
+  filters and the libmp3lame encoder are present. `download_ffmpeg.ps1
+  -ValidateOnly` passed for both bin folders.
+- With that `bin/` first on PATH, the full suite reported 459 passed and two
   skipped (the existing Windows symlink-permission skips), with 22 subtests
-  passed.
-- FFmpeg replacement, 2026-10-14: runtime verification passed for 16 upstream
-  material files, two LAME source archives, three native binaries and all 28
-  pinned runtime packages; desktop PyZMQ/Pillow/PyInstaller identity and notice
-  checks also passed. Candidate FFmpeg regression checks passed (112 tests,
-  seven subtests, six WAV/MP3 export cases). The full suite reported 443 passed,
-  one failed and two skipped; the failure is the existing ffplay startup-clock
-  race in `test_live_tap_uses_player_clock_and_processed_audio[-12-0.5]`, which
-  is also present at baseline `f62e5f9`.
+  passed. Keep `bin/` first when testing: the fixtures otherwise use whatever
+  FFmpeg PATH provides, such as a separately installed WinGet build.
+- `scripts/qa_compact_release.py` on `release/compact-fix30` with the new tools
+  passed: EXE smoke test, confined runtime imports, a real two-second split into
+  four stems, 48 kHz 24-bit WAV and 320 kbps MP3 mixes, four separate WAVs and
+  MP3s, and play/pause/resume on the silent device.
+- Runtime license materials verified: five components, 16 files, two LAME
+  source archives, three native binaries and 28 pinned runtime packages.
 - Audio tests used the silent SDL device; physical-device listening was not
   performed. Source provenance checks are not a bit-for-bit rebuild.
 
@@ -106,5 +122,6 @@ it must not silently replace a file whose hash does not match.
 
 The promotional site describes a Windows-only portable ZIP, a one-time model
 download on the first split and the license terms above; it makes no
-commercial-use claim. Its download links and checksums are placeholders until
+commercial-use claim. Its feature copy and screenshots match the current
+compact UI (three-band EQ, mute/solo mixer, four-track export; no presets). Its download links and checksums are placeholders until
 a public release exists. GitHub Releases is the download listing.

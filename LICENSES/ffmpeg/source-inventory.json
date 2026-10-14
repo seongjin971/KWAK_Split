@@ -1039,45 +1039,6 @@
     {
       "enabled": true,
       "depends": [
-        "base"
-      ],
-      "download_command": "git-mini-clone \"https://code.videolan.org/videolan/libdvdcss.git\" \"811ce97a1d4d1c9d936f4b2707f533a9ef768251\" \".\"\n",
-      "download_command_sha256": "8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c",
-      "configure": [],
-      "script": "scripts.d/50-dvd/30-libdvdcss.sh",
-      "stage": "30-libdvdcss",
-      "file": "30-libdvdcss_8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c.tar.xz",
-      "bytes": 233016,
-      "sha256": "1575ad0395411414e0368f55047993059a4b77c441d3fd5179fdc2529af9905a",
-      "source_fields": {
-        "REPO": "https://code.videolan.org/videolan/libdvdcss.git",
-        "COMMIT": "811ce97a1d4d1c9d936f4b2707f533a9ef768251"
-      },
-      "git_heads": [
-        "811ce97a1d4d1c9d936f4b2707f533a9ef768251",
-        "0000000000000000000000000000000000000000 811ce97a1d4d1c9d936f4b2707f533a9ef768251 Unknown <unknown@409ba98d7ab5.(none)> 1786563186 +0000\tcheckout: moving from master to FETCH_HEAD"
-      ],
-      "missing_refs": [],
-      "source_files": 20,
-      "files": 110,
-      "notices": [
-        {
-          "path": "./COPYING",
-          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
-          "bytes": 18092
-        },
-        {
-          "path": "./AUTHORS",
-          "sha256": "b2de31ac3382bbadd18eb2f9abea4e209372c62bdf722c96a62043ad074e93b1",
-          "bytes": 1708
-        }
-      ],
-      "cargo_vendor_packages": 0,
-      "possible_sdk_paths": []
-    },
-    {
-      "enabled": true,
-      "depends": [
         "base",
         "fribidi",
         "fonts"
@@ -1149,47 +1110,6 @@
           "path": "./AUTHORS",
           "sha256": "db6d73a160bb2de10268f88ef60aae91771fefdeee4992b791c76ce6592a4a4b",
           "bytes": 62
-        }
-      ],
-      "cargo_vendor_packages": 0,
-      "possible_sdk_paths": []
-    },
-    {
-      "enabled": true,
-      "depends": [
-        "base"
-      ],
-      "download_command": "git-mini-clone \"https://code.videolan.org/videolan/libdvdread.git\" \"0f30df53125b564ef45903714403ce0a1e6c5e9e\" \".\"\n",
-      "download_command_sha256": "05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0",
-      "configure": [
-        "--enable-libdvdread"
-      ],
-      "script": "scripts.d/50-dvd/40-libdvdread.sh",
-      "stage": "40-libdvdread",
-      "file": "40-libdvdread_05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0.tar.xz",
-      "bytes": 295624,
-      "sha256": "1e296c018e59fabadf2e316821ce2bf3a1fdc68e925789072aa07c1116f26069",
-      "source_fields": {
-        "REPO": "https://code.videolan.org/videolan/libdvdread.git",
-        "COMMIT": "0f30df53125b564ef45903714403ce0a1e6c5e9e"
-      },
-      "git_heads": [
-        "0f30df53125b564ef45903714403ce0a1e6c5e9e",
-        "0000000000000000000000000000000000000000 0f30df53125b564ef45903714403ce0a1e6c5e9e Unknown <unknown@e72efb69aef8.(none)> 1790141846 +0000\tcheckout: moving from master to FETCH_HEAD"
-      ],
-      "missing_refs": [],
-      "source_files": 30,
-      "files": 150,
-      "notices": [
-        {
-          "path": "./COPYING",
-          "sha256": "d6cb0e9e560f51085556949a84af12b79a00f10ab8b66c752537faf7cd665572",
-          "bytes": 18097
-        },
-        {
-          "path": "./AUTHORS",
-          "sha256": "e49066cd889298c75cf2b37167557004c43112ec6be90c487644fc6b3b737fcf",
-          "bytes": 947
         }
       ],
       "cargo_vendor_packages": 0,
@@ -2649,47 +2569,6 @@
           "path": "./contrib/asm/LICENSE.txt",
           "sha256": "293b6af371eee28b0ff16f0334ea19e20a3d5522143faa4b95b346855507879a",
           "bytes": 1598
-        }
-      ],
-      "cargo_vendor_packages": 0,
-      "possible_sdk_paths": []
-    },
-    {
-      "enabled": true,
-      "depends": [
-        "base"
-      ],
-      "download_command": "git-mini-clone \"https://code.videolan.org/videolan/libdvdnav.git\" \"8147ccd35e5aae4afdd21171cf7b6b4d8f179d28\" \".\"\n",
-      "download_command_sha256": "20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684",
-      "configure": [
-        "--enable-libdvdnav"
-      ],
-      "script": "scripts.d/50-dvd/50-libdvdnav.sh",
-      "stage": "50-libdvdnav",
-      "file": "50-libdvdnav_20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684.tar.xz",
-      "bytes": 249264,
-      "sha256": "f122b0bccbd3b4d9cdf7e174b461070e0a449e4eb7dc619d235c58efaef3c383",
-      "source_fields": {
-        "REPO": "https://code.videolan.org/videolan/libdvdnav.git",
-        "COMMIT": "8147ccd35e5aae4afdd21171cf7b6b4d8f179d28"
-      },
-      "git_heads": [
-        "8147ccd35e5aae4afdd21171cf7b6b4d8f179d28",
-        "0000000000000000000000000000000000000000 8147ccd35e5aae4afdd21171cf7b6b4d8f179d28 Unknown <unknown@e72efb69aef8.(none)> 1790142068 +0000\tcheckout: moving from master to FETCH_HEAD"
-      ],
-      "missing_refs": [],
-      "source_files": 33,
-      "files": 150,
-      "notices": [
-        {
-          "path": "./COPYING",
-          "sha256": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670",
-          "bytes": 17992
-        },
-        {
-          "path": "./AUTHORS",
-          "sha256": "0d688bcf35faf86f4d9747f677da278189932eead3f1d05cde637d9ea93a7816",
-          "bytes": 455
         }
       ],
       "cargo_vendor_packages": 0,
@@ -8562,7 +8441,7 @@
   ],
   "missing_refs": [],
   "source_completeness_verified": true,
-  "scope": "Locally verified corresponding-source material for the pinned win64 GPL 8.1 binaries, with recipes, used dependencies and Rust source supplementation. No byte-for-byte rebuild or public-source publication is asserted.",
+  "scope": "Locally verified corresponding-source material for the pinned win64 GPL 8.1 no-DVD binaries, with recipes, used dependencies and Rust source supplementation. No byte-for-byte rebuild is asserted.",
   "possible_sdk_paths_excluded_from_distribution": {
     "50-amf": [
       "./amf/public/src/components/Capture/DeckLinkMedia/DeckLinkAPI_h.h",
@@ -8572,5 +8451,29 @@
     ]
   },
   "possible_sdk_paths": {},
-  "rust_supplement": "rav1e-cargo-inventory.json:275 exact crate source archives from the actual cached build layer; all package checksums verified."
+  "rust_supplement": "rav1e-cargo-inventory.json:275 exact crate source archives from the actual cached build layer; all package checksums verified.",
+  "excluded_unlinked_stages": [
+    {
+      "stage": "30-libdvdcss",
+      "script": "scripts.d/50-dvd/30-libdvdcss.sh",
+      "file": "30-libdvdcss_8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c.tar.xz",
+      "bytes": 233016,
+      "sha256": "1575ad0395411414e0368f55047993059a4b77c441d3fd5179fdc2529af9905a"
+    },
+    {
+      "stage": "40-libdvdread",
+      "script": "scripts.d/50-dvd/40-libdvdread.sh",
+      "file": "40-libdvdread_05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0.tar.xz",
+      "bytes": 295624,
+      "sha256": "1e296c018e59fabadf2e316821ce2bf3a1fdc68e925789072aa07c1116f26069"
+    },
+    {
+      "stage": "50-libdvdnav",
+      "script": "scripts.d/50-dvd/50-libdvdnav.sh",
+      "file": "50-libdvdnav_20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684.tar.xz",
+      "bytes": 249264,
+      "sha256": "f122b0bccbd3b4d9cdf7e174b461070e0a449e4eb7dc619d235c58efaef3c383"
+    }
+  ],
+  "excluded_unlinked_reason": "The no-DVD build disables libdvdread and libdvdnav, so libdvdcss, libdvdread and libdvdnav are not linked into the distributed executables."
 }

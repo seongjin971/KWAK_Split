@@ -46,6 +46,7 @@ function Assert-Tools([string]$Directory) {
             throw "Unexpected FFmpeg tool version: $($Tool.name)"
         }
         if ($Output.Contains("--enable-nonfree")) { throw "Nonredistributable FFmpeg configuration detected." }
+        if ($Output.Contains("--enable-libdvd")) { throw "DVD support (libdvdcss) must not be built into the bundled FFmpeg." }
     }
     $Ffmpeg = Join-Path $Directory "ffmpeg.exe"
     $Filters = (& $Ffmpeg -hide_banner -filters 2>&1 | Out-String)
@@ -66,18 +67,15 @@ if ($ValidateOnly) {
     exit 0
 }
 
-$DownloadDir = Get-WorkspacePath "temp\downloads\ffmpeg"
-New-Item -ItemType Directory -Force -Path $DownloadDir | Out-Null
+New-Item -ItemType Directory -Force -Path (Get-WorkspacePath "temp\downloads\ffmpeg") | Out-Null
 if ($ArchivePath) {
     $ZipPath = [IO.Path]::GetFullPath($ArchivePath)
 } else {
-    $ZipPath = Join-Path $DownloadDir $Manifest.archive.name
+    # The no-DVD build is produced by .github/workflows/ffmpeg-nodvd.yml; its
+    # package is preserved locally because workflow artifacts expire.
+    $ZipPath = Get-WorkspacePath $Manifest.archive.local_path
     if (-not (Test-Path -LiteralPath $ZipPath -PathType Leaf)) {
-        $PartialPath = $ZipPath + ".partial"
-        Write-Host "Downloading the pinned FFmpeg package ($($Manifest.version))..."
-        Invoke-WebRequest -UseBasicParsing -Uri $Manifest.archive.url -OutFile $PartialPath
-        Assert-Hash $PartialPath $Manifest.archive.sha256
-        Move-Item -LiteralPath $PartialPath -Destination $ZipPath
+        throw "The pinned FFmpeg package is missing: $($Manifest.archive.local_path). Download artifact '$($Manifest.archive.workflow_artifact)' from $($Manifest.archive.workflow_run) or rebuild it with .github/workflows/ffmpeg-nodvd.yml, then pass -ArchivePath."
     }
 }
 Assert-Hash $ZipPath $Manifest.archive.sha256

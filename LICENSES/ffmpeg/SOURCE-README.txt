@@ -2,9 +2,12 @@ FFmpeg corresponding-source material for KWAK Split
 ===================================================
 
 Applies only to the three executables identified by manifest.json:
-BtbN n8.1.3-18-g46d899d7a0-20261013, win64-gpl-8.1, GPLv3-or-later.
-The older Gyan 8.1.1 build is a separate unresolved historical matter; see
-LEGACY-GYAN.txt. This material does not repair that older distribution.
+FFmpeg n8.1.3-18-g46d899d7a0-kwak-nodvd, win64-gpl-8.1, GPLv3-or-later.
+They were rebuilt from BtbN/FFmpeg-Builds with the FFmpeg commit and
+dependency image of BtbN's 2026-10-13 release, but without DVD support:
+libdvdcss, libdvdread and libdvdnav are not linked. Neither BtbN's original
+2026-10-13 binaries nor the older Gyan 8.1.1 build is covered; for the latter
+see LEGACY-GYAN.txt.
 
 What is preserved
 -----------------
@@ -13,12 +16,25 @@ The release's source/ffmpeg directory must accompany the application download:
 * FFmpeg-46d899d7a02bc63237472cc4897258d5ddf274ac.tar.gz: exact FFmpeg source.
 * FFmpeg-Builds-63ac3265b0789ea16c7b1f8351cd2ad195a28722.tar.gz: original build
   recipes, patches, Dockerfiles and workflow. Original MIT license retained.
-* dependencies-part1.zip through dependencies-part3.zip: the 98 dependency
-  source stages actually used by win64 GPL 8.1, at .cache/downloads/*.tar.xz.
+* dependencies-part1.zip through dependencies-part3.zip: the 95 dependency
+  source stages linked into these executables, at .cache/downloads/*.tar.xz.
 * rav1e-cargo-sources.zip: the 275 original Rust crate source archives recovered
   from the same Docker build-cache layer as the built librav1e.a.
-* source-metadata.zip: inventory, checksums, configuration, provenance,
-  reconstruction notes, and the application-side original license notices.
+* source-metadata.zip: inventory, checksums, configuration, provenance, the
+  KWAK Split recipe patch, build script, workflow and build log, reconstruction
+  notes, and the application-side original license notices.
+
+How these executables were built
+--------------------------------
+build/build-nodvd.sh fetches FFmpeg-Builds at 63ac3265, applies
+build/btbn-nodvd.patch and runs ./build.sh win64 gpl 8.1. The patch uses the
+dependency image ghcr.io/btbn/ffmpeg-builds/win64-gpl-8.1@sha256:79ffe8aa0a517bb5a4fbeb718c798b88033b1d853e82b0e936ee4edd95a0f2be,
+checks out FFmpeg 46d899d7a02bc63237472cc4897258d5ddf274ac, replaces
+--enable-libdvdread/--enable-libdvdnav with --disable-libdvdread and
+--disable-libdvdnav, and sets the version suffix kwak-nodvd. The workflow
+.github/workflows/ffmpeg-nodvd.yml ran it on GitHub Actions:
+https://github.com/seongjin971/KWAK_Split/actions/runs/38508865689
+Its build log, image digest and checksums are in source-metadata.zip.
 
 Large archives are kept locally in vendor-sources/ffmpeg and excluded from Git.
 Their exact sizes, SHA-256 hashes and release locations are in manifest.json.
@@ -29,18 +45,22 @@ is not a substitute. Retain source access while providing the binaries.
 
 Provenance and selection
 ------------------------
-Upstream release:
+BtbN release whose FFmpeg commit and dependency image are reused:
 https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-10-13-13-05
-Build run:
+BtbN build run that produced the dependency image:
 https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770
 Source-cache artifact ID: 11811473165 (download-cache).
 Original artifact SHA-256:
 ae912701a3fc2f92473c5bd16deb8fedadcdd3720badd96d72284637b5d55ffc
 
-The original cache covers multiple variants. Only the 98 active source stages
-were selected, and all 98 filenames match the actual win64 GPL 8.1 build log.
-Unused stages, including fdk-aac/nonfree variants, are excluded. The original
-whole cache remains private acquisition evidence, not a release artifact.
+The original cache covers multiple variants. 98 active source stages were
+selected, and all 98 filenames match the actual win64 GPL 8.1 build log. The
+no-DVD executables do not link libdvdcss, libdvdread or libdvdnav, so those
+three stage archives are left out; build/rebundle_nodvd.py copied the other 95
+unchanged and records the three under excluded_unlinked_stages in
+source-inventory.json. Unused stages, including fdk-aac/nonfree variants, are
+excluded. The original whole cache remains private acquisition evidence, not a
+release artifact.
 
 AMF is header-only in this FFmpeg recipe: it copies amf/public/include.
 The source sidecar keeps exactly those headers and AMD's original LICENSE.txt.
@@ -68,15 +88,20 @@ crates; inclusion does not assert every crate is linked into the executables.
 Build reconstruction
 --------------------
 The original upstream workflow and scripts are supplied unchanged in the
-FFmpeg-Builds archive. Use a Linux Docker build environment, not the application's
-Windows Python environment. No byte-for-byte rebuild was performed by this
-audit, and modern toolchains may produce different binary hashes.
+FFmpeg-Builds archive; the KWAK Split patch and script are in build/. Use a
+Linux Docker build environment, not the application's Windows Python
+environment. Rebuilds may produce different binary hashes.
+
+With BtbN's published dependency image, run build/build-nodvd.sh (this is what
+the workflow did). To rebuild that dependency image from the supplied source:
 
 1. Unpack the FFmpeg-Builds archive into a build directory. Unpack all three
    dependency ZIPs into that directory, preserving .cache/downloads paths.
    The tar.xz filenames encode upstream download-command hashes. The cache is
    intentionally limited to the selected GPL target, so do not run a script
-   that fetches all variants before using it.
+   that fetches all variants before using it. Disable the three scripts.d/50-dvd
+   stages (make ffbuild_enabled return -1): they are not linked, and their
+   sources are not supplied.
 2. Inspect generate.sh, scripts.d, util and the original workflow. Generate the
    dependency build with ./generate.sh win64 gpl 8.1. The recorded base image is
    ghcr.io/btbn/ffmpeg-builds/base-win64@sha256:f27c68da9e353b5fcef0396fb5d5112b969eb6c9fb02e8df484c0fea130016e7.
@@ -90,11 +115,10 @@ audit, and modern toolchains may produce different binary hashes.
 4. Build the dependency image using the supplied scripts. The original
    scripts.d recipes contain the modifications/patches and configure switches
    for every dependency. Build stages use the supplied cache tarballs.
-5. Unpack the exact FFmpeg source archive. Use the recorded configure command
-   in build-provenance.json and the original build.sh commands inside the
-   dependency image. Do not let build.sh clone today's release/8.1 branch;
-   use the supplied source at 46d899d7a02bc63237472cc4897258d5ddf274ac.
-   Run make and make install as described by that original script.
+5. Run build/build-nodvd.sh with the IMAGE line of btbn-nodvd.patch pointing
+   at the rebuilt image. It builds FFmpeg 46d899d7a02bc63237472cc4897258d5ddf274ac
+   with the configure command recorded in build-provenance.json, DVD disabled.
+   To build offline, replace its git checkout with the supplied FFmpeg archive.
 
 Normal compilers, build utilities and their standard runtime/system libraries
 are not claimed to be reproduced byte-for-byte here. Their version evidence

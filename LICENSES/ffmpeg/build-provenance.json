@@ -1,26 +1,55 @@
 {
   "build_recipe_commit": "63ac3265b0789ea16c7b1f8351cd2ad195a28722",
   "ffmpeg_commit": "46d899d7a02bc63237472cc4897258d5ddf274ac",
-  "workflow_run": "https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770",
+  "executable_build": {
+    "description": "KWAK Split rebuild of BtbN's 2026-10-13 win64 GPL 8.1 release without DVD support.",
+    "workflow_run": "https://github.com/seongjin971/KWAK_Split/actions/runs/38508865689",
+    "commit": "832b72683dd5c738aaca5c7dc8b75538f9ef51c7",
+    "workflow": {
+      "path": ".github/workflows/ffmpeg-nodvd.yml",
+      "sha256": "f08ea6b5fb022306d1110f7bb9f28addc33570fd29e70a5afbc4083360772af4"
+    },
+    "script": {
+      "path": "LICENSES/ffmpeg/build/build-nodvd.sh",
+      "sha256": "4c7ba0c506a2c597579f1cc4627d4d693aa362d1fc754724cc11e4da11feb007"
+    },
+    "recipe_patch": {
+      "path": "LICENSES/ffmpeg/build/btbn-nodvd.patch",
+      "sha256": "506d1b3de30d4ebe547f7bb9645504bce10d64b0f9c7f7f3a61876bea2731223"
+    },
+    "build_log_sha256": "62c09233e308680215cc371dbd05f84c062a55ad20ce5dd6a458fdea3084bd00",
+    "dependency_image_used": "ghcr.io/btbn/ffmpeg-builds/win64-gpl-8.1@sha256:79ffe8aa0a517bb5a4fbeb718c798b88033b1d853e82b0e936ee4edd95a0f2be",
+    "configure_changes_from_btbn": [
+      "--disable-libdvdread instead of --enable-libdvdread",
+      "--disable-libdvdnav instead of --enable-libdvdnav",
+      "--extra-version=kwak-nodvd instead of 20261013"
+    ],
+    "unlinked_stages": [
+      "30-libdvdcss",
+      "40-libdvdread",
+      "50-libdvdnav"
+    ]
+  },
+  "dependency_workflow_run": "https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770",
   "dependency_build_job": "https://github.com/BtbN/FFmpeg-Builds/actions/runs/38396239770/job/115294201809",
-  "build_log_sha256": "b8d5fde59a4f9083d8a8d9c3ef73b9001779515143dc9e1876b20aa09e14b28d",
-  "source_stage_count": 98,
+  "dependency_build_log_sha256": "b8d5fde59a4f9083d8a8d9c3ef73b9001779515143dc9e1876b20aa09e14b28d",
+  "source_stage_count": 95,
   "source_stage_log_names_match": true,
   "base_image": "ghcr.io/btbn/ffmpeg-builds/base-win64@sha256:f27c68da9e353b5fcef0396fb5d5112b969eb6c9fb02e8df484c0fea130016e7",
   "dependency_image": "ghcr.io/btbn/ffmpeg-builds/win64-gpl-8.1@sha256:79ffe8aa0a517bb5a4fbeb718c798b88033b1d853e82b0e936ee4edd95a0f2be",
   "cache_image_manifest": "sha256:e946dce215b73608c6b13d9579d56bf6a2bf8a20527eb57556a50bb26821baf2",
   "binaries": {
     "ffmpeg": {
-      "sha256": "2edd3240d6834ac341bcd8d3b51a73d0fd13dfaddbaf5b1c88bf228fe5558a35",
-      "version_output": "ffmpeg version n8.1.3-18-g46d899d7a0-20261013 Copyright (c) 2000-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --enable-libdvdread --enable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20261013\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n\nExiting with exit code 0\n"
+      "sha256": "c956abc0911cbeb1fe81f9a0051bca6166f773d337cba25071ebfaeb904ed83d",
+      "version_output": "ffmpeg version n8.1.3-18-g46d899d7a0-kwak-nodvd Copyright (c) 2000-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --disable-libdvdread --disable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=kwak-nodvd\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n\nExiting with exit code 0\n"
     },
     "ffprobe": {
-      "sha256": "69eae874f41b4e18d7a8af2255f5b8f363fe58196d1cc96d5a079b75e93449d7",
-      "version_output": "ffprobe version n8.1.3-18-g46d899d7a0-20261013 Copyright (c) 2007-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --enable-libdvdread --enable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20261013\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n"
+      "sha256": "17dd0e91bc0de82fa934bf3759524970a61823b409eb2f6bbc04f924c9258914",
+      "version_output": "ffprobe version n8.1.3-18-g46d899d7a0-kwak-nodvd Copyright (c) 2007-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --disable-libdvdread --disable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=kwak-nodvd\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n"
     },
     "ffplay": {
-      "sha256": "d1afbd81deb8c16e36554dba65108084a56e370e0f17e17958ae04f344db2334",
-      "version_output": "ffplay version n8.1.3-18-g46d899d7a0-20261013 Copyright (c) 2003-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --enable-libdvdread --enable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20261013\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n"
+      "sha256": "c96793f96f97a3a97b3237eec8075b04ef9f70fcca4e85781f194d2576262032",
+      "version_output": "ffplay version n8.1.3-18-g46d899d7a0-kwak-nodvd Copyright (c) 2003-2026 the FFmpeg developers\nbuilt with gcc 16.2.0 (crosstool-NG 1.29.0.7_b1a94f6)\nconfiguration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --disable-libxcb --disable-xlib --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-lcms2 --enable-vulkan --enable-libshaderc --enable-libdav1d --enable-libvorbis --enable-librav1e --enable-librsvg --disable-libpulse --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-opencl --enable-amf --enable-libaom --enable-avisynth --enable-chromaprint --enable-libdavs2 --disable-libdvdread --disable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribb24 --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --enable-vapoursynth --enable-libvidstab --enable-libvvenc --disable-whisper --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=kwak-nodvd\nlibavutil      60. 26.103 / 60. 26.103\nlibavcodec     62. 28.103 / 62. 28.103\nlibavformat    62. 12.103 / 62. 12.103\nlibavdevice    62.  3.103 / 62.  3.103\nlibavfilter    11. 14.103 / 11. 14.103\nlibswscale      9.  5.103 /  9.  5.103\nlibswresample   6.  3.103 /  6.  3.103\n"
     }
   },
   "selected_recipe_downloads": [
@@ -115,12 +144,6 @@
       "download_command_sha256": "b47aea19d87bc74ee9a1ba179e240b0c2998eed272c980ba9065827d8cfb0276"
     },
     {
-      "stage": "30-libdvdcss",
-      "script": "scripts.d/50-dvd/30-libdvdcss.sh",
-      "file": "30-libdvdcss_8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c.tar.xz",
-      "download_command_sha256": "8e6c469595eeef1d2ca7962b68faabe5531518009472d449f700665a616bc66c"
-    },
-    {
       "stage": "30-pango",
       "script": "scripts.d/50-librsvg/30-pango.sh",
       "file": "30-pango_fa28105e276f1fc77de3a3231765da71db0cf4b93c57adba61921bcb240e30d7.tar.xz",
@@ -131,12 +154,6 @@
       "script": "scripts.d/45-fonts/35-fontconfig.sh",
       "file": "35-fontconfig_ce2e0916ca408e9567ab57c27be06a7166a9f9a3da902c751fef1bbb969f6a1a.tar.xz",
       "download_command_sha256": "ce2e0916ca408e9567ab57c27be06a7166a9f9a3da902c751fef1bbb969f6a1a"
-    },
-    {
-      "stage": "40-libdvdread",
-      "script": "scripts.d/50-dvd/40-libdvdread.sh",
-      "file": "40-libdvdread_05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0.tar.xz",
-      "download_command_sha256": "05480a48c37dea2502d831aa7dd0b71c28c6d32cfabf95e0cbb16512fe45d8f0"
     },
     {
       "stage": "40-mbedtls",
@@ -329,12 +346,6 @@
       "script": "scripts.d/50-libbluray.sh",
       "file": "50-libbluray_cbdd227c469333ec53b78a1b5c8b26cb3db25c331d9052740a38136bd96b13b0.tar.xz",
       "download_command_sha256": "cbdd227c469333ec53b78a1b5c8b26cb3db25c331d9052740a38136bd96b13b0"
-    },
-    {
-      "stage": "50-libdvdnav",
-      "script": "scripts.d/50-dvd/50-libdvdnav.sh",
-      "file": "50-libdvdnav_20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684.tar.xz",
-      "download_command_sha256": "20088474345356fbabc64ef14250d1f5ed698d04d2facb7d73dddfc9ace7b684"
     },
     {
       "stage": "50-libjxl",

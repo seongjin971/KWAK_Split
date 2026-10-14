@@ -8,8 +8,10 @@ Licensing update, 2026-10-14: the owner selected MIT for the project's original
 code. Public packages do not include the Demucs model weights, which the author
 provides for research purposes outside the MIT license; the app downloads them
 from the official Demucs server on the first split. This replaces the earlier
-reliance on a removed Hugging Face MIT tag. Public downloads must provide the
-FFmpeg/LAME corresponding source, and the old v1.0.0 GitHub ZIP remains a draft.
+reliance on a removed Hugging Face MIT tag. The bundled FFmpeg is rebuilt
+without DVD support, so libdvdcss is not included. Public downloads must
+provide the FFmpeg/LAME corresponding source, and the old v1.0.0 GitHub ZIP
+remains a draft.
 See [distribution licensing](docs/license-compliance.md) and the
 [model record](LICENSES/demucs-model/PROVENANCE.md).
 
