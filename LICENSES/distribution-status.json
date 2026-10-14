@@ -1,78 +1,22 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "public_binary_distribution": "approved",
   "decision_date": "2026-10-14",
   "source_license": "MIT",
-  "reason": "The owner adopts the historical official MIT declaration for the verified-identical HTDemucs checkpoint. The model-specific hold is removed; retain notices and deliver the verified corresponding-source materials with the reviewed package.",
+  "reason": "Public packages exclude the Demucs model weights. KWAK Split does not redistribute them; the app downloads the official checkpoint on the first split. Deliver the verified FFmpeg/LAME corresponding source with each public package.",
   "model": {
     "name": "htdemucs",
+    "signature": "955717e8",
     "path": "models/torch/hub/checkpoints/955717e8-8726e21a.th",
     "sha256": "8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4",
-    "permission_status": "historical-mit-basis-adopted",
-    "evidence": "LICENSES/demucs-model/PROVENANCE.md",
-    "permission_basis": "historical-upstream-mit",
-    "permission_document": "LICENSES/demucs-model/evidence/historical-model-card.md",
-    "original_acquisition_date": null,
-    "acquisition_account": "Owner states model was obtained and used while MIT licensed; no independently verified exact date is asserted.",
-    "required_materials": [
-      {
-        "path": "LICENSES/demucs-model/evidence/comparison-method.py.txt",
-        "sha256": "995a1f63d5762e117fc7c4b450c3909d83d43e913161590d3822b13ebe14ac6f"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/hf-commits.json",
-        "sha256": "6f66791aca24d980cf3a2e28dae5d9cfbcd6090197ff41086e81a160fc22eebd"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/hf-discussion-1.json",
-        "sha256": "cf61a34c861bde58e028abad47827bbd3cc15cf58965e7dafa1e14d0d838ec0b"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/hf-tree-after-removal.json",
-        "sha256": "160b309d0ec9972f3ab6bc1a14cc694a40cb4d388bc5087c0ccfbcd2f3f0838e"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/hf-tree-mit.json",
-        "sha256": "f75d2bea0cdea7a43d5a098f987aa47c256b92cbf05ac2622e897d910a6d9bf0"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/historical-model-card.md",
-        "sha256": "369d146638e76979e9cfbe5e359ef44e77fa13cfd2da2eb4753c9022572ee7b9"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/history-verification.json",
-        "sha256": "a129ce7a7f8d18a5742a59ae3dde966ba93651287a083a92725c488df03180ba"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/model-card-after-removal.md",
-        "sha256": "b34c13f1b6c3473bf44978f70b5c62666ee309514d6d50b34cf44827f9a38104"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/model-identity.json",
-        "sha256": "70b96fbfd0d733120558a2ec9fdf8b5249f66b1d3481da0d29b073731d13bc1b"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence/official-conversion.py.txt",
-        "sha256": "6407eed34d14311b099e952ebe85de650e0436ed7616ef8351d45f90e22e4e00"
-      },
-      {
-        "path": "LICENSES/demucs-model/evidence.json",
-        "sha256": "07ffa0b5eb411eb2f4532a5dcc145e768a45b401b600567e8945bb24d34f24f2"
-      },
-      {
-        "path": "LICENSES/demucs-model/MIT-LICENSE.txt",
-        "sha256": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173"
-      },
-      {
-        "path": "LICENSES/demucs-model/NOTICE.txt",
-        "sha256": "ef9b0cd09a13635a2e1dc6a7d8b76175b80eb63731bfb0e4c15357a2eb5eb42d"
-      },
-      {
-        "path": "LICENSES/demucs-model/PROVENANCE.md",
-        "sha256": "466911454c389450e6c01715603c38c36d962e11ff98ac2cd7593b5db776348a"
-      }
-    ]
+    "bundled_in_public_packages": false,
+    "download_url": "https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/955717e8-8726e21a.th",
+    "terms": "Not covered by KWAK Split's MIT license. The Demucs author stated that the weights are not covered by the Demucs MIT license and are provided for research purposes.",
+    "notice": "LICENSES/demucs-model/NOTICE.txt",
+    "record": "LICENSES/demucs-model/PROVENANCE.md"
   },
-  "approval_scope": "Project distribution decision based on retained historical evidence; not a new rights-holder approval or a legal guarantee.",
-  "excluded_release": "The previous v1.0.0 ZIP remains a draft because its legacy FFmpeg corresponding-source matter is separate."
+  "do_not_publish": [
+    "release/compact-fix30 and any -LocalOnly package: they contain the local model checkpoint.",
+    "The draft v1.0.0 ZIP: it predates the verified FFmpeg corresponding source."
+  ]
 }

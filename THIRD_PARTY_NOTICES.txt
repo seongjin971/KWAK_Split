@@ -4,11 +4,10 @@ KWAK Split third-party notices
 This file is a practical notice for bundled third-party components. It is not legal advice.
 
 KWAK Split's original code is MIT licensed (see LICENSE). That grant does not
-relicense the components below or the Demucs model weights. For the exact Demucs
-checkpoint below, the project relies on the historical official MIT declaration
-and verified model identity recorded in LICENSES/demucs-model/PROVENANCE.md.
-Current package distribution requires the notices and corresponding-source
-materials described here; see LICENSES/distribution-status.json.
+relicense the components below. Demucs model weights are not included in
+KWAK Split packages; see "Stem separation model" below. Public distribution
+requires the notices and corresponding-source materials described here; see
+LICENSES/distribution-status.json.
 
 Bundled executable tools
 ------------------------
@@ -32,9 +31,10 @@ FFmpeg 8.1 branch, BtbN/FFmpeg-Builds pinned 2026-10-13 win64 GPL build
 
 Corresponding source includes FFmpeg, required dependency source and the exact
 build recipes. The prepared source/ directory beside the application folder
-contains these materials, with a SHA256.json index. A future authorized public
-download must include that directory or supply its archives beside the executable
-download, clearly linked and without extra access restrictions. Expiring upstream
+contains these materials, with a SHA256.json index. Every public download must
+supply these archives beside the executable download (for example, as assets of
+the same GitHub release), clearly linked and without extra access restrictions,
+for as long as the executable is offered. Expiring upstream
 Actions artifacts are acquisition provenance, not our public source-delivery route.
 See LICENSES/FFMPEG_SOURCE_NOTICE.txt and docs/license-compliance.md.
 
@@ -118,20 +118,17 @@ requirements-demucs.txt pins the reviewed runtime packages. The provenance
 records preserve archive URLs and hashes. scripts/prepare_license_materials.py
 verifies these materials and the actual runtime before packaging.
 
-The retained local models folder contains this Demucs model checkpoint:
-- models/torch/hub/checkpoints/955717e8-8726e21a.th
+Stem separation model
+---------------------
 
+KWAK Split packages do not include Demucs model weights. On the first Split
+Stems, the bundled Demucs runtime downloads the htdemucs checkpoint
+955717e8-8726e21a.th from the official Demucs server into the app's models
+folder:
+https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/955717e8-8726e21a.th
 SHA-256: 8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4
-Historical model MIT declaration and attribution:
-LICENSES/demucs-model/NOTICE.txt and MIT-LICENSE.txt.
-The current model's 533 tensors (41,984,456 elements), shapes, dtypes and declared
-configuration match the official MIT-marked July 11, 2026 revision exactly.
-The original card, full comparison and hashed provenance are preserved under
-LICENSES/demucs-model/. This is evidence for a historical MIT grant, distinct
-from the MIT license of KWAK Split's own code. No model download date or new
-rights-holder permission is fabricated. The validity and scope of the historical
-grant are not a new legal guarantee; see LICENSES/demucs-model/PROVENANCE.md.
-The owner adopted this historical MIT basis after the direct comparison, and
-the model-specific public-release hold has been removed. Preserve these model
-notices, the historical declaration and its evidence when distributing this
-checkpoint, including when obtaining it through the runtime's first-use download.
+
+The weights are not covered by KWAK Split's MIT license. The Demucs author has
+stated that they are not covered by the Demucs MIT license and are provided for
+research purposes. KWAK Split grants no rights to them; check that your use is
+permitted. See LICENSES/demucs-model/NOTICE.txt and PROVENANCE.md.

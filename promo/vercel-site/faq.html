@@ -64,11 +64,11 @@
       </details>
       <details style="border-top:2px solid #221F1B;">
         <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 4px; font:700 18px 'Space Mono',monospace; color:#F2EFE6;"><span>Which platforms does it run on?</span><span style="font:400 30px 'Anton',sans-serif; color:#C8F542; line-height:1;"><span class="faq-plus">+</span><span class="faq-minus">–</span></span></summary>
-        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">Windows 10 / 11 (64-bit) and macOS 12 Monterey or newer — including both Apple Silicon and Intel Macs from a single universal build.</div>
+        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">Windows 10 / 11 (64-bit). There is no macOS version.</div>
       </details>
       <details style="border-top:2px solid #221F1B; border-bottom:2px solid #221F1B;">
         <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 4px; font:700 18px 'Space Mono',monospace; color:#F2EFE6;"><span>Do I need internet or a fancy GPU?</span><span style="font:400 30px 'Anton',sans-serif; color:#C8F542; line-height:1;"><span class="faq-plus">+</span><span class="faq-minus">–</span></span></summary>
-        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">Neither. You only need a connection to download it once. Splitting runs on your CPU — any modern 64-bit machine with 4 GB of RAM handles it. A faster chip just means faster splits.</div>
+        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">Internet only for your first split, which downloads the Demucs model (about 84 MB) once. No GPU needed — splitting runs on your CPU, and any modern 64-bit machine with 4 GB of RAM handles it. A faster chip just means faster splits.</div>
       </details>
     </div>
 
@@ -110,8 +110,8 @@
     <div style="display:flex; flex-direction:column;">
       <div style="font:700 13px 'Space Mono',monospace; color:#C8F542; letter-spacing:.14em; margin-bottom:6px;">04 · TROUBLESHOOTING &amp; LICENSE</div>
       <details style="border-top:2px solid #221F1B;">
-        <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 4px; font:700 18px 'Space Mono',monospace; color:#F2EFE6;"><span>macOS won't open it ("unidentified developer")</span><span style="font:400 30px 'Anton',sans-serif; color:#C8F542; line-height:1;"><span class="faq-plus">+</span><span class="faq-minus">–</span></span></summary>
-        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">Right-click the app → Open → Open, just once. macOS remembers after that. Gatekeeper flags small indie apps by default — nothing's wrong with the build. Verify the SHA-256 on the Download page if you want to be sure.</div>
+        <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 4px; font:700 18px 'Space Mono',monospace; color:#F2EFE6;"><span>Windows warns about an unknown publisher</span><span style="font:400 30px 'Anton',sans-serif; color:#C8F542; line-height:1;"><span class="faq-plus">+</span><span class="faq-minus">–</span></span></summary>
+        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">Click More info → Run anyway. SmartScreen flags new apps that aren't code-signed — nothing's wrong with the build. Download it only from the official GitHub release and compare the SHA-256 listed there if you want to be sure.</div>
       </details>
       <details style="border-top:2px solid #221F1B;">
         <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 4px; font:700 18px 'Space Mono',monospace; color:#F2EFE6;"><span>A split is slow or crashed on a huge file</span><span style="font:400 30px 'Anton',sans-serif; color:#C8F542; line-height:1;"><span class="faq-plus">+</span><span class="faq-minus">–</span></span></summary>
@@ -119,7 +119,7 @@
       </details>
       <details style="border-top:2px solid #221F1B; border-bottom:2px solid #221F1B;">
         <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 4px; font:700 18px 'Space Mono',monospace; color:#F2EFE6;"><span>Where can I find the license terms?</span><span style="font:400 30px 'Anton',sans-serif; color:#C8F542; line-height:1;"><span class="faq-plus">+</span><span class="faq-minus">–</span></span></summary>
-        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">KWAK Split's original code is covered by the <a href="https://github.com/seongjin971/KWAK_Split/blob/main/LICENSE">MIT license</a>. Included libraries and model weights have their own <a href="https://github.com/seongjin971/KWAK_Split/blob/main/THIRD_PARTY_NOTICES.txt">component notices</a> and <a href="https://github.com/seongjin971/KWAK_Split/blob/main/LICENSES/demucs-model/NOTICE.txt">model license record</a>. Use audio you own or have permission to edit; processing a recording does not grant rights to its underlying content.</div>
+        <div style="padding:0 4px 24px; font:500 16px/1.65 'Archivo',sans-serif; color:#A5A199;">KWAK Split's original code is covered by the <a href="https://github.com/seongjin971/KWAK_Split/blob/main/LICENSE">MIT license</a>. Included libraries have their own <a href="https://github.com/seongjin971/KWAK_Split/blob/main/THIRD_PARTY_NOTICES.txt">component notices</a>, and the complete FFmpeg and LAME source is attached to each GitHub release. The Demucs model isn't included: your first split downloads it from the official Demucs server. Its weights are provided by their authors for research purposes and aren't covered by KWAK Split's license; see the <a href="https://github.com/seongjin971/KWAK_Split/blob/main/LICENSES/demucs-model/NOTICE.txt">model notice</a>. Use audio you own or have permission to edit; processing a recording does not grant rights to its underlying content.</div>
       </details>
     </div>
 
@@ -150,7 +150,7 @@
             </div>
             <div style="font:400 22px 'Anton',sans-serif;">KWAK SPLIT</div>
           </div>
-          <div style="font:500 14px/1.55 'Archivo',sans-serif; color:#8A867C;">The free stem splitter for the AI-music era. Split, shape, and ship your audio. Windows &amp; macOS.</div>
+          <div style="font:500 14px/1.55 'Archivo',sans-serif; color:#8A867C;">The free stem splitter for the AI-music era. Split, shape, and ship your audio. Windows 10 / 11.</div>
         </div>
         <div style="display:flex; gap:56px; flex-wrap:wrap;">
           <div style="display:flex; flex-direction:column; gap:12px;">

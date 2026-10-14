@@ -1,37 +1,28 @@
-HTDemucs 955717e8 - historical MIT declaration and model attribution
-=================================================================
+Demucs model weights (htdemucs / 955717e8) - not included
+=========================================================
 
-KWAK Split uses the htdemucs / 955717e8 model from Demucs, developed by
-Alexandre Defossez and the Demucs contributors. The upstream Demucs copyright
-notice and complete MIT text are preserved unchanged in MIT-LICENSE.txt.
-That text was obtained from the upstream Demucs code distribution; the specific
-evidence for the model weights is the historical official model card below.
+KWAK Split packages do not contain Demucs model weights. On the first Split
+Stems, the bundled Demucs 4.0.1 runtime downloads this checkpoint directly
+from the official Demucs server and stores it in the app's models/torch
+folder:
 
-The included model's weights and declared model configuration were verified to
-match the official artifact at:
-https://huggingface.co/adefossez/HTDemucs/tree/bf35a81b663819a8255c8fefee17f9d812b786b5
-
-That revision's model card expressly identifies the htdemucs weights and
-955717e8.safetensors, and declares "license: mit". A verbatim copy is retained
-as evidence/historical-model-card.md. All 533 tensors (41,984,456 elements),
-their shapes and dtypes, and the model constructor configuration were compared.
-The tensor payloads are byte-identical despite the different file formats.
-
-Included original checkpoint:
-  models/torch/hub/checkpoints/955717e8-8726e21a.th
+  https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/955717e8-8726e21a.th
+  84,141,911 bytes
   SHA-256: 8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4
-Official historical safetensors artifact:
-  SHA-256: d9fa14133cfcc034a6758923bb3a8ca9f8dfd0b582134643bbf83f72c17576dd
 
-The owner states that this model was obtained and used while it was MIT
-licensed. This is the owner's account; a specific historical download date
-has not been independently established, and no such date is asserted.
+Demucs checks the download against the hash prefix in its file name.
 
-The author later removed the MIT metadata without changing those weights.
-The project relies on that historical official MIT declaration as the license
-basis for this exact model. Retain this attribution, MIT-LICENSE.txt and the
-historical declaration with copies of the model. This records the project's
-reliance on an existing declaration, not a new permission by KWAK Split or
-a new approval by the rights holder. See PROVENANCE.md for the full history,
-and evidence.json for preserved-file hashes and exhaustive comparison results.
-The project distribution decision is recorded in ../distribution-status.json.
+The weights are not part of KWAK Split and are not covered by its MIT
+license. The Demucs author has stated that the model weights are not covered
+by the MIT license of the Demucs code and are provided for research purposes:
+
+  https://github.com/facebookresearch/demucs/issues/327#issuecomment-1134828611
+  https://github.com/facebookresearch/demucs/issues/508#issuecomment-1663033356
+
+KWAK Split does not redistribute the weights and grants no rights to them.
+Before using Split Stems, check that your use is permitted by the model's
+terms. You are also responsible for the rights to the audio you process.
+
+Demucs is developed by Alexandre Defossez and contributors
+(https://github.com/facebookresearch/demucs). The license of the Demucs code
+is in LICENSES/demucs/LICENSE.txt. See PROVENANCE.md for the decision record.

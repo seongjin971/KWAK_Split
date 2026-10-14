@@ -2761,7 +2761,9 @@ class StemSamplePrepApp(PreparedPreview, CompactInterface, WorkspaceFeatures, tk
         if not self.paths.models_have_payload():
             proceed = messagebox.askyesno(
                 "Model Download",
-                "The first split needs to download model weights.\n\n"
+                "The first split downloads the Demucs model (about 84 MB) from the official Demucs server.\n\n"
+                "Its weights are not covered by KWAK Split's MIT license; the Demucs author provides them "
+                "for research purposes. See LICENSES/demucs-model/NOTICE.txt.\n\n"
                 f"Check your internet connection and free space on the app drive.\nModel folder: {self.paths.models}",
             )
             if not proceed:

@@ -38,8 +38,8 @@ if (-not (Test-Path $VenvPython)) {
     if ($LASTEXITCODE -ne 0) { throw "Build environment creation failed." }
 }
 
-# Fail before packaging or copying weights. A local build is explicitly marked
-# and cannot be mistaken for approval to publish third-party model weights.
+# Fail before packaging. Public builds never contain model weights; only a
+# -LocalOnly build copies the local checkpoint, and it is marked DO_NOT_DISTRIBUTE.
 $LicenseCheckArgs = @("-B", (Join-Path $Root "scripts\check_distribution.py"), "--root", $Root)
 if ($LocalOnly) { $LicenseCheckArgs += "--local-only" }
 & $VenvPython @LicenseCheckArgs
@@ -78,6 +78,9 @@ foreach ($folder in @("bin", "models")) {
     $source = Join-Path $Root $folder
     $dest = Join-Path $AppOut $folder
     New-Item -ItemType Directory -Force -Path $dest | Out-Null
+    # The Demucs weights are not redistributed: a public package keeps models/
+    # empty and the app downloads the official checkpoint on the first split.
+    if ($folder -eq "models" -and -not $LocalOnly) { continue }
     if (Test-Path $source) {
         # Skip the numba JIT cache: leftover from the removed Beat/BPM (librosa) feature, unused at runtime.
         Get-ChildItem -LiteralPath $source -Force |
@@ -172,10 +175,12 @@ $LauncherPath = Join-Path $AppOut $LauncherName
 Write-Host "Build complete with app-local Python (verify on each target PC):"
 Write-Host "  $AppOut\$AppExe"
 if ($LocalOnly) {
-    "LOCAL DEVELOPMENT BUILD ONLY - this output was built with -LocalOnly. See LICENSES/distribution-status.json for the project distribution decision." |
+    "LOCAL DEVELOPMENT BUILD ONLY - built with -LocalOnly; it may contain local Demucs model weights, which must not be redistributed. See LICENSES/distribution-status.json." |
         Set-Content -LiteralPath (Join-Path $AppOut "DO_NOT_DISTRIBUTE.txt") -Encoding ASCII
     Write-Warning "LOCAL BUILD ONLY: public distribution is not authorized."
 } else {
+    & $VenvPython -B (Join-Path $Root "scripts\check_distribution.py") --root $Root --package $AppOut
+    if ($LASTEXITCODE -ne 0) { throw "The public package contains model files; public packages must not include them." }
     & $VenvPython -B (Join-Path $Root "scripts\prepare_distribution_sources.py") --destination $ReleaseRoot
     if ($LASTEXITCODE -ne 0) { throw "Required public-release source materials could not be staged." }
     Write-Host "Publish the source/ materials beside the app download; do not ship the app folder alone."
