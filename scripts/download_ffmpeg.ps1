@@ -71,11 +71,16 @@ New-Item -ItemType Directory -Force -Path (Get-WorkspacePath "temp\downloads\ffm
 if ($ArchivePath) {
     $ZipPath = [IO.Path]::GetFullPath($ArchivePath)
 } else {
-    # The no-DVD build is produced by .github/workflows/ffmpeg-nodvd.yml; its
-    # package is preserved locally because workflow artifacts expire.
+    # Built by .github/workflows/ffmpeg-nodvd.yml. Workflow artifacts expire, so
+    # the package is kept locally and attached to the GitHub release.
     $ZipPath = Get-WorkspacePath $Manifest.archive.local_path
     if (-not (Test-Path -LiteralPath $ZipPath -PathType Leaf)) {
-        throw "The pinned FFmpeg package is missing: $($Manifest.archive.local_path). Download artifact '$($Manifest.archive.workflow_artifact)' from $($Manifest.archive.workflow_run) or rebuild it with .github/workflows/ffmpeg-nodvd.yml, then pass -ArchivePath."
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $ZipPath) | Out-Null
+        $PartialPath = $ZipPath + ".partial"
+        Write-Host "Downloading the pinned FFmpeg package ($($Manifest.version))..."
+        Invoke-WebRequest -UseBasicParsing -Uri $Manifest.archive.release_url -OutFile $PartialPath
+        Assert-Hash $PartialPath $Manifest.archive.sha256
+        Move-Item -LiteralPath $PartialPath -Destination $ZipPath
     }
 }
 Assert-Hash $ZipPath $Manifest.archive.sha256

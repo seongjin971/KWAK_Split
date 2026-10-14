@@ -152,9 +152,13 @@ foreach ($doc in @("LICENSE", "README.txt", "THIRD_PARTY_NOTICES.txt", "project.
     }
 }
 
-$qaDocsSource = Join-Path $Root "docs"
-if (Test-Path -LiteralPath $qaDocsSource) {
-    Copy-Item -LiteralPath $qaDocsSource -Destination $AppOut -Recurse -Force
+# Ship only tracked documentation; local QA notes under docs/ are ignored by Git.
+$TrackedDocs = @(& git -C $Root ls-files -- docs)
+if ($LASTEXITCODE -ne 0) { throw "Could not list the tracked documentation." }
+foreach ($Relative in $TrackedDocs) {
+    $DocTarget = Join-Path $AppOut $Relative
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $DocTarget) | Out-Null
+    Copy-Item -LiteralPath (Join-Path $Root $Relative) -Destination $DocTarget -Force
 }
 
 $licensesSource = Join-Path $Root "LICENSES"

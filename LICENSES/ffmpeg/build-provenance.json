@@ -635,5 +635,6 @@
   "byte_for_byte_rebuild_performed": false,
   "source_cache_excludes_unused_nonfree_variants": true,
   "amf_source_filter": "amf/public/include plus original LICENSE.txt only; no unused DeckLink SDK-generated sources",
-  "public_source_published": false
+  "public_source_published": true,
+  "published_release": "https://github.com/seongjin971/KWAK_Split/releases/tag/v1.1.0"
 }

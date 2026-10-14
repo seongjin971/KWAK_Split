@@ -5,7 +5,7 @@
   "license": "GPL-3.0-or-later",
   "candidate_only": false,
   "source_local_verified": true,
-  "public_source_published": false,
+  "public_source_published": true,
   "build_run": "https://github.com/seongjin971/KWAK_Split/actions/runs/38508865689",
   "build_commit": "63ac3265b0789ea16c7b1f8351cd2ad195a28722",
   "recipe_patch": {
@@ -20,6 +20,7 @@
     "name": "ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1-nodvd.zip",
     "root_directory": "ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1-nodvd",
     "local_path": "vendor-sources/ffmpeg/build-nodvd/ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1-nodvd.zip",
+    "release_url": "https://github.com/seongjin971/KWAK_Split/releases/download/v1.1.0/ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1-nodvd.zip",
     "workflow_run": "https://github.com/seongjin971/KWAK_Split/actions/runs/38508865689",
     "workflow_artifact": "ffmpeg-nodvd-win64-gpl-8.1",
     "bytes": 192721749,
@@ -78,13 +79,14 @@
     },
     {
       "path": "vendor-sources/ffmpeg/source-metadata.zip",
-      "sha256": "ba1afd5999c2498cbf707f82425b38f3486b0170db0ea599e7f24afc42e79e1b",
-      "bytes": 1438771,
+      "sha256": "3dbfa5a918ccffcd1cc554228ac94d3b06f1e6c7cbdf262892b30e69a26a93b3",
+      "bytes": 1438843,
       "bundle_path": "source/ffmpeg/source-metadata.zip"
     }
   ],
   "source_verification": "Exact FFmpeg core, original build scripts plus the KWAK Split no-DVD patch, the 95 dependency source stages linked into these executables (matched to the dependency build log; libdvdcss, libdvdread and libdvdnav excluded as unlinked), selected GPL sources with unused AMF SDK material excluded, and 275 rav1e crate archives matched to the same built-library cache layer and package checksums; original component notices preserved. No byte-for-byte rebuild or public publication asserted.",
   "source_inventory": "LICENSES/ffmpeg/source-inventory.json",
   "rust_inventory": "LICENSES/ffmpeg/rav1e-cargo-inventory.json",
-  "build_provenance": "LICENSES/ffmpeg/build-provenance.json"
+  "build_provenance": "LICENSES/ffmpeg/build-provenance.json",
+  "published_release": "https://github.com/seongjin971/KWAK_Split/releases/tag/v1.1.0"
 }

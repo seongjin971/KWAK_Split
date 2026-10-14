@@ -31,7 +31,8 @@ build.ps1 verifies these records and keeps model files out of public builds.
 
 Quick Start
 -----------
-1. Run "Run KWAK Split.cmd". It selects release/compact-fix30/KWAK Split/KWAK Split.exe,
+1. In a downloaded package, run "Run KWAK Split.cmd" or KWAK Split.exe. In a source
+   checkout, the root "Run KWAK Split.cmd" selects release/compact-fix30/KWAK Split/KWAK Split.exe,
    or runs the source through run_dev.ps1 when the build is unavailable.
 2. Open Audio (Ctrl+O), or drop WAV/MP3/FLAC/M4A onto the window.
 3. Drag the large blue left handle to set the start and the right handle to set

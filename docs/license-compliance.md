@@ -45,6 +45,14 @@ grant third-party rights.
 Never publish `release/compact-fix30` or any `-LocalOnly` package: they contain
 the local model checkpoint. Do not re-publish the draft v1.0.0 ZIP.
 
+## Published releases
+
+- [v1.1.0](https://github.com/seongjin971/KWAK_Split/releases/tag/v1.1.0),
+  2026-10-14: the public package (no model files) with all nine source
+  archives, `SHA256.json` and the FFmpeg package
+  `ffmpeg-n8.1.3-18-g46d899d7a0-win64-gpl-8.1-nodvd.zip`. Keep these assets
+  while the package is offered.
+
 ## Earlier release
 
 The previous GitHub release `v1.0.0` (release ID 333222423) was changed from
@@ -71,17 +79,17 @@ The root and `release/compact-fix30/KWAK Split` copies use FFmpeg
 dependency image with DVD support disabled. Apart from that and the version
 suffix, its configure command is identical to BtbN's 2026-10-13 build; the
 three executables contain no libdvdcss code. All six copies match the pinned
-hashes and version. The previous BtbN binaries and their source sidecar are
-kept locally under `backups/`.
+hashes and version. The previous BtbN binaries are kept locally under
+`backups/`.
 
 Nine source archives (seven FFmpeg/build/dependency archives and two LAME
-archives), totaling 2,188,531,774 bytes, are verified by
+archives), totaling 2,188,531,846 bytes, are verified by
 `scripts/prepare_distribution_sources.py`. The FFmpeg materials cover the 95
 dependency source stages linked into the executables, matched to the
 dependency build log, and 275 rav1e crates recovered from the same cache layer
 as the built library. `release/compact-fix30` no longer carries a source
-sidecar because it must not be published; a public build stages its own. No
-public source or executable release has been published.
+sidecar because it must not be published; a public build stages its own.
+Release v1.1.0 provides these archives publicly.
 
 Verify acquired notices and runtime identities with:
 
