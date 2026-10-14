@@ -11,7 +11,9 @@ from the official Demucs server on the first split. This replaces the earlier
 reliance on a removed Hugging Face MIT tag. The bundled FFmpeg is rebuilt
 without DVD support, so libdvdcss is not included. Public downloads must
 provide the FFmpeg/LAME corresponding source, and the old v1.0.0 GitHub ZIP
-remains a draft.
+remains a draft. Public release
+[v1.1.0](https://github.com/seongjin971/KWAK_Split/releases/tag/v1.1.0)
+(2026-10-14) ships the model-free package with that source attached.
 See [distribution licensing](docs/license-compliance.md) and the
 [model record](LICENSES/demucs-model/PROVENANCE.md).
 
